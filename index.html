@@ -125,8 +125,8 @@ var ph = function(c) { return 'data:image/svg+xml,' + encodeURIComponent('<svg x
 var fillColors = ['#edebe7', '#d6cfc7', '#c9ddd4', '#e8d6c3'];
 var fillImgs = fillColors.map(ph);
 
-var _stored = (function() { try { var r = localStorage.getItem('coll_v8'); return r ? JSON.parse(r) : []; } catch(e) { return []; } })();
-var S = { products: _stored, view: 'gallery', sort: 'default' };
+var _stored = (function() { try { var r = localStorage.getItem('coll_v8'); return r ? JSON.parse(r) : null; } catch(e) { return null; } })();
+var S = { products: _stored || [], view: 'gallery', sort: 'default' };
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -268,7 +268,14 @@ function route() {
   }
 }
 
-renderGallery(); route();
+if (_stored) {
+  renderGallery(); route();
+} else {
+  fetch('data.json').then(function(r) { return r.json(); }).then(function(data) {
+    S.products = data;
+    renderGallery(); route();
+  }).catch(function() { renderGallery(); route(); });
+}
 </script>
 </body>
 </html>
