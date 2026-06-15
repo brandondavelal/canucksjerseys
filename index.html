@@ -207,7 +207,7 @@ function renderGallery() {
   });
   var imgs = g.querySelectorAll('.card-img img');
   var remaining = imgs.length;
-  var minDelay = 1000;
+  var minDelay = 600;
   var startTime = Date.now();
   var revealAll = function() {
     var wait = Math.max(0, minDelay - (Date.now() - startTime));
