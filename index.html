@@ -200,8 +200,8 @@ function renderGallery() {
     var img2 = (p.images && p.images.length > 1) ? p.images[1] : null;
     var sub  = [p.manufacturer, p.year].filter(Boolean).join(' · ');
     return '<div class="card" data-id="' + esc(p.id) + '" tabindex="0" role="button" style="animation-delay:' + (i * 40) + 'ms">' +
-      '<div class="card-img skeleton"><img src="' + img + '" alt="' + esc(p.player) + '" loading="lazy">' +
-      (img2 ? '<img class="card-img-alt" src="' + img2 + '" alt="' + esc(p.player) + '" loading="lazy">' : '') +
+      '<div class="card-img skeleton"><img src="' + img + '" alt="' + esc(p.player) + '">' +
+      (img2 ? '<img class="card-img-alt" src="' + img2 + '" alt="' + esc(p.player) + '">' : '') +
       '</div><div class="card-info">' +
       (p.team   ? '<div class="card-team">'   + esc(p.team)        + '</div>' : '') +
       '<div class="card-title">' + esc(p.title||'—') + '</div>' +
@@ -217,7 +217,11 @@ function renderGallery() {
   var remaining = imgs.length;
   var minDelay = 600;
   var startTime = Date.now();
+  var revealed = false;
   var revealAll = function() {
+    if (revealed) return;
+    revealed = true;
+    clearTimeout(fallback);
     var wait = Math.max(0, minDelay - (Date.now() - startTime));
     setTimeout(function() {
       imgs.forEach(function(img) {
@@ -227,6 +231,7 @@ function renderGallery() {
       });
     }, wait);
   };
+  var fallback = setTimeout(revealAll, 5000);
   if (!remaining) revealAll();
   imgs.forEach(function(img) {
     var onDone = function() { if (--remaining <= 0) revealAll(); };
