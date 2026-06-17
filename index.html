@@ -44,7 +44,6 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 48px 16px; }
 @media (max-width: 900px)  { .grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 700px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 420px)  { .grid { grid-template-columns: 1fr; } }
 
 .card { background: #f7f7f7; border-radius: 2px; overflow: hidden; cursor: pointer; opacity: 0; animation: cardIn 0.4s ease forwards; }
 @keyframes cardIn { to { opacity: 1; } }
@@ -84,9 +83,18 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 .gallery-contact { text-align: center; margin-top: 64px; margin-bottom: 12px; }
 
 @media (max-width: 768px) {
-  .detail-wrap { flex-direction: column; }
-  .detail-imgs { width: 100%; position: static; height: auto; margin-top: 0; padding-top: 0; }
-  .detail-panel { width: 100%; min-height: auto; padding: 24px 0 40px; }
+  .detail-wrap { flex-direction: column; gap: 0; }
+  .detail-imgs { width: 100%; position: static; height: auto; margin-top: 0; padding-top: 0; padding-bottom: 0; }
+  .detail-panel { width: 100%; min-height: auto; padding: 48px 0 40px; }
+}
+@media (max-width: 600px) {
+  #view-gallery { padding-left: 24px; padding-right: 24px; }
+  #view-detail .detail-wrap { padding: 0 24px; }
+  .grid { grid-template-columns: 1fr; row-gap: 32px; }
+  .hdr-back { left: 24px; }
+  .hdr-sort { right: 24px; color: transparent; padding: 10px 20px 10px 10px; }
+  .hdr-sort option { color: #000; }
+  .hdr-sort:hover { box-shadow: none; border-radius: 0; }
 }
 </style>
 </head>
