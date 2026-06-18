@@ -261,24 +261,23 @@ main { padding: calc(var(--hdr1) + 48px) 48px 100px; max-width: none; margin: 0;
 </div>
 
 <script>
-var _stored = (function() { try { var r = localStorage.getItem('coll_v8'); return r ? JSON.parse(r) : null; } catch(e) { return null; } })();
-if (!_stored && typeof GALLERY_DATA !== 'undefined') { _stored = GALLERY_DATA; }
-if (_stored) { _stored.forEach(function(p) { if (!p.status) p.status = 'Public'; }); }
-var S = { products: _stored || [] };
+var _initial = typeof GALLERY_DATA !== 'undefined' ? GALLERY_DATA : [];
+_initial.forEach(function(p) { if (!p.status) p.status = 'Public'; });
+var S = { products: _initial };
 var editingId = null;
 var formImages = [];
 var formPatches = [];
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function save() { try { localStorage.setItem('coll_v8', JSON.stringify(S.products)); } catch(e) {} }
+function save() {}
 
 document.getElementById('btn-export').addEventListener('click', function(e) {
   e.preventDefault();
-  var blob = new Blob([JSON.stringify(S.products, null, 2)], { type: 'application/json' });
+  var blob = new Blob(['var GALLERY_DATA = ' + JSON.stringify(S.products, null, 2) + ';'], { type: 'application/javascript' });
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
   a.href = url;
-  a.download = 'data.json';
+  a.download = 'data.js';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
