@@ -763,5 +763,27 @@ var GALLERY_DATA = [
     "jerseyType": "Replica/Indo Authentic",
     "category": "canucks",
     "condition": "Very Good"
+  },
+  {
+    "category": "canucks",
+    "team": "Vancouver Canucks",
+    "title": "'Vancouver Millionaires' 2015 Heritage Classic Alt",
+    "player": "Henrik Sedin",
+    "number": "33",
+    "designation": "C",
+    "manufacturer": "Reebok",
+    "model": "Edge 2.0 Wordmark",
+    "year": "2015",
+    "size": "56",
+    "country": "Made in Canada",
+    "jerseyType": "Retail On-Ice",
+    "condition": "New without Tags",
+    "cost": "$463.07",
+    "patch1": "2015 Heritage Classic",
+    "patch2": "",
+    "patch3": "",
+    "images": [],
+    "id": "pmr3033vwb09wg",
+    "status": "Public"
   }
 ];
