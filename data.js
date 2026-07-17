@@ -785,5 +785,27 @@ var GALLERY_DATA = [
     "images": [],
     "id": "pmr3033vwb09wg",
     "status": "Public"
+  },
+  {
+    "category": "canucks",
+    "team": "Vancouver Canucks",
+    "title": "'Flying Skate' 2015 Throwback",
+    "player": "Alex Burrons",
+    "number": "12",
+    "designation": "Blank",
+    "manufacturer": "Reebok",
+    "model": "Edge 2.0 Wordmark",
+    "year": "2015",
+    "size": "54",
+    "country": "Made in Canada",
+    "jerseyType": "Retail On-Ice",
+    "condition": "New without Tags",
+    "cost": "287",
+    "patch1": "",
+    "patch2": "",
+    "patch3": "",
+    "images": [],
+    "id": "pmrohf7amow40r",
+    "status": "Public"
   }
 ];
