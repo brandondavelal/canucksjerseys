@@ -765,7 +765,7 @@ var GALLERY_DATA = [
   {
     "id": "j03",
     "player": "Pavel Bure",
-    "title": "'Flying Skate' Home Away",
+    "title": "'Flying Skate' Home White",
     "team": "Vancouver Canucks",
     "number": "10",
     "designation": "Blank",
@@ -777,9 +777,12 @@ var GALLERY_DATA = [
     "patch1": "",
     "patch2": "",
     "patch3": "",
-    "status": "Draft",
+    "status": "Public",
     "cost": "$400.00",
-    "images": [],
+    "images": [
+      "images/IMG_4403 Large.jpeg",
+      "images/IMG_4404 Large.jpeg"
+    ],
     "jerseyType": "Retail On-Ice",
     "category": "canucks",
     "condition": "Very Good"
