@@ -75,7 +75,10 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 #grid > div > div.card-info > div { font-size: 10px; font-weight: 400; line-height: 1; color: #0d0d0d; transition: color 0.2s; }
 #grid > div > div.card-info > div:last-child { margin-bottom: 0; }
 
-#grid > div > div.card-info > div.card-price { margin-top: 15px; font-weight: 700; color: #000; }
+.card.sale { display: flex; flex-direction: column; }
+.card.sale .card-info { flex: 1; position: relative; padding-bottom: 88px; }
+#grid .card-cta { position: absolute; left: 24px; right: 24px; bottom: 24px; display: block; text-align: center; font-size: 12px; padding: 12px 8px; white-space: nowrap; }
+#grid .card-cta .cta-dot { margin: 0 6px; }
 .empty { grid-column: 1/-1; min-height: 60vh; display: flex; align-items: center; justify-content: center; }
 .empty-hed { font-size: 15px; color: var(--lgrey); }
 
@@ -243,12 +246,14 @@ function renderGallery() {
       return ya - yb;
     });
   }
+  document.querySelector('.gallery-contact').style.display = S.filter === 'sale' ? 'none' : '';
   if (!list.length) { g.innerHTML = '<div class="empty"><div class="empty-hed">Nothing here yet.</div></div>'; return; }
+  var sale = S.filter === 'sale';
   g.innerHTML = list.map(function(p, i) {
     var img = (p.images && p.images.length) ? p.images[0] : fillImgs[0];
     var img2 = (p.images && p.images.length > 1) ? p.images[1] : null;
     var sub  = [p.manufacturer, p.year].filter(Boolean).join(' · ');
-    return '<div class="card" data-id="' + esc(p.id) + '" tabindex="0" role="button" style="animation-delay:' + (i * 40) + 'ms">' +
+    return '<div class="card' + (sale ? ' sale' : '') + '" data-id="' + esc(p.id) + '" tabindex="0" role="button" style="animation-delay:' + (i * 40) + 'ms">' +
       '<div class="card-img skeleton"><img src="' + img + '" alt="' + esc(p.player) + '">' +
       (img2 ? '<img class="card-img-alt" src="' + img2 + '" alt="' + esc(p.player) + '">' : '') +
       '</div><div class="card-info">' +
@@ -256,12 +261,12 @@ function renderGallery() {
       '<div class="card-title">' + esc(p.title||'—') + '</div>' +
       (p.player ? '<div class="card-player">' + esc(p.player)      + '</div>' : '') +
       (sub      ? '<div class="card-sub">'    + esc(sub)           + '</div>' : '') +
-      (S.filter === 'sale' && p.price ? '<div class="card-price">' + esc(p.price) + '</div>' : '') +
+      (sale ? '<a class="cta-buy card-cta" href="mailto:brandondavelal@gmail.com">Contact to Buy' + (p.price ? '<span class="cta-dot">·</span>' + esc(p.price) : '') + '</a>' : '') +
       '</div></div>';
   }).join('');
   g.querySelectorAll('.card').forEach(function(c) {
-    c.addEventListener('click', function() { openDetail(c.dataset.id); });
-    c.addEventListener('keydown', function(e) { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); openDetail(c.dataset.id); } });
+    c.addEventListener('click', function(e) { if (e.target.closest('.card-cta')) return; openDetail(c.dataset.id); });
+    c.addEventListener('keydown', function(e) { if (e.target.closest('.card-cta')) return; if (e.key==='Enter'||e.key===' ') { e.preventDefault(); openDetail(c.dataset.id); } });
   });
   g.querySelectorAll('.card').forEach(function(card) {
     var img = card.querySelector('.card-img img:not(.card-img-alt)');
