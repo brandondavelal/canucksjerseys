@@ -151,7 +151,7 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 
 <main class="view on" id="view-gallery">
   <div class="grid" id="grid"></div>
-  <div class="dp-contact gallery-contact"><a class="cta-buy" href="mailto:brandondavelal@gmail.com?subject=Jersey%20inquiry">Contact to Buy</a></div>
+  <div class="dp-contact gallery-contact"><a class="cta-buy" href="mailto:brandondavelal@gmail.com">Contact to Buy</a></div>
 </main>
 
 <main class="view" id="view-detail">
@@ -285,7 +285,7 @@ function openDetail(id, skipPush) {
     (mfr  ? '<div class="dp-meta">'   + esc(mfr)     + '</div>' : '') +
     extras.map(function(x) { return '<div class="dp-extra">' + esc(x[0]) + ': ' + esc(x[1]) + '</div>'; }).join('') +
     (p.country ? '<div class="dp-extra">' + esc(p.country) + '</div>' : '') +
-    '<div class="dp-contact"><hr class="dp-rule"><br><a class="cta-buy" href="mailto:brandondavelal@gmail.com?subject=' + encodeURIComponent('Jersey inquiry: ' + [p.player, p.title].filter(Boolean).join(' - ')) + '">Contact to Buy</a></div>';
+    '<div class="dp-contact"><hr class="dp-rule"><br><a class="cta-buy" href="mailto:brandondavelal@gmail.com">Contact to Buy</a></div>';
   show('detail');
 }
 
