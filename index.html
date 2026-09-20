@@ -100,13 +100,13 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 
 @media (max-width: 768px) {
   .detail-panel { align-items: stretch; }
-  #detail-panel > div.dp-contact { order: -1; width: 100%; margin: 0 0 24px; }
+  #detail-panel > div.dp-contact { order: -1; width: 100%; margin: 0 0 24px; padding-bottom: 24px; border-bottom: 1px solid #0000001a; }
   .detail-panel .dp-contact .dp-rule, .detail-panel .dp-contact br { display: none; }
   .detail-panel .cta-buy { display: block; width: 100%; text-align: center; }
   .detail-panel > div:not(.dp-contact) { text-align: center; }
   .detail-wrap { flex-direction: column; gap: 0; }
   .detail-imgs { width: 100%; position: static; height: auto; margin-top: 0; padding-top: 0; padding-bottom: 0; }
-  .detail-panel { width: 100%; min-height: auto; padding: 48px 0 40px; }
+  .detail-panel { width: 100%; min-height: auto; padding: 16px 0 40px; }
 }
 @media (max-width: 600px) {
   .gallery-contact .cta-buy { display: block; width: 100%; text-align: center; }
