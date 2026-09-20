@@ -485,7 +485,7 @@ var GALLERY_DATA = [
     "category": "canucks",
     "team": "Vancouver Canucks",
     "title": "'Flying Skate' 2015 Throwback",
-    "player": "Alex Burrons",
+    "player": "Alex Burrows",
     "number": "12",
     "designation": "Blank",
     "manufacturer": "Reebok",
