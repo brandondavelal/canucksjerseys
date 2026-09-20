@@ -94,15 +94,22 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 .cta-buy { display: inline-block; background: #0a5cff; color: #fff; font-family: var(--f); font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-decoration: none; padding: 14px 28px; border-radius: 4px; transition: background 0.15s; }
 .dp-contact a.cta-buy { color: #fff; text-decoration: none; }
 .cta-buy:hover { background: #0847c7; }
+.cta-dot { margin: 0 10px; }
 .dp-rule { border: none; border-top: 1px solid #0000001a; margin: 0; }
 .gallery-contact { text-align: center; margin-top: 64px; margin-bottom: 12px; }
 
 @media (max-width: 768px) {
+  .detail-panel { align-items: stretch; }
+  #detail-panel > div.dp-contact { order: -1; width: 100%; margin: 0 0 24px; }
+  .detail-panel .dp-contact .dp-rule, .detail-panel .dp-contact br { display: none; }
+  .detail-panel .cta-buy { display: block; width: 100%; text-align: center; }
+  .detail-panel > div:not(.dp-contact) { text-align: center; }
   .detail-wrap { flex-direction: column; gap: 0; }
   .detail-imgs { width: 100%; position: static; height: auto; margin-top: 0; padding-top: 0; padding-bottom: 0; }
   .detail-panel { width: 100%; min-height: auto; padding: 48px 0 40px; }
 }
 @media (max-width: 600px) {
+  .gallery-contact .cta-buy { display: block; width: 100%; text-align: center; }
   #view-gallery { padding-left: 24px; padding-right: 24px; }
   #view-detail .detail-wrap { padding: 0 24px; }
   .grid { grid-template-columns: 1fr; row-gap: 32px; }
@@ -285,7 +292,7 @@ function openDetail(id, skipPush) {
     (mfr  ? '<div class="dp-meta">'   + esc(mfr)     + '</div>' : '') +
     extras.map(function(x) { return '<div class="dp-extra">' + esc(x[0]) + ': ' + esc(x[1]) + '</div>'; }).join('') +
     (p.country ? '<div class="dp-extra">' + esc(p.country) + '</div>' : '') +
-    '<div class="dp-contact"><hr class="dp-rule"><br><a class="cta-buy" href="mailto:brandondavelal@gmail.com">Contact to Buy</a></div>';
+    '<div class="dp-contact"><hr class="dp-rule"><br><a class="cta-buy" href="mailto:brandondavelal@gmail.com">Contact to Buy' + (p.price ? '<span class="cta-dot">·</span>' + esc(p.price) : '') + '</a></div>';
   show('detail');
 }
 

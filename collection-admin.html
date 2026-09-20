@@ -252,6 +252,10 @@ main { padding: calc(var(--hdr1) + 48px) 48px 100px; max-width: none; margin: 0;
         <input id="f-cost" type="text">
       </div>
       <div class="field">
+        <label>Sell Price</label>
+        <input id="f-price" type="text" placeholder="$0">
+      </div>
+      <div class="field">
         <label>For Sale</label>
         <select id="f-onSale">
           <option value="">No</option>
@@ -410,6 +414,7 @@ function openForm(id) {
   document.getElementById('f-jerseyType').value = p.jerseyType || '';
   document.getElementById('f-condition').value = p.condition || '';
   document.getElementById('f-cost').value = p.cost || '';
+  document.getElementById('f-price').value = p.price || '';
   document.getElementById('f-onSale').value = p.onSale ? 'yes' : '';
   formPatches = [p.patch1, p.patch2, p.patch3].filter(Boolean);
   document.getElementById('btn-delete').style.display = id ? '' : 'none';
@@ -524,6 +529,7 @@ document.getElementById('btn-save').addEventListener('click', function() {
     jerseyType: document.getElementById('f-jerseyType').value,
     condition: document.getElementById('f-condition').value,
     cost: document.getElementById('f-cost').value.trim(),
+    price: document.getElementById('f-price').value.trim(),
     onSale: document.getElementById('f-onSale').value === 'yes',
     patch1: (formPatches[0] || '').trim(),
     patch2: (formPatches[1] || '').trim(),
