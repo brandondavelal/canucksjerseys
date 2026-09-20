@@ -105,9 +105,9 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 
 @media (max-width: 768px) {
   .detail-panel { align-items: stretch; }
-  #detail-panel > div.dp-contact { order: -1; width: 100%; margin: 0 0 24px; }
-  #detail-panel > div.dp-contact::after { content: ''; display: block; width: 72px; height: 1px; background: #0000001a; margin: 24px auto 0; }
-  .detail-panel .dp-contact .dp-rule, .detail-panel .dp-contact br { display: none; }
+  #detail-panel > div.dp-contact-cta { order: -1; width: 100%; margin: 0 0 24px; }
+  #detail-panel > div.dp-contact-cta::after { content: ''; display: block; width: 72px; height: 1px; background: #0000001a; margin: 24px auto 0; }
+  .detail-panel .dp-contact-cta .dp-rule, .detail-panel .dp-contact-cta br { display: none; }
   #detail-panel .cta-buy { display: block; width: 100%; text-align: center; margin-top: 0; }
   .detail-panel > div:not(.dp-contact) { text-align: center; }
   .detail-wrap { flex-direction: column; gap: 0; }
@@ -115,7 +115,6 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
   .detail-panel { width: 100%; min-height: auto; padding: 20px 0 40px; }
 }
 @media (max-width: 600px) {
-  .gallery-contact .cta-buy { display: block; width: 100%; text-align: center; }
   #view-gallery { padding-left: 24px; padding-right: 24px; }
   #view-detail .detail-wrap { padding: 0 24px; }
   .grid { grid-template-columns: 1fr; row-gap: 32px; }
@@ -164,7 +163,7 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 
 <main class="view on" id="view-gallery">
   <div class="grid" id="grid"></div>
-  <div class="dp-contact gallery-contact"><a class="cta-buy" href="mailto:brandondavelal@gmail.com">Contact to Buy</a></div>
+  <div class="dp-contact gallery-contact">Interested in a jersey?<br><a href="mailto:brandondavelal@gmail.com">Contact</a> to inquire.</div>
 </main>
 
 <main class="view" id="view-detail">
@@ -246,7 +245,6 @@ function renderGallery() {
       return ya - yb;
     });
   }
-  document.querySelector('.gallery-contact').style.display = S.filter === 'sale' ? 'none' : '';
   if (!list.length) { g.innerHTML = '<div class="empty"><div class="empty-hed">Nothing here yet.</div></div>'; return; }
   var sale = S.filter === 'sale';
   g.innerHTML = list.map(function(p, i) {
@@ -301,7 +299,9 @@ function openDetail(id, skipPush) {
     (mfr  ? '<div class="dp-meta">'   + esc(mfr)     + '</div>' : '') +
     extras.map(function(x) { return '<div class="dp-extra">' + esc(x[0]) + ': ' + esc(x[1]) + '</div>'; }).join('') +
     (p.country ? '<div class="dp-extra">' + esc(p.country) + '</div>' : '') +
-    '<div class="dp-contact"><hr class="dp-rule"><br><a class="cta-buy" href="mailto:brandondavelal@gmail.com">Contact to Buy' + (p.price ? '<span class="cta-dot">·</span>' + esc(p.price) : '') + '</a></div>';
+    (p.onSale
+      ? '<div class="dp-contact dp-contact-cta"><hr class="dp-rule"><br><a class="cta-buy" href="mailto:brandondavelal@gmail.com">Contact to Buy' + (p.price ? '<span class="cta-dot">·</span>' + esc(p.price) : '') + '</a></div>'
+      : '<div class="dp-contact"><hr class="dp-rule"><br>Interested in this jersey?<br><a href="mailto:brandondavelal@gmail.com">Contact</a> to inquire.</div>');
   show('detail');
 }
 
