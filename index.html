@@ -83,15 +83,15 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 .empty-hed { font-size: 15px; color: var(--lgrey); }
 
 .detail-wrap { display: flex; align-items: flex-start; gap: 48px; }
-.detail-imgs { width: 62%; flex-shrink: 0; position: sticky; top: 0; height: 100vh; margin-top: calc(-1 * var(--top)); padding-top: var(--top); padding-bottom: 48px; display: flex; gap: 16px; }
-.detail-thumbs { flex: 0 0 96px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-.detail-thumbs::-webkit-scrollbar { display: none; }
-.detail-thumb { flex: 0 0 auto; width: 96px; aspect-ratio: 1; padding: 0; border: none; background: #f7f7f7; cursor: pointer; position: relative; opacity: 0.6; transition: opacity 0.15s; }
+.detail-imgs { width: 62%; flex-shrink: 0; position: sticky; top: var(--top); align-self: flex-start; display: flex; gap: 16px; padding-bottom: 48px; }
+.detail-thumbs { flex: 0 0 96px; position: relative; }
+.detail-thumbs-in { position: absolute; inset: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+.detail-thumbs-in::-webkit-scrollbar { display: none; }
+.detail-thumb { flex: 0 0 auto; width: 96px; aspect-ratio: 1; padding: 0; border: 2px solid transparent; border-radius: 4px; background: #f7f7f7; cursor: pointer; overflow: hidden; transition: border-color 0.15s; }
 .detail-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.detail-thumb:hover, .detail-thumb.on { opacity: 1; }
-.detail-thumb.on::after { content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 3px; background: #d0d0d0; }
-.detail-main { flex: 1; min-width: 0; background: #f7f7f7; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.detail-main img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.detail-thumb.on { border-color: #8c8c8c; }
+.detail-main { flex: 1; min-width: 0; aspect-ratio: 4 / 3; background: #f7f7f7; overflow: hidden; }
+.detail-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .detail-panel { width: 38%; min-height: calc(100vh - var(--top)); padding: 32px 0 48px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
 
 .dp-team, .dp-player, .dp-meta, .dp-extra { margin-bottom: 1px; }
@@ -116,11 +116,11 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
   #detail-panel .cta-buy { display: block; width: 100%; text-align: center; margin-top: 0; }
   .detail-panel > div:not(.dp-contact) { text-align: center; }
   .detail-wrap { flex-direction: column; gap: 0; }
-  .detail-imgs { width: 100%; position: static; height: auto; margin-top: 0; padding-top: 0; padding-bottom: 0; flex-direction: column-reverse; gap: 12px; }
-  .detail-thumbs { flex: none; flex-direction: row; overflow-x: auto; overflow-y: hidden; gap: 8px; padding-bottom: 8px; }
+  .detail-imgs { width: 100%; position: static; padding-bottom: 0; flex-direction: column-reverse; gap: 12px; }
+  .detail-thumbs { flex: none; }
+  .detail-thumbs-in { position: static; flex-direction: row; overflow-x: auto; overflow-y: hidden; gap: 8px; }
   .detail-thumb { width: 64px; }
-  .detail-thumb.on::after { bottom: -6px; }
-  .detail-main { aspect-ratio: 4 / 3; }
+  .detail-main { flex: none; width: 100%; }
   .detail-panel { width: 100%; min-height: auto; padding: 20px 0 40px; }
 }
 @media (max-width: 600px) {
@@ -293,9 +293,9 @@ function openDetail(id, skipPush) {
   if (!skipPush) history.pushState({ id: id }, '', '#' + encodeURIComponent(id));
   var imgs = (p.images && p.images.length) ? p.images : fillImgs;
   var di = document.getElementById('detail-imgs');
-  di.innerHTML = (imgs.length > 1 ? '<div class="detail-thumbs">' + imgs.map(function(src, i) {
+  di.innerHTML = (imgs.length > 1 ? '<div class="detail-thumbs"><div class="detail-thumbs-in">' + imgs.map(function(src, i) {
       return '<button type="button" class="detail-thumb' + (i === 0 ? ' on' : '') + '" data-i="' + i + '" aria-label="Photo ' + (i + 1) + '"><img src="' + src + '" alt=""></button>';
-    }).join('') + '</div>' : '') +
+    }).join('') + '</div></div>' : '') +
     '<div class="detail-main"><img src="' + imgs[0] + '" alt="' + esc(p.player) + '"></div>';
   di.querySelectorAll('.detail-thumb').forEach(function(t) {
     t.addEventListener('click', function() {
