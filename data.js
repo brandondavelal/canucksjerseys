@@ -1,6 +1,7 @@
 var GALLERY_DATA = [
   {
     "id": "j16",
+    "onSale": true,
     "player": "Henrik Sedin",
     "title": "'2011 Stanley Cup Final' Wordmark Orca Home Blue",
     "team": "Vancouver Canucks",
@@ -26,6 +27,7 @@ var GALLERY_DATA = [
   },
   {
     "id": "j09",
+    "onSale": true,
     "player": "Markus Naslund",
     "title": "'West Coast Express' Orca Home Navy",
     "team": "Vancouver Canucks",
@@ -176,6 +178,7 @@ var GALLERY_DATA = [
   },
   {
     "id": "j30",
+    "onSale": true,
     "player": "Sidney Crosby",
     "title": "Vancouver 2010 Olympics Home Red",
     "team": "Team Canada",
@@ -301,6 +304,7 @@ var GALLERY_DATA = [
   },
   {
     "id": "j10",
+    "onSale": true,
     "player": "Markus Naslund",
     "title": "'West Coast Express' Orca Away White",
     "team": "Vancouver Canucks",
