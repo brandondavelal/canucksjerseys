@@ -91,6 +91,9 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 #detail-panel > div:last-child { margin-bottom: 0; }
 .dp-contact { margin-top: 16px; font-size: 11px; color: #999999; }
 .dp-contact a { color: inherit; text-decoration: underline; }
+.cta-buy { display: inline-block; background: #0a5cff; color: #fff; font-family: var(--f); font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-decoration: none; padding: 14px 28px; border-radius: 4px; transition: background 0.15s; }
+.dp-contact a.cta-buy { color: #fff; text-decoration: none; }
+.cta-buy:hover { background: #0847c7; }
 .dp-rule { border: none; border-top: 1px solid #0000001a; margin: 0; }
 .gallery-contact { text-align: center; margin-top: 64px; margin-bottom: 12px; }
 
@@ -126,13 +129,13 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
       <button class="hdr-filter" data-filter="canucks">Canucks</button>
       <button class="hdr-filter" data-filter="canada">Canada</button>
       <button class="hdr-filter" data-filter="other">Other</button>
-      <button class="hdr-filter hdr-filter-sale" data-filter="sale">On Sale</button>
+      <button class="hdr-filter hdr-filter-sale" data-filter="sale">For Sale</button>
       <select class="hdr-filter-select" id="filter-select">
         <option value="all">All</option>
         <option value="canucks">Canucks</option>
         <option value="canada">Canada</option>
         <option value="other">Other</option>
-        <option value="sale">On Sale</option>
+        <option value="sale">For Sale</option>
       </select>
     </div>
     <div class="hdr-right">
@@ -148,7 +151,7 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 
 <main class="view on" id="view-gallery">
   <div class="grid" id="grid"></div>
-  <div class="dp-contact gallery-contact">Interested in a jersey?<br><a href="mailto:brandondavelal@gmail.com">Contact</a> to inquire.</div>
+  <div class="dp-contact gallery-contact"><a class="cta-buy" href="mailto:brandondavelal@gmail.com?subject=Jersey%20inquiry">Contact to Buy</a></div>
 </main>
 
 <main class="view" id="view-detail">
@@ -282,7 +285,7 @@ function openDetail(id, skipPush) {
     (mfr  ? '<div class="dp-meta">'   + esc(mfr)     + '</div>' : '') +
     extras.map(function(x) { return '<div class="dp-extra">' + esc(x[0]) + ': ' + esc(x[1]) + '</div>'; }).join('') +
     (p.country ? '<div class="dp-extra">' + esc(p.country) + '</div>' : '') +
-    '<div class="dp-contact"><hr class="dp-rule"><br>Interested in this jersey?<br><a href="mailto:brandondavelal@gmail.com">Contact</a> to inquire.</div>';
+    '<div class="dp-contact"><hr class="dp-rule"><br><a class="cta-buy" href="mailto:brandondavelal@gmail.com?subject=' + encodeURIComponent('Jersey inquiry: ' + [p.player, p.title].filter(Boolean).join(' - ')) + '">Contact to Buy</a></div>';
   show('detail');
 }
 
