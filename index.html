@@ -75,6 +75,7 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 #grid > div > div.card-info > div { font-size: 10px; font-weight: 400; line-height: 1; color: #0d0d0d; transition: color 0.2s; }
 #grid > div > div.card-info > div:last-child { margin-bottom: 0; }
 
+#grid > div > div.card-info > div.card-price { margin-top: 15px; font-weight: 700; color: #000; }
 .empty { grid-column: 1/-1; min-height: 60vh; display: flex; align-items: center; justify-content: center; }
 .empty-hed { font-size: 15px; color: var(--lgrey); }
 
@@ -255,6 +256,7 @@ function renderGallery() {
       '<div class="card-title">' + esc(p.title||'—') + '</div>' +
       (p.player ? '<div class="card-player">' + esc(p.player)      + '</div>' : '') +
       (sub      ? '<div class="card-sub">'    + esc(sub)           + '</div>' : '') +
+      (S.filter === 'sale' && p.price ? '<div class="card-price">' + esc(p.price) + '</div>' : '') +
       '</div></div>';
   }).join('');
   g.querySelectorAll('.card').forEach(function(c) {
