@@ -83,10 +83,15 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 .empty-hed { font-size: 15px; color: var(--lgrey); }
 
 .detail-wrap { display: flex; align-items: flex-start; gap: 48px; }
-.detail-imgs { width: 62%; flex-shrink: 0; position: sticky; top: 0; height: 100vh; margin-top: calc(-1 * var(--top)); padding-top: var(--top); padding-bottom: 48px; overflow-y: auto; }
-.detail-imgs img { width: 100%; display: block; background: #ededed; border-radius: 4px; }
-.detail-imgs img + img { margin-top: 12px; }
-.detail-imgs::-webkit-scrollbar { display: none; }
+.detail-imgs { width: 62%; flex-shrink: 0; position: sticky; top: 0; height: 100vh; margin-top: calc(-1 * var(--top)); padding-top: var(--top); padding-bottom: 48px; display: flex; gap: 16px; }
+.detail-thumbs { flex: 0 0 96px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+.detail-thumbs::-webkit-scrollbar { display: none; }
+.detail-thumb { flex: 0 0 auto; width: 96px; aspect-ratio: 1; padding: 0; border: none; background: #f7f7f7; cursor: pointer; position: relative; opacity: 0.6; transition: opacity 0.15s; }
+.detail-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.detail-thumb:hover, .detail-thumb.on { opacity: 1; }
+.detail-thumb.on::after { content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 3px; background: #d0d0d0; }
+.detail-main { flex: 1; min-width: 0; background: #f7f7f7; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.detail-main img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .detail-panel { width: 38%; min-height: calc(100vh - var(--top)); padding: 32px 0 48px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
 
 .dp-team, .dp-player, .dp-meta, .dp-extra { margin-bottom: 1px; }
@@ -111,7 +116,11 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
   #detail-panel .cta-buy { display: block; width: 100%; text-align: center; margin-top: 0; }
   .detail-panel > div:not(.dp-contact) { text-align: center; }
   .detail-wrap { flex-direction: column; gap: 0; }
-  .detail-imgs { width: 100%; position: static; height: auto; margin-top: 0; padding-top: 0; padding-bottom: 0; }
+  .detail-imgs { width: 100%; position: static; height: auto; margin-top: 0; padding-top: 0; padding-bottom: 0; flex-direction: column-reverse; gap: 12px; }
+  .detail-thumbs { flex: none; flex-direction: row; overflow-x: auto; overflow-y: hidden; gap: 8px; padding-bottom: 8px; }
+  .detail-thumb { width: 64px; }
+  .detail-thumb.on::after { bottom: -6px; }
+  .detail-main { aspect-ratio: 4 / 3; }
   .detail-panel { width: 100%; min-height: auto; padding: 20px 0 40px; }
 }
 @media (max-width: 600px) {
@@ -283,7 +292,17 @@ function openDetail(id, skipPush) {
   if (!p) return;
   if (!skipPush) history.pushState({ id: id }, '', '#' + encodeURIComponent(id));
   var imgs = (p.images && p.images.length) ? p.images : fillImgs;
-  document.getElementById('detail-imgs').innerHTML = imgs.map(function(src) { return '<img src="' + src + '" alt="' + esc(p.player) + '">'; }).join('');
+  var di = document.getElementById('detail-imgs');
+  di.innerHTML = (imgs.length > 1 ? '<div class="detail-thumbs">' + imgs.map(function(src, i) {
+      return '<button type="button" class="detail-thumb' + (i === 0 ? ' on' : '') + '" data-i="' + i + '" aria-label="Photo ' + (i + 1) + '"><img src="' + src + '" alt=""></button>';
+    }).join('') + '</div>' : '') +
+    '<div class="detail-main"><img src="' + imgs[0] + '" alt="' + esc(p.player) + '"></div>';
+  di.querySelectorAll('.detail-thumb').forEach(function(t) {
+    t.addEventListener('click', function() {
+      di.querySelector('.detail-main img').src = imgs[+t.dataset.i];
+      di.querySelectorAll('.detail-thumb').forEach(function(x) { x.classList.toggle('on', x === t); });
+    });
+  });
   var patches = [p.patch1, p.patch2, p.patch3].filter(Boolean);
   var numDesig = [p.number ? '#' + p.number : '', p.designation && p.designation !== 'Blank' ? p.designation : ''].filter(Boolean).join(' · ');
   var extras = [];
