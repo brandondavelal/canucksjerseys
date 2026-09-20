@@ -96,12 +96,13 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 .cta-buy:hover { background: #0847c7; }
 .cta-dot { margin: 0 10px; }
 #detail-panel .cta-buy { margin-top: 8px; }
-.dp-rule { border: none; border-top: 1px solid #0000001a; margin: 0; }
+.dp-rule { border: none; border-top: 1px solid #0000001a; margin: 0 auto; width: 72px; }
 .gallery-contact { text-align: center; margin-top: 64px; margin-bottom: 12px; }
 
 @media (max-width: 768px) {
   .detail-panel { align-items: stretch; }
-  #detail-panel > div.dp-contact { order: -1; width: 100%; margin: 0 0 24px; padding-bottom: 24px; border-bottom: 1px solid #0000001a; }
+  #detail-panel > div.dp-contact { order: -1; width: 100%; margin: 0 0 24px; }
+  #detail-panel > div.dp-contact::after { content: ''; display: block; width: 72px; height: 1px; background: #0000001a; margin: 24px auto 0; }
   .detail-panel .dp-contact .dp-rule, .detail-panel .dp-contact br { display: none; }
   #detail-panel .cta-buy { display: block; width: 100%; text-align: center; margin-top: 0; }
   .detail-panel > div:not(.dp-contact) { text-align: center; }
