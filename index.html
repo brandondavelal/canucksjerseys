@@ -61,16 +61,16 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
   .hdr-filter-select { display: block; }
 }
 
-.card { background: #f7f7f7; border-radius: 12px; overflow: hidden; cursor: pointer; opacity: 0; animation: cardIn 0.4s ease forwards; }
+.card { background: #f5f5f7; border-radius: 12px; overflow: hidden; cursor: pointer; opacity: 0; animation: cardIn 0.4s ease forwards; }
 @keyframes cardIn { to { opacity: 1; } }
-.card-img { width: 100%; aspect-ratio: 4/3; overflow: hidden; background: #f7f7f7; position: relative; }
+.card-img { width: 100%; aspect-ratio: 4/3; overflow: hidden; background: #f5f5f7; position: relative; }
 .card-img { transition: background-color 0.6s ease; }
 .card-img.skeleton { animation: skeletonPulse 1.2s ease-in-out infinite; animation-delay: inherit; }
 .card-img img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 0.6s ease; }
 .card-img img.loaded { opacity: 1; }
 .card-img img.card-img-alt { position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; }
 .card:hover .card-img:not(.skeleton) img.card-img-alt { opacity: 1; }
-@keyframes skeletonPulse { 0%, 100% { background-color: #f7f7f7; } 50% { background-color: #e8e8e8; } }
+@keyframes skeletonPulse { 0%, 100% { background-color: #f5f5f7; } 50% { background-color: #e8e8e8; } }
 .card-info   { padding: 20px 24px 52px 24px; opacity: 0; transition: opacity 0.6s ease; }
 .card.loaded .card-info { opacity: 1; }
 .card-team   { margin-bottom: 5px; }
@@ -91,10 +91,10 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 .detail-thumbs { flex: 0 0 96px; position: relative; }
 .detail-thumbs-in { position: absolute; inset: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
 .detail-thumbs-in::-webkit-scrollbar { display: none; }
-.detail-thumb { flex: 0 0 auto; width: 96px; aspect-ratio: 1; padding: 0; border: 3px solid transparent; border-radius: 8px; background: #f7f7f7; cursor: pointer; overflow: hidden; transition: border-color 0.15s; }
+.detail-thumb { flex: 0 0 auto; width: 96px; aspect-ratio: 1; padding: 0; border: 3px solid transparent; border-radius: 8px; background: #f5f5f7; cursor: pointer; overflow: hidden; transition: border-color 0.15s; }
 .detail-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .detail-thumb.on { border-color: #3375e7; }
-.detail-main { flex: 1; min-width: 0; aspect-ratio: 4 / 3; background: #f7f7f7; border-radius: 8px; overflow: hidden; }
+.detail-main { flex: 1; min-width: 0; aspect-ratio: 4 / 3; background: #f5f5f7; border-radius: 8px; overflow: hidden; }
 .detail-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .detail-panel { width: 38%; min-height: calc(100vh - var(--top)); padding: 32px 0 48px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
 
