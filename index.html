@@ -55,8 +55,11 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 .hdr-sort:hover { box-shadow: 0 1px 0 0 #000000; border-radius: 0; }
 
 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px 16px; }
-@media (max-width: 900px)  { .grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 700px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 924px)  {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .hdr-filter { display: none; }
+  .hdr-filter-select { display: block; }
+}
 
 .card { background: #f7f7f7; border-radius: 12px; overflow: hidden; cursor: pointer; opacity: 0; animation: cardIn 0.4s ease forwards; }
 @keyframes cardIn { to { opacity: 1; } }
@@ -131,8 +134,6 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
   .hdr-back { left: 24px; }
   .hdr-filters { left: 24px; }
   .hdr-right { right: 24px; }
-  .hdr-filter { display: none; }
-  .hdr-filter-select { display: block; }
   .hdr-sort { padding: 10px 20px 10px 0; }
   .hdr-sort:hover { box-shadow: none; border-radius: 0; }
 }
