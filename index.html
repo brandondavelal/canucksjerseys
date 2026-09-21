@@ -54,11 +54,11 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 .hdr-sort:focus { outline: none; }
 .hdr-sort:hover { box-shadow: 0 1px 0 0 #000000; border-radius: 0; }
 
-.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 48px 16px; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px 16px; }
 @media (max-width: 900px)  { .grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 700px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
 
-.card { background: #f7f7f7; border-radius: 4px; overflow: hidden; cursor: pointer; opacity: 0; animation: cardIn 0.4s ease forwards; }
+.card { background: #f7f7f7; border-radius: 8px; overflow: hidden; cursor: pointer; opacity: 0; animation: cardIn 0.4s ease forwards; }
 @keyframes cardIn { to { opacity: 1; } }
 .card-img { width: 100%; aspect-ratio: 4/3; overflow: hidden; background: #f7f7f7; position: relative; }
 .card-img { transition: background-color 0.6s ease; }
