@@ -189,15 +189,6 @@ html[data-theme="dark"] .cta-buy { background: var(--accent); color: var(--on-ac
 html[data-theme="dark"] .cta-buy:hover { background: var(--accent-h); }
 html[data-theme="dark"] .dp-contact a.cta-buy { color: var(--on-accent); }
 
-/* very light, desaturated ice texture over the page background (images are true grayscale) */
-html[data-theme="dark"] body::before {
-  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background: url('images/ice-texture.jpg') center / cover no-repeat;
-  mix-blend-mode: screen; opacity: .03;
-}
-/* larger screens get the full-resolution original (3589 x 5384) */
-@media (min-width: 1000px) { html[data-theme="dark"] body::before { background-image: url('images/ice-texture-full.jpg'); } }
-
 /* jersey pages: space between the header and the photo */
 #view-detail .detail-wrap { padding-top: 32px; }
 @media (max-width: 768px) { #view-detail .detail-wrap { padding-top: 24px; } }
