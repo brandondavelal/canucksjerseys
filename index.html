@@ -6,7 +6,6 @@
 <title>Canucks Jerseys</title>
 <link rel="icon" type="image/png" href="images/favicon.png">
 <script src="data.js"></script>
-<script>try { var p = localStorage.getItem("palette"); var q = /[?&]palette=(blue|orange|wce|dark)/.exec(location.search); if (q) p = q[1]; if (p === "blue" || p === "orange" || p === "wce") document.documentElement.setAttribute("data-palette", p); } catch (e) {}</script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -143,7 +142,7 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 }
 </style>
 <style id="dark-mode">
-/* ── dark theme with switchable palettes (click the header logo): dark -> blue -> orange -> dark ── */
+/* ── dark theme ── */
 html[data-theme="dark"] {
   color-scheme: dark;
   --bg: #0b0b0d; --bg-image: none;
@@ -152,45 +151,12 @@ html[data-theme="dark"] {
   --card: rgba(28,28,30,.6); --card-hi: #2a2a2d; --stroke-hi: #5a5a62; --card-filter: blur(14px) saturate(1.2); --pop: #1c1c1e; --shadow: rgba(0,0,0,.5);
   --accent: #3375e7; --accent-h: #295eb9; --on-accent: #fff; --ring: #3375e7; --sale: #25c46a;
   --arrow: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23f5f5f7%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
-  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.6' numOctaves='1' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .85 0 0 0 0 .85 0 0 0 .2 -.09'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --black: var(--text); --white: var(--bg); --grey: var(--muted); --lgrey: var(--muted2);
 }
-/* blue: royal blue with icy glass highlights */
-html[data-theme="dark"][data-palette="blue"] {
-  --bg: #030816;
-  --bg-image: radial-gradient(75% 48% at 92% 108%, rgba(56,104,255,.5), transparent 68%), radial-gradient(50% 36% at 0% 100%, rgba(130,180,255,.2), transparent 70%), radial-gradient(55% 32% at 14% 0%, rgba(120,170,255,.1), transparent 70%), linear-gradient(180deg, #050b22, #020512);
-  --text: #f4f9ff; --muted: #a9c6ff; --muted2: #6f8fd0;
-  --hdr: rgba(3,8,26,.7); --line: rgba(190,220,255,.3); --rule: rgba(190,220,255,.5);
-  --card: rgba(10,19,44,.6); --card-hi: rgba(90,130,230,.26); --stroke-hi: #4a78e0; --card-filter: blur(14px) saturate(1.2); --pop: #06123f; --shadow: rgba(0,2,20,.75);
-  --accent: #cfe8ff; --accent-h: #ffffff; --on-accent: #020a2e; --ring: #cfe8ff; --sale: #2bdc7a;
-  --arrow: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23f4f9ff%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
-}
-/* orange: near-black with ember glow and fiery edges */
-html[data-theme="dark"][data-palette="orange"] {
-  --bg: #090102;
-  --bg-image: radial-gradient(78% 50% at 92% 108%, rgba(237,64,33,.55), transparent 68%), radial-gradient(52% 38% at 0% 100%, rgba(158,11,15,.42), transparent 70%), radial-gradient(48% 30% at 100% 0%, rgba(249,90,44,.2), transparent 70%), radial-gradient(50% 28% at 18% 0%, rgba(255,199,64,.07), transparent 70%), linear-gradient(180deg, #0d0102, #070101);
-  --text: #fff4e6; --muted: #e5a38a; --muted2: #a8705c;
-  --hdr: rgba(10,1,2,.7); --line: rgba(249,90,44,.32); --rule: rgba(249,90,44,.6);
-  --card: rgba(30,4,4,.6); --card-hi: rgba(249,90,44,.16); --card-filter: blur(14px) saturate(1.2); --pop: #1a0504; --shadow: rgba(0,0,0,.75);
-  --stroke-hi: #f95a2c;
-  --accent: #f95a2c; --accent-h: #ff7a3d; --on-accent: #1a0402; --ring: #ffc740; --sale: #ffd23a;
-  --arrow: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23fff4e6%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
-}
 
-/* west coast express: navy and black, jersey red, silver trim, royal-blue logo */
-html[data-theme="dark"][data-palette="wce"] {
-  --bg: #060a1a;
-  --bg-image: radial-gradient(90% 55% at 50% 112%, rgba(196,24,44,.55), transparent 70%), radial-gradient(100% 58% at 50% -12%, rgba(168,22,46,.62), transparent 76%), radial-gradient(55% 34% at 12% 0%, rgba(47,111,209,.16), transparent 70%), radial-gradient(45% 32% at 100% 100%, rgba(47,111,209,.14), transparent 70%), linear-gradient(180deg, #080d24, #050818);
-  --text: #f1f3f7; --muted: #aeb6c6; --muted2: #7c869c;
-  --hdr: rgba(5,8,24,.7); --line: rgba(200,208,222,.22); --rule: rgba(200,208,222,.45);
-  --card: rgba(12,19,46,.6); --card-hi: rgba(60,90,180,.26); --stroke-hi: #b8c1d4; --card-filter: blur(14px) saturate(1.2); --pop: #0c1536; --shadow: rgba(0,0,10,.75);
-  --accent: #2f6fd1; --accent-h: #4f8cf0; --on-accent: #ffffff; --ring: #e3e7ee; --sale: #ff4a5a;
-  --arrow: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23f1f3f7%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
-}
 
 html[data-theme="dark"] body { background-color: var(--bg); background-image: var(--bg-image); background-attachment: fixed; color: var(--text); }
 html[data-theme="dark"] header { background: var(--hdr); border-bottom-color: var(--line); }
-html[data-theme="dark"] header::before { content: ''; position: absolute; inset: 0; background: var(--grain); background-size: 120px 120px; pointer-events: none; }
 html[data-theme="dark"] .hdr-back { color: var(--text); }
 html[data-theme="dark"] .hdr-back:hover { color: var(--muted); }
 html[data-theme="dark"] .hdr-filter, html[data-theme="dark"] .hdr-filter.active { color: var(--text); }
@@ -199,7 +165,7 @@ html[data-theme="dark"] .hdr-filter-select, html[data-theme="dark"] .hdr-sort { 
 html[data-theme="dark"] .hdr-filter-select option, html[data-theme="dark"] .hdr-sort option { background: var(--pop); color: var(--text); }
 html[data-theme="dark"] .hdr-sort:hover { box-shadow: 0 1px 0 0 var(--text); }
 
-html[data-theme="dark"] .card { background-color: var(--hdr); background-image: var(--grain); background-size: 120px 120px; -webkit-backdrop-filter: blur(40px); backdrop-filter: blur(40px); box-shadow: 0 2px 10px var(--shadow); }
+html[data-theme="dark"] .card { background: var(--hdr); -webkit-backdrop-filter: blur(40px); backdrop-filter: blur(40px); box-shadow: 0 2px 10px var(--shadow); }
 html[data-theme="dark"] .card::after { box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow .25s ease; }
 html[data-theme="dark"] .card:hover { box-shadow: 0 8px 22px var(--shadow); }
 html[data-theme="dark"] .card:hover::after { box-shadow: inset 0 0 0 1px var(--stroke-hi); }
@@ -456,23 +422,6 @@ function route() {
 }
 
 renderGallery(); route();
-</script>
-<script>
-/* click the header logo to cycle palettes: dark (default) -> blue -> orange -> west coast express -> dark */
-(function () {
-  var root = document.documentElement, SETS = ['', 'blue', 'orange', 'wce'];
-  var logo = document.getElementById('logo'); if (logo) logo.title = 'Click to change colours';
-  document.addEventListener('click', function (e) {
-    if (!e.target.closest || !e.target.closest('#logo')) return;
-    e.stopPropagation(); e.preventDefault();
-    var flip = function () {
-      var next = SETS[(SETS.indexOf(root.getAttribute('data-palette') || '') + 1) % SETS.length];
-      if (next) root.setAttribute('data-palette', next); else root.removeAttribute('data-palette');
-      try { localStorage.setItem('palette', next || 'dark'); } catch (x) {}
-    };
-    if (document.startViewTransition) document.startViewTransition(flip); else flip();
-  }, true);
-})();
 </script>
 </body>
 </html>
