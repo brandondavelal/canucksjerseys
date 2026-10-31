@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canucks Jerseys (dark)</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<script src="data.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black:  #000;
+  --white:  #fff;
+  --grey:   #999;
+  --lgrey:  #bbb;
+  --bg:     #fff;
+  --f: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --hdr1: 64px;
+  --top:  64px;
+}
+
+html, body { height: 100%; }
+body { font-family: var(--f); background: var(--white); color: var(--black); font-size: 14px; line-height: 1.4; -webkit-font-smoothing: antialiased; }
+
+header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,0.6); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border-bottom: 1px solid rgba(255,255,255,0.3); }
+.hdr-top { height: var(--hdr1); display: flex; align-items: center; justify-content: center; padding: 0 48px; position: relative; }
+.hdr-left { display: flex; align-items: center; }
+.logo { height: 36px; cursor: pointer; }
+.hdr-back { font-family: var(--f); font-size: 10px; text-transform: uppercase; line-height: 1; color: #000000; background: none; border: none; cursor: pointer; padding: 0; transition: color 0.15s; display: none; align-items: center; gap: 4px; letter-spacing: 0.04em; position: absolute; left: 48px; top: 50%; transform: translateY(-50%); }
+.hdr-back-chevron { font-size: 24px; line-height: 1; display: inline-block; transform: translateY(-2px); }
+.hdr-left.detail .hdr-back { display: flex; }
+.hdr-back:hover { color: #999999; }
+
+.view { display: none; padding-top: var(--top); min-height: 100vh; }
+.view.on { display: block; }
+#view-gallery { padding: calc(var(--top) + 24px) 48px 24px; }
+#view-detail .detail-wrap { padding: 0 48px 48px; }
+
+.hdr-right { position: absolute; right: 48px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 20px; }
+.hdr-left.detail ~ .hdr-right { display: none; }
+.hdr-filters { position: absolute; left: 48px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 2px; }
+.hdr-left.detail ~ .hdr-filters { display: none; }
+.hdr-filter { font-family: var(--f); font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: #000; background: none; border: none; cursor: pointer; padding: 5px 8px; border-radius: 3px; line-height: 1; transition: background 0.15s, color 0.15s; }
+.hdr-filter:focus { outline: none; }
+.hdr-filter:hover:not(.active) { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.hdr-filter.active { background: none; color: #000; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.hdr-filter-sale, .hdr-filter-sale.active { color: #0b9a45; }
+.hdr-filter-sale { font-weight: 600; }
+.hdr-filter-select { display: none; font-family: var(--f); font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: #000; background: transparent url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23000000%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E') no-repeat right 0 center / 14px; border: none; padding: 6px 18px 6px 0; cursor: pointer; -webkit-appearance: none; appearance: none; outline: none; }
+.hdr-sort { font-family: var(--f); font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: #000000; background: transparent url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23000000%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E') no-repeat right 0 center / 14px; border: none; padding: 6px 18px 6px 0; cursor: pointer; -webkit-appearance: none; appearance: none; border-radius: 4px; }
+.hdr-sort:focus { outline: none; }
+.hdr-sort:hover { box-shadow: 0 1px 0 0 #000000; border-radius: 0; }
+
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px 16px; }
+@media (max-width: 924px)  {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .hdr-filter { display: none; }
+  .hdr-filter-select { display: block; }
+}
+
+.card { background: #f5f5f7; border-radius: 12px; overflow: hidden; cursor: pointer; opacity: 0; animation: cardIn 0.4s ease forwards; position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.16); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3); pointer-events: none; }
+.card:hover { transform: scale(1.01); box-shadow: 0 8px 22px rgba(0,0,0,0.32); z-index: 2; }
+@keyframes cardIn { to { opacity: 1; } }
+.card-img { width: 100%; aspect-ratio: 4/3; overflow: hidden; background: #f5f5f7; position: relative; }
+.card-img { transition: background-color 0.6s ease; }
+.card-img.skeleton { animation: skeletonPulse 1.2s ease-in-out infinite; animation-delay: inherit; }
+.card-img img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 0.6s ease; }
+.card-img img.loaded { opacity: 1; }
+.card-img img.card-img-alt { position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; }
+.card:hover .card-img:not(.skeleton) img.card-img-alt { opacity: 1; }
+@keyframes skeletonPulse { 0%, 100% { background-color: #f5f5f7; } 50% { background-color: #e8e8e8; } }
+.card-info   { padding: 20px 24px 52px 24px; opacity: 0; transition: opacity 0.6s ease; }
+.card.loaded .card-info { opacity: 1; }
+.card-team   { margin-bottom: 5px; }
+#grid > div > div.card-info > div.card-title  { margin-top: 7px; margin-bottom: 7px; font-weight: 600; line-height: 1.2; font-size: 15px; }
+.card-player { margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#grid > div > div.card-info > div { font-size: 12px; font-weight: 400; line-height: 1; color: #0d0d0d; transition: color 0.2s; }
+#grid > div > div.card-info > div.card-team { color: #999999; }
+#grid > div > div.card-info > div:last-child { margin-bottom: 0; }
+
+.card.sale { display: flex; flex-direction: column; }
+.card.sale .card-info { flex: 1; position: relative; padding-bottom: 80px; }
+#grid .card-cta { position: absolute; left: 24px; right: 24px; bottom: 24px; display: block; text-align: center; font-size: 14px; padding: 12px 8px; white-space: nowrap; }
+#grid .card-cta .cta-dot { margin: 0 6px; }
+.empty { grid-column: 1/-1; min-height: 60vh; display: flex; align-items: center; justify-content: center; }
+.empty-hed { font-size: 15px; color: var(--lgrey); }
+
+.detail-wrap { display: flex; align-items: stretch; gap: 48px; }
+.detail-imgs { width: 62%; flex-shrink: 0; display: flex; gap: 16px; }
+.detail-thumbs { flex: 0 0 96px; position: relative; }
+.detail-thumbs-in { position: absolute; inset: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+.detail-thumbs-in::-webkit-scrollbar { display: none; }
+.detail-thumb { flex: 0 0 auto; width: 96px; aspect-ratio: 1; padding: 0; border: none; border-radius: 8px; background: #f5f5f7; cursor: pointer; overflow: hidden; position: relative; }
+.detail-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.detail-thumb.on::after { content: ''; position: absolute; inset: 0; border: 1px solid #3375e7; border-radius: 6px; pointer-events: none; }
+.detail-main { flex: 1; min-width: 0; aspect-ratio: 4 / 3; background: #f5f5f7; border-radius: 8px; overflow: hidden; }
+.detail-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.detail-panel { width: 38%; padding: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+
+.dp-team, .dp-player, .dp-meta, .dp-extra { margin-bottom: 1px; }
+.dp-title  { line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 1px; }
+#detail-panel > div.dp-team, #detail-panel > div.dp-title, #detail-panel > div.dp-player, #detail-panel > div.dp-meta, #detail-panel > div.dp-extra { font-size: 11px; font-weight: 400; color: var(--black); }
+#detail-panel > div:last-child { margin-bottom: 0; }
+.dp-contact { margin-top: 16px; font-size: 11px; color: #999999; }
+.dp-contact a { color: inherit; text-decoration: underline; }
+.cta-buy { display: inline-block; background: #3375e7; color: #fff; font-family: var(--f); font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-decoration: none; padding: 14px 28px; border-radius: 999px; transition: background 0.15s; }
+.dp-contact a.cta-buy { color: #fff; text-decoration: none; }
+.cta-buy:hover { background: #295eb9; }
+.cta-dot { margin: 0 10px; }
+#detail-panel .cta-buy { margin-top: 8px; }
+.dp-rule { border: none; border-top: 1px solid #0000001a; margin: 0 auto; width: 72px; }
+.gallery-contact { text-align: center; margin-top: 64px; margin-bottom: 12px; }
+
+@media (max-width: 768px) {
+  .detail-panel { align-items: stretch; }
+  #detail-panel > div.dp-contact-cta { order: -1; width: 100%; margin: 0 0 24px; }
+  #detail-panel > div.dp-contact-cta::after { content: ''; display: block; width: 72px; height: 1px; background: #0000001a; margin: 24px auto 0; }
+  .detail-panel .dp-contact-cta .dp-rule, .detail-panel .dp-contact-cta br { display: none; }
+  #detail-panel .cta-buy { display: block; width: 100%; text-align: center; margin-top: 0; }
+  .detail-panel > div:not(.dp-contact) { text-align: center; }
+  .detail-wrap { flex-direction: column; gap: 0; }
+  #view-detail .detail-wrap { padding-bottom: 0; }
+  .detail-imgs { width: 100%; position: static; padding-bottom: 0; flex-direction: column-reverse; gap: 12px; }
+  .detail-thumbs { flex: none; }
+  .detail-thumbs-in { position: static; flex-direction: row; overflow-x: auto; overflow-y: hidden; gap: 8px; }
+  .detail-thumb { width: 64px; }
+  .detail-main { flex: none; width: 100%; }
+  .detail-panel { width: 100%; min-height: auto; padding: 20px 0 40px; }
+}
+@media (max-width: 600px) {
+  #view-gallery { padding-left: 24px; padding-right: 24px; }
+  #view-detail .detail-wrap { padding: 0 24px; }
+  .grid { grid-template-columns: 1fr; row-gap: 32px; }
+  .hdr-back { left: 24px; }
+  .hdr-filters { left: 24px; }
+  .hdr-right { right: 24px; }
+  .hdr-sort { padding: 10px 20px 10px 0; }
+  .hdr-sort:hover { box-shadow: none; border-radius: 0; }
+}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap" rel="stylesheet">
+
+<style id="poster-skin">
+/* ── Game-day poster skin v2: black, electric yellow + red, modern light type, neon glow ── */
+:root {
+  --y: #ffe600; --r: #ff2d3d; --k: #050505;
+  --yg: 255,230,0; --rg: 255,45,61;
+  --f: "Inter", -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  --black: #fff; --grey: #b5b5b5; --lgrey: #8a8a8a; --white: #050505;
+}
+body { background: var(--k); color: #fff; font-weight: 400; letter-spacing: -.005em; padding-bottom: 0; }
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(60% 40% at 12% 0%, rgba(var(--yg),.08), transparent 70%),
+    radial-gradient(70% 38% at 0% 100%, rgba(255,150,0,.32), transparent 70%),
+    radial-gradient(95% 55% at 50% 120%, rgba(var(--rg),.55), rgba(120,10,16,.3) 42%, transparent 72%),
+    repeating-linear-gradient(125deg, rgba(var(--rg),.06) 0 1px, transparent 1px 26px);
+}
+
+/* header: glass bar with a glowing gradient hairline */
+header { background: rgba(5,5,5,.55); border-bottom: 1px solid rgba(var(--yg),.18); box-shadow: 0 0 34px rgba(var(--yg),.12), 0 10px 50px rgba(var(--rg),.10); }
+header::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: linear-gradient(90deg, transparent, rgba(var(--yg),.9) 30%, rgba(var(--rg),.9) 70%, transparent); box-shadow: 0 0 14px rgba(var(--yg),.7); opacity: .8; }
+.hdr-back { color: #fff; font-weight: 500; letter-spacing: .08em; text-shadow: 0 0 10px rgba(255,255,255,.35); }
+.hdr-back:hover { color: var(--y); text-shadow: 0 0 12px rgba(var(--yg),.8); }
+
+/* filter tabs: neon pills */
+.hdr-filter { color: #e9e9e9; font-weight: 500; font-style: normal; font-size: 11px; letter-spacing: .1em; padding: 8px 15px; border-radius: 999px; transition: color .2s, text-shadow .2s, box-shadow .2s, background .2s; }
+.hdr-filter:hover:not(.active) { text-decoration: none; color: var(--y); text-shadow: 0 0 12px rgba(var(--yg),.85); }
+.hdr-filter.active { text-decoration: none; clip-path: none; color: var(--y); text-shadow: 0 0 12px rgba(var(--yg),.9); background: rgba(var(--yg),.08); box-shadow: 0 0 0 1px rgba(var(--yg),.55), 0 0 18px rgba(var(--yg),.4), inset 0 0 14px rgba(var(--yg),.14); }
+.hdr-filter-sale, .hdr-filter-sale.active { font-weight: 600; color: #ff5a67; text-shadow: 0 0 10px rgba(var(--rg),.6); }
+.hdr-filter-sale:hover:not(.active) { color: #ff7d87; text-shadow: 0 0 14px rgba(var(--rg),.95); }
+.hdr-filter-sale.active { background: rgba(var(--rg),.1); color: #ff6f7b; text-shadow: 0 0 12px rgba(var(--rg),.95); box-shadow: 0 0 0 1px rgba(var(--rg),.6), 0 0 18px rgba(var(--rg),.45), inset 0 0 14px rgba(var(--rg),.16); }
+
+.hdr-filter-select, .hdr-sort {
+  color: var(--y); font-weight: 500; letter-spacing: .1em; text-shadow: 0 0 10px rgba(var(--yg),.6);
+  background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23ffe600%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
+}
+.hdr-sort:hover { box-shadow: 0 1px 0 0 var(--y), 0 6px 14px -6px rgba(var(--yg),.8); }
+.hdr-filter-select option, .hdr-sort option { background: #000; color: #fff; text-shadow: none; }
+
+/* cards: dark glass with a soft neon halo */
+.card { background: linear-gradient(180deg, rgba(26,26,26,.92), rgba(8,8,8,.96)); border-radius: 16px; box-shadow: 0 0 0 1px rgba(var(--yg),.16), 0 0 26px rgba(var(--yg),.09), 0 14px 44px rgba(0,0,0,.65); transition: transform .3s ease, box-shadow .3s ease; }
+.card::after { box-shadow: inset 0 0 0 1px rgba(var(--yg),.14), inset 0 1px 0 rgba(255,255,255,.07); }
+.card:hover { box-shadow: 0 0 0 1px rgba(var(--yg),.75), 0 0 30px rgba(var(--yg),.45), 0 0 80px rgba(var(--rg),.35), 0 16px 50px rgba(0,0,0,.6); }
+.card-img { background: #111; }
+.card-img.skeleton { animation: skelDark 1.2s ease-in-out infinite; animation-delay: inherit; }
+@keyframes skelDark { 0%, 100% { background-color: #111; } 50% { background-color: #1c1c1c; } }
+
+#grid > div > div.card-info > div { color: #cfcfcf; font-weight: 400; }
+#grid > div > div.card-info > div.card-team { color: #ff5a67; font-weight: 500; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; text-shadow: 0 0 10px rgba(var(--rg),.55); }
+#grid > div > div.card-info > div.card-title { color: var(--y); font-weight: 600; font-size: 16px; line-height: 1.25; letter-spacing: -.012em; text-transform: none; text-shadow: 0 0 16px rgba(var(--yg),.4); margin-top: 9px; margin-bottom: 10px; }
+#grid > div > div.card-info > div.card-player { color: #fff; font-weight: 500; font-size: 12px; letter-spacing: 0; text-transform: none; }
+#grid > div > div.card-info > div.card-sub { color: #9d9d9d; }
+
+/* buttons: glowing yellow pills */
+.cta-buy { background: var(--y); color: #000; font-weight: 600; font-style: normal; font-stretch: 100%; letter-spacing: .005em; text-transform: none; border-radius: 999px; padding: 14px 32px; clip-path: none; box-shadow: 0 0 0 1px rgba(255,255,255,.25) inset, 0 0 18px rgba(var(--yg),.6), 0 0 52px rgba(var(--yg),.28); transition: background .2s, box-shadow .2s, transform .2s; }
+.cta-buy:hover { background: #fff35c; box-shadow: 0 0 0 1px rgba(255,255,255,.4) inset, 0 0 26px rgba(var(--yg),.9), 0 0 80px rgba(var(--yg),.45); }
+.dp-contact a.cta-buy { color: #000; }
+#grid .card-cta { padding: 12px 18px; font-size: 13px; }
+
+/* detail page */
+.detail-main { background: #111; border-radius: 16px; box-shadow: 0 0 0 1px rgba(var(--yg),.28), 0 0 44px rgba(var(--yg),.18), 0 30px 100px rgba(var(--rg),.32); }
+.detail-thumb { background: #111; border-radius: 10px; transition: box-shadow .2s; }
+.detail-thumb.on { box-shadow: 0 0 20px rgba(var(--yg),.6); }
+.detail-thumb.on::after { border: 1px solid var(--y); border-radius: 10px; }
+.detail-thumb:not(.on) img { opacity: .7; transition: opacity .2s; }
+.detail-thumb:not(.on):hover img { opacity: 1; }
+.detail-thumb:not(.on):hover { box-shadow: 0 0 14px rgba(var(--yg),.35); }
+
+#detail-panel > div.dp-team { color: #ff5a67; font-weight: 500; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; text-shadow: 0 0 12px rgba(var(--rg),.6); }
+#detail-panel > div.dp-title { color: var(--y); font-weight: 600; font-size: clamp(24px, 2.6vw, 36px); line-height: 1.1; letter-spacing: -.025em; text-transform: none; text-shadow: 0 0 22px rgba(var(--yg),.45); margin: 12px 0 16px; text-wrap: balance; }
+#detail-panel > div.dp-player { color: #fff; font-weight: 500; font-size: 15px; letter-spacing: 0; text-transform: none; margin-bottom: 6px; }
+#detail-panel > div.dp-meta, #detail-panel > div.dp-extra { color: #b8b8b8; font-size: 12px; font-weight: 400; line-height: 1.55; }
+.dp-rule { border-top: 1px solid var(--r); box-shadow: 0 0 12px rgba(var(--rg),.95); }
+#detail-panel > div.dp-contact-cta::after { background: var(--r); height: 1px; box-shadow: 0 0 12px rgba(var(--rg),.95); }
+.dp-contact { color: #a0a0a0; }
+.dp-contact a { color: var(--y); text-shadow: 0 0 10px rgba(var(--yg),.5); }
+.dp-contact a.cta-buy { text-decoration: none; text-shadow: none; }
+.gallery-contact { color: #a0a0a0; }
+.empty-hed { color: #8a8a8a; }
+
+</style>
+<style id="poster-skin-2">
+/* ── v3: tighter radii, glass cards with light + depth, denser grid ── */
+:root { --rad: 8px; }
+
+/* density: 4 / 3 / 2 columns */
+.grid { grid-template-columns: repeat(4, 1fr); gap: 22px 14px; }
+@media (max-width: 1180px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 760px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 601px)  { #view-gallery { padding-left: 32px; padding-right: 32px; } }
+@media (max-width: 600px)  {
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 12px 10px; }
+  .card-info { padding: 12px 12px 14px !important; }
+  .card.sale .card-info { padding-bottom: 82px !important; }
+  #grid .card-cta { left: 10px; right: 10px; bottom: 10px; font-size: 11px; padding: 10px 6px; }
+  #grid .card-cta { white-space: normal; line-height: 1.25; }
+  #grid .card-cta .cta-dot { display: block; height: 0; overflow: hidden; margin: 0; }
+  #grid > div > div.card-info > div.card-title { font-size: 13px; }
+}
+
+.card-info { padding: 16px 18px 20px; }
+.card.sale .card-info { padding-bottom: 68px; }
+#grid .card-cta { left: 18px; right: 18px; bottom: 16px; font-size: 12px; padding: 11px 10px; }
+#grid > div > div.card-info > div { font-size: 11.5px; }
+#grid > div > div.card-info > div.card-team { font-size: 10.5px; }
+#grid > div > div.card-info > div.card-title { font-size: 14.5px; margin: 7px 0 8px; }
+#grid > div > div.card-info > div.card-player { font-size: 11.5px; }
+
+/* smaller radii everywhere */
+.hdr-filter { border-radius: 8px; }
+.cta-buy { border-radius: 10px; }
+.detail-main { border-radius: var(--rad); }
+.detail-thumb, .detail-thumb.on::after { border-radius: 6px; }
+
+/* glass cards */
+.card {
+  border-radius: var(--rad);
+  background:
+    linear-gradient(160deg, rgba(255,255,255,.13) 0%, rgba(255,255,255,.045) 40%, rgba(255,255,255,.02) 100%),
+    rgba(14,14,16,.5);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6); backdrop-filter: blur(22px) saturate(1.6);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.09),
+    0 1px 0 rgba(255,255,255,.05),
+    0 8px 16px -4px rgba(0,0,0,.6),
+    0 28px 56px -16px rgba(0,0,0,.85),
+    0 0 40px rgba(var(--yg),.07);
+}
+.card::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 2;
+  background:
+    radial-gradient(120% 65% at 0% 0%, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, rgba(255,255,255,.06), transparent 28%);
+}
+.card::after {
+  z-index: 3;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.45),
+    inset 1px 0 0 rgba(255,255,255,.14),
+    inset 0 0 0 1px rgba(255,255,255,.08),
+    inset 0 -28px 44px -30px rgba(var(--yg),.22);
+}
+.card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow:
+    0 0 0 1px rgba(var(--yg),.7),
+    0 0 28px rgba(var(--yg),.42),
+    0 0 72px rgba(var(--rg),.3),
+    0 18px 30px -8px rgba(0,0,0,.7),
+    0 44px 80px -22px rgba(0,0,0,.9);
+}
+</style>
+<style id="poster-skin-3">
+/* ── v4: texture. Film grain, halftone dots, grainy glass ── */
+:root { --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.1 -.4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); --noise-soft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .8 -.33'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+/* halftone dots + grain across the whole page */
+body::before {
+  background:
+    radial-gradient(rgba(255,255,255,.085) .8px, transparent 1.1px) 0 0 / 6px 6px,
+    radial-gradient(60% 40% at 12% 0%, rgba(var(--yg),.08), transparent 70%),
+    radial-gradient(70% 38% at 0% 100%, rgba(255,150,0,.32), transparent 70%),
+    radial-gradient(95% 55% at 50% 120%, rgba(var(--rg),.55), rgba(120,10,16,.3) 42%, transparent 72%),
+    repeating-linear-gradient(125deg, rgba(var(--rg),.08) 0 1px, transparent 1px 26px);
+}
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: 60; pointer-events: none;
+  background: var(--noise); background-size: 240px 240px; opacity: .07;
+}
+
+/* grainy glass header */
+header::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: var(--noise-soft); background-size: 240px 240px; opacity: .22; }
+
+/* grainy glass cards: grain + sheen share the highlight layer */
+.card::before {
+  background:
+    radial-gradient(120% 65% at 0% 0%, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, rgba(255,255,255,.06), transparent 28%);
+  background-size: auto, auto;
+  opacity: 1;
+}
+
+/* textured highlights on buttons and the photo frame */
+.cta-buy { background-image: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 55%), var(--noise-soft); background-size: auto, 160px 160px; background-blend-mode: normal; }
+.detail-main::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: var(--noise-soft); background-size: 200px 200px; opacity: .1; }
+.detail-main { position: relative; }
+</style>
+<style id="poster-skin-7">
+/* ── v8: reference-poster glass & texture, plus a switchable blue colour set ── */
+:root {
+  --t1: #fff7b8; --t2: #ffe600; --t3: #ff9d00;           /* beveled gold lettering */
+  --sec-text: #ff5a67; --sec-hi: #ff7d87; --sec-hi2: #ff6f7b; --acc-hi: #fff35c;
+  --ga: 255,150,0; --gb: 232,32,44; --gc: 120,10,16;     /* atmosphere glows */
+  --arrow: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23ffe600%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
+}
+html[data-theme="blue"] {
+  --y: #5ab4ff; --yg: 90,180,255; --r: #12d6a0; --rg: 18,214,160; --k: #030812;
+  --t1: #f2fbff; --t2: #6cc0ff; --t3: #1f6fe0;
+  --sec-text: #3be8b8; --sec-hi: #7af2d0; --sec-hi2: #5ceec6; --acc-hi: #b9e0ff;
+  --ga: 0,200,255; --gb: 20,100,255; --gc: 4,22,80;
+  --arrow: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%235ab4ff%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
+}
+
+/* West Coast Express era: navy + royal blue base, silver accent, Orca red */
+html[data-theme="wce"] {
+  --y: #dfe6ef; --yg: 223,230,239; --r: #ff3a46; --rg: 255,58,70; --k: #040916;
+  --t1: #ffffff; --t2: #dfe6ef; --t3: #8d99aa;
+  --sec-text: #ff4b57; --sec-hi: #ff7a84; --sec-hi2: #ff6670; --acc-hi: #ffffff;
+  --ga: 36,104,235; --gb: 205,24,44; --gc: 8,26,86;
+  --arrow: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23dfe6ef%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
+}
+
+/* atmosphere: glow, light streaks, halftone, glossy ice floor */
+body::before {
+  background:
+    radial-gradient(55% 38% at 14% 2%, rgba(var(--yg),.14), transparent 70%),
+    radial-gradient(50% 34% at 92% 0%, rgba(var(--gb),.2), transparent 70%),
+    radial-gradient(65% 40% at 0% 100%, rgba(var(--ga),.34), transparent 70%),
+    radial-gradient(95% 55% at 50% 120%, rgba(var(--gb),.62), rgba(var(--gc),.34) 42%, transparent 72%),
+    radial-gradient(40% 30% at 100% 100%, rgba(var(--gb),.3), transparent 70%);
+}
+html::after {
+  content: ''; position: fixed; left: 0; right: 0; bottom: 0; height: 26vh; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(70% 2px at 50% 0, rgba(255,255,255,.6), transparent 80%),
+    linear-gradient(180deg, rgba(var(--gb),0) 0%, rgba(var(--gb),.2) 60%, rgba(var(--ga),.3) 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 38%); mask-image: linear-gradient(180deg, transparent, #000 38%);
+}
+.logo { filter: drop-shadow(0 0 10px rgba(var(--yg),.4)); transition: filter .2s; }
+.logo:hover { filter: drop-shadow(0 0 16px rgba(var(--yg),.8)); }
+
+/* colour-set aware accents (replaces the hard-coded reds/yellows) */
+.hdr-filter-sale, .hdr-filter-sale.active { color: var(--sec-text); }
+.hdr-filter-sale:hover:not(.active) { color: var(--sec-hi); }
+.hdr-filter-sale.active { color: var(--sec-hi2); }
+#grid > div > div.card-info > div.card-team, #detail-panel > div.dp-team { color: var(--sec-text); }
+.hdr-filter-select, .hdr-sort { background-image: var(--arrow); }
+
+/* neon title text: solid accent colour with a glowing halo (follows the colour set) */
+#grid > div > div.card-info > div.card-title {
+  background: none; -webkit-background-clip: border-box; background-clip: border-box;
+  color: var(--y); -webkit-text-fill-color: var(--y); filter: none;
+  text-shadow: 0 0 3px rgba(var(--yg),.3), 0 0 12px rgba(var(--yg),.2);
+}
+#detail-panel > div.dp-title {
+  background: none; -webkit-background-clip: border-box; background-clip: border-box;
+  color: var(--y); -webkit-text-fill-color: var(--y); filter: none;
+  text-shadow: 0 0 4px rgba(var(--yg),.3), 0 0 16px rgba(var(--yg),.2);
+}
+
+/* glass buttons: glossy upper half, lit rim */
+.cta-buy {
+  background-color: var(--y);
+  background-image: linear-gradient(180deg, rgba(255,255,255,.62) 0%, rgba(255,255,255,.16) 49%, rgba(255,255,255,0) 50%, rgba(0,0,0,.12) 100%), var(--noise-soft);
+  background-size: auto, 160px 160px;
+}
+.cta-buy:hover {
+  background-color: var(--acc-hi);
+  background-image: linear-gradient(180deg, rgba(255,255,255,.7) 0%, rgba(255,255,255,.2) 49%, rgba(255,255,255,0) 50%, rgba(0,0,0,.1) 100%), var(--noise-soft);
+}
+
+/* glassier cards: crisp specular top edge, faint skate-scratch texture below */
+.card::before {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,.05) 18%, rgba(255,255,255,0) 34%),
+    radial-gradient(120% 65% at 0% 0%, rgba(255,255,255,.18) 0%, rgba(255,255,255,0) 55%);
+}
+.card-info {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='170' fill='none' stroke='white' stroke-linecap='round'%3E%3Cpath stroke-opacity='.075' stroke-width='.8' d='M-10 128 C50 96 140 104 290 52'/%3E%3Cpath stroke-opacity='.05' stroke-width='.6' d='M-10 150 C70 128 160 138 290 96'/%3E%3Cpath stroke-opacity='.06' stroke-width='.7' d='M40 -6 C70 40 60 90 118 176'/%3E%3C/svg%3E") 0 0 / 280px 170px,
+    repeating-linear-gradient(168deg, rgba(255,255,255,.028) 0 1px, transparent 1px 10px);
+}
+.card::after { box-shadow: inset 0 1px 0 rgba(255,255,255,.6), inset 1px 0 0 rgba(255,255,255,.14), inset 0 0 0 1px rgba(255,255,255,.08), inset 0 -28px 44px -30px rgba(var(--yg),.22); }
+
+/* detail pages: breathing room between the header and the photo */
+#view-detail .detail-wrap { padding-top: 32px; }
+@media (max-width: 768px) { #view-detail .detail-wrap { padding-top: 20px; } }
+</style>
+<style id="poster-skin-8">
+/* ── header: frosted ice (smooth, no grain) ── */
+header {
+  background:
+    linear-gradient(105deg, rgba(255,255,255,0) 18%, rgba(255,255,255,.05) 26%, rgba(255,255,255,0) 36%),
+    linear-gradient(105deg, rgba(255,255,255,0) 62%, rgba(255,255,255,.05) 70%, rgba(255,255,255,0) 78%),
+    linear-gradient(180deg, rgba(232,246,255,.09) 0%, rgba(208,232,255,.03) 100%),
+    rgba(8,16,30,.26);
+  -webkit-backdrop-filter: blur(46px) saturate(1.7) brightness(1.05);
+  backdrop-filter: blur(46px) saturate(1.7) brightness(1.05);
+  border-bottom: .5px solid rgba(226,243,255,.3);
+  box-shadow:
+    inset 0 .5px 0 rgba(255,255,255,.5),
+    inset 0 -.5px 0 rgba(170,212,255,.35),
+    inset 0 0 46px rgba(206,233,255,.10),
+    0 10px 30px -6px rgba(0,8,26,.55),
+    0 0 44px rgba(150,205,255,.12);
+}
+/* the old grain layer becomes a smooth frost bloom */
+header::before {
+  background:
+    radial-gradient(55% 150% at 14% -10%, rgba(255,255,255,.26), rgba(255,255,255,0) 62%),
+    radial-gradient(48% 130% at 88% 115%, rgba(188,224,255,.24), rgba(188,224,255,0) 70%);
+  opacity: 1;
+}
+/* icy bottom edge instead of the coloured hairline */
+header::after {
+  background: linear-gradient(90deg, rgba(226,243,255,0), rgba(226,243,255,.95) 28%, rgba(226,243,255,.95) 72%, rgba(226,243,255,0));
+  height: .5px; box-shadow: 0 0 12px rgba(176,218,255,.55);
+  opacity: .6;
+}
+/* thinner selected-tab outlines */
+.hdr-filter.active { box-shadow: 0 0 0 .75px rgba(var(--yg),.6), 0 0 18px rgba(var(--yg),.36), inset 0 0 14px rgba(var(--yg),.12); }
+.hdr-filter-sale.active { box-shadow: 0 0 0 .75px rgba(var(--rg),.6), 0 0 18px rgba(var(--rg),.4), inset 0 0 14px rgba(var(--rg),.14); }
+</style>
+<style id="poster-skin-9">
+/* ── homepage cards: no accent colours (neutral text + neutral glass) ── */
+#grid > div > div.card-info > div.card-title { color: #fff; -webkit-text-fill-color: #fff; text-shadow: none; }
+#grid > div > div.card-info > div.card-team { color: rgba(255,255,255,.62); text-shadow: none; }
+
+.card {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.12),
+    0 1px 0 rgba(255,255,255,.05),
+    0 8px 16px -4px rgba(0,0,0,.6),
+    0 28px 56px -16px rgba(0,0,0,.85);
+}
+.card::after {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.5),
+    inset 1px 0 0 rgba(255,255,255,.14),
+    inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.card:hover {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.55),
+    0 0 30px rgba(255,255,255,.14),
+    0 18px 30px -8px rgba(0,0,0,.7),
+    0 44px 80px -22px rgba(0,0,0,.9);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-top">
+    <div class="hdr-left">
+      <img class="logo" id="logo" src="images/Frame 1 color.png" alt="Canucks Jerseys">
+      <button class="hdr-back" id="btn-back"><span class="hdr-back-chevron">‹</span> Back</button>
+    </div>
+    <div class="hdr-filters">
+      <button class="hdr-filter active" data-filter="all">All</button>
+      <button class="hdr-filter" data-filter="canucks">Canucks</button>
+      <button class="hdr-filter" data-filter="canada">Canada</button>
+      <!-- hidden for now: <button class="hdr-filter" data-filter="other">Other</button> -->
+      <button class="hdr-filter hdr-filter-sale" data-filter="sale">For Sale</button>
+      <select class="hdr-filter-select" id="filter-select">
+        <option value="all">All</option>
+        <option value="canucks">Canucks</option>
+        <option value="canada">Canada</option>
+        <!-- hidden for now: <option value="other">Other</option> -->
+        <option value="sale">For Sale</option>
+      </select>
+    </div>
+    <div class="hdr-right">
+      <select id="sort-select" class="hdr-sort">
+        <option value="default" selected>Default</option>
+        <option value="newest">Newest</option>
+        <option value="oldest">Oldest</option>
+        <option value="player">Player</option>
+      </select>
+    </div>
+  </div>
+</header>
+
+<main class="view on" id="view-gallery">
+  <div class="grid" id="grid"></div>
+  <div class="dp-contact gallery-contact">Interested in a jersey?<br><a href="mailto:brandondavelal@gmail.com">Contact</a> to inquire.</div>
+</main>
+
+<main class="view" id="view-detail">
+  <div class="detail-wrap">
+    <div class="detail-imgs" id="detail-imgs"></div>
+    <div class="detail-panel" id="detail-panel"></div>
+  </div>
+</main>
+
+<script>
+var ph = function(c) { return 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><rect width="800" height="600" fill="' + c + '"/></svg>'); };
+var fillColors = ['#edebe7', '#d6cfc7', '#c9ddd4', '#e8d6c3'];
+var fillImgs = fillColors.map(ph);
+
+var S = { products: typeof GALLERY_DATA !== 'undefined' ? GALLERY_DATA : [], view: 'gallery', sort: 'default', filter: 'all' };
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function latestYear(p) {
+  var years = String(p.year || '').match(/\d{4}/g);
+  if (!years) return null;
+  return Math.max.apply(null, years.map(Number));
+}
+
+function firstYear(p) {
+  var years = String(p.year || '').match(/\d{4}/g);
+  if (!years) return null;
+  return Math.min.apply(null, years.map(Number));
+}
+
+function playerName(p) {
+  var parts = String(p.player || '').trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return { first: '', last: '' };
+  var last = parts[parts.length - 1];
+  var first = parts.slice(0, -1).join(' ');
+  return { first: first, last: last };
+}
+
+function show(name) {
+  S.view = name;
+  document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('on'); });
+  document.getElementById('view-' + name).classList.add('on');
+  var og = name === 'gallery';
+  document.querySelector('.hdr-left').classList.toggle('detail', !og);
+  window.scrollTo(0,0);
+}
+
+function renderGallery() {
+  var g = document.getElementById('grid');
+  var list = S.products.filter(function(p) { return p.status !== 'Draft'; });
+  if (S.filter !== 'all') {
+    list = list.filter(function(p) {
+      var cat = p.category || (p.team === 'Vancouver Canucks' ? 'canucks' : p.team === 'Team Canada' ? 'canada' : 'other');
+      return S.filter === 'sale' ? !!p.onSale : cat === S.filter;
+    });
+  }
+  if (S.sort === 'newest' || S.sort === 'oldest') {
+    list = list.slice().sort(function(a, b) {
+      var ya = firstYear(a), yb = firstYear(b);
+      if (ya === null && yb === null) return 0;
+      if (ya === null) return 1;
+      if (yb === null) return -1;
+      return S.sort === 'newest' ? yb - ya : ya - yb;
+    });
+  } else if (S.sort === 'player') {
+    list = list.slice().sort(function(a, b) {
+      var na = playerName(a), nb = playerName(b);
+      if (!na.last && !nb.last) return 0;
+      if (!na.last) return 1;
+      if (!nb.last) return -1;
+      var c = na.last.localeCompare(nb.last);
+      if (c !== 0) return c;
+      c = na.first.localeCompare(nb.first);
+      if (c !== 0) return c;
+      var ya = latestYear(a), yb = latestYear(b);
+      if (ya === null && yb === null) return 0;
+      if (ya === null) return 1;
+      if (yb === null) return -1;
+      return ya - yb;
+    });
+  }
+  if (!list.length) { g.innerHTML = '<div class="empty"><div class="empty-hed">Nothing here yet.</div></div>'; return; }
+  var sale = S.filter === 'sale';
+  g.innerHTML = list.map(function(p, i) {
+    var img = (p.images && p.images.length) ? p.images[0] : fillImgs[0];
+    var img2 = (p.images && p.images.length > 1) ? p.images[1] : null;
+    var sub  = [p.manufacturer, p.year].filter(Boolean).join(' · ');
+    return '<div class="card' + (sale ? ' sale' : '') + '" data-id="' + esc(p.id) + '" tabindex="0" role="button" style="animation-delay:' + (i * 40) + 'ms">' +
+      '<div class="card-img skeleton"><img src="' + img + '" alt="' + esc(p.player) + '">' +
+      (img2 ? '<img class="card-img-alt" src="' + img2 + '" alt="' + esc(p.player) + '">' : '') +
+      '</div><div class="card-info">' +
+      (p.team   ? '<div class="card-team">'   + esc(p.team)        + '</div>' : '') +
+      '<div class="card-title">' + esc(p.title||'—') + '</div>' +
+      (p.player ? '<div class="card-player">' + esc(p.player)      + '</div>' : '') +
+      (sub      ? '<div class="card-sub">'    + esc(sub)           + '</div>' : '') +
+      (sale ? '<a class="cta-buy card-cta" href="mailto:brandondavelal@gmail.com">Contact to Buy' + (p.price ? '<span class="cta-dot">·</span>' + esc(p.price) : '') + '</a>' : '') +
+      '</div></div>';
+  }).join('');
+  g.querySelectorAll('.card').forEach(function(c) {
+    c.addEventListener('click', function(e) { if (e.target.closest('.card-cta')) return; openDetail(c.dataset.id); });
+    c.addEventListener('keydown', function(e) { if (e.target.closest('.card-cta')) return; if (e.key==='Enter'||e.key===' ') { e.preventDefault(); openDetail(c.dataset.id); } });
+  });
+  g.querySelectorAll('.card').forEach(function(card) {
+    var img = card.querySelector('.card-img img:not(.card-img-alt)');
+    var reveal = function() {
+      if (img) img.classList.add('loaded');
+      card.querySelector('.card-img').classList.remove('skeleton');
+      card.classList.add('loaded');
+    };
+    if (!img || img.complete) reveal();
+    else { img.addEventListener('load', reveal); img.addEventListener('error', reveal); }
+  });
+}
+
+function openDetail(id, skipPush) {
+  var p = S.products.filter(function(x) { return x.id === id; })[0];
+  if (!p) return;
+  if (!skipPush) history.pushState({ id: id }, '', '#' + encodeURIComponent(id));
+  var imgs = (p.images && p.images.length) ? p.images : fillImgs;
+  var di = document.getElementById('detail-imgs');
+  di.innerHTML = (imgs.length > 1 ? '<div class="detail-thumbs"><div class="detail-thumbs-in">' + imgs.map(function(src, i) {
+      return '<button type="button" class="detail-thumb' + (i === 0 ? ' on' : '') + '" data-i="' + i + '" aria-label="Photo ' + (i + 1) + '"><img src="' + src + '" alt=""></button>';
+    }).join('') + '</div></div>' : '') +
+    '<div class="detail-main"><img src="' + imgs[0] + '" alt="' + esc(p.player) + '"></div>';
+  di.querySelectorAll('.detail-thumb').forEach(function(t) {
+    t.addEventListener('click', function() {
+      di.querySelector('.detail-main img').src = imgs[+t.dataset.i];
+      di.querySelectorAll('.detail-thumb').forEach(function(x) { x.classList.toggle('on', x === t); });
+    });
+  });
+  var patches = [p.patch1, p.patch2, p.patch3].filter(Boolean);
+  var numDesig = [p.number ? '#' + p.number : '', p.designation && p.designation !== 'Blank' ? p.designation : ''].filter(Boolean).join(' · ');
+  var extras = [];
+  if (p.size)         extras.push(['Size', p.size]);
+  var mfr = [p.manufacturer, p.model, p.jerseyType].filter(Boolean).join(' · ');
+  var playerLine = [p.player||'', numDesig].filter(Boolean).join(' · ');
+  document.getElementById('detail-panel').innerHTML =
+    (p.team   ? '<div class="dp-team">'   + esc(p.team)     + '</div>' : '') +
+    (p.title  ? '<div class="dp-title">'  + esc(p.title)    + '</div>' : '') +
+    (playerLine ? '<div class="dp-player">' + esc(playerLine) + '</div>' : '') +
+    (p.year   ? '<div class="dp-meta">'   + esc(p.year)      + '</div>' : '') +
+    (patches.length ? '<div class="dp-extra">Patches: ' + esc(patches.join(' · ')) + '</div>' : '') +
+    (mfr  ? '<div class="dp-meta">'   + esc(mfr)     + '</div>' : '') +
+    extras.map(function(x) { return '<div class="dp-extra">' + esc(x[0]) + ': ' + esc(x[1]) + '</div>'; }).join('') +
+    (p.country ? '<div class="dp-extra">' + esc(p.country) + '</div>' : '') +
+    (p.onSale
+      ? '<div class="dp-contact dp-contact-cta"><hr class="dp-rule"><br><a class="cta-buy" href="mailto:brandondavelal@gmail.com">Contact to Buy' + (p.price ? '<span class="cta-dot">·</span>' + esc(p.price) : '') + '</a></div>'
+      : '<div class="dp-contact"><hr class="dp-rule"><br>Interested in this jersey?<br><a href="mailto:brandondavelal@gmail.com">Contact</a> to inquire.</div>');
+  show('detail');
+}
+
+document.getElementById('sort-select').addEventListener('change', function(e) { S.sort = e.target.value; renderGallery(); });
+
+function setFilter(f) {
+  S.filter = f;
+  document.querySelectorAll('.hdr-filter').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.filter === f);
+  });
+  document.getElementById('filter-select').value = f;
+  renderGallery();
+}
+
+document.querySelectorAll('.hdr-filter').forEach(function(btn) {
+  btn.addEventListener('click', function() { setFilter(btn.dataset.filter); });
+});
+
+document.getElementById('filter-select').addEventListener('change', function(e) { setFilter(e.target.value); });
+
+document.getElementById('btn-back').addEventListener('click', function() { history.pushState({}, '', location.pathname + location.search); show('gallery'); renderGallery(); });
+document.getElementById('logo').addEventListener('click', function() { if (S.view !== 'gallery') { history.pushState({}, '', location.pathname + location.search); show('gallery'); renderGallery(); } });
+document.addEventListener('keydown', function(e) { if (e.key==='Escape' && S.view==='detail') { history.pushState({}, '', location.pathname + location.search); show('gallery'); renderGallery(); } });
+window.addEventListener('popstate', function() { route(); });
+
+function route() {
+  var id = decodeURIComponent(location.hash.slice(1));
+  if (id && S.products.some(function(p) { return p.id === id && p.status !== 'Draft'; })) {
+    openDetail(id, true);
+  } else {
+    show('gallery'); renderGallery();
+  }
+}
+
+renderGallery(); route();
+</script>
+<script>
+/* click the logos to cycle colour sets: poster (red/yellow) -> blue -> WCE era -> poster */
+(function () {
+  var root = document.documentElement, SETS = ['', 'blue', 'wce'], KEY = 'pp-theme';
+  function set(name) { if (name) root.setAttribute('data-theme', name); else root.removeAttribute('data-theme'); }
+  var start = '';
+  try { var v = localStorage.getItem(KEY); if (SETS.indexOf(v) > 0) start = v; } catch (e) {}
+  var q = /[?&]theme=(blue|wce)/.exec(location.search); if (q) start = q[1];
+  set(start);
+  var logo = document.getElementById('logo'); if (logo) logo.title = 'Click to switch colour set';
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest || !e.target.closest('#logo')) return;
+    e.stopPropagation(); e.preventDefault();
+    var flip = function () {
+      var next = SETS[(SETS.indexOf(root.getAttribute('data-theme') || '') + 1) % SETS.length];
+      set(next);
+      try { localStorage.setItem(KEY, next); } catch (x) {}
+    };
+    if (document.startViewTransition) document.startViewTransition(flip); else flip();
+  }, true);
+})();
+</script>
+</body>
+</html>
