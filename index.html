@@ -140,6 +140,292 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
   .hdr-sort:hover { box-shadow: none; border-radius: 0; }
 }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap" rel="stylesheet">
+
+<style id="poster-skin">
+/* ── Game-day poster skin v2: black, electric yellow + red, modern light type, neon glow ── */
+:root {
+  --y: #ffe600; --r: #ff2d3d; --k: #050505;
+  --yg: 255,230,0; --rg: 255,45,61;
+  --f: "Inter", -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  --black: #fff; --grey: #b5b5b5; --lgrey: #8a8a8a; --white: #050505;
+}
+body { background: var(--k); color: #fff; font-weight: 400; letter-spacing: -.005em; padding-bottom: 0; }
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(60% 40% at 12% 0%, rgba(var(--yg),.08), transparent 70%),
+    radial-gradient(70% 38% at 0% 100%, rgba(255,150,0,.32), transparent 70%),
+    radial-gradient(95% 55% at 50% 120%, rgba(var(--rg),.55), rgba(120,10,16,.3) 42%, transparent 72%),
+    repeating-linear-gradient(125deg, rgba(var(--rg),.06) 0 1px, transparent 1px 26px);
+}
+
+/* header: glass bar with a glowing gradient hairline */
+header { background: rgba(5,5,5,.55); border-bottom: 1px solid rgba(var(--yg),.18); box-shadow: 0 0 34px rgba(var(--yg),.12), 0 10px 50px rgba(var(--rg),.10); }
+header::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: linear-gradient(90deg, transparent, rgba(var(--yg),.9) 30%, rgba(var(--rg),.9) 70%, transparent); box-shadow: 0 0 14px rgba(var(--yg),.7); opacity: .8; }
+.hdr-back { color: #fff; font-weight: 500; letter-spacing: .08em; text-shadow: 0 0 10px rgba(255,255,255,.35); }
+.hdr-back:hover { color: var(--y); text-shadow: 0 0 12px rgba(var(--yg),.8); }
+
+/* filter tabs: neon pills */
+.hdr-filter { color: #e9e9e9; font-weight: 500; font-style: normal; font-size: 11px; letter-spacing: .1em; padding: 8px 15px; border-radius: 999px; transition: color .2s, text-shadow .2s, box-shadow .2s, background .2s; }
+.hdr-filter:hover:not(.active) { text-decoration: none; color: var(--y); text-shadow: 0 0 12px rgba(var(--yg),.85); }
+.hdr-filter.active { text-decoration: none; clip-path: none; color: var(--y); text-shadow: 0 0 12px rgba(var(--yg),.9); background: rgba(var(--yg),.08); box-shadow: 0 0 0 1px rgba(var(--yg),.55), 0 0 18px rgba(var(--yg),.4), inset 0 0 14px rgba(var(--yg),.14); }
+.hdr-filter-sale, .hdr-filter-sale.active { font-weight: 600; color: #ff5a67; text-shadow: 0 0 10px rgba(var(--rg),.6); }
+.hdr-filter-sale:hover:not(.active) { color: #ff7d87; text-shadow: 0 0 14px rgba(var(--rg),.95); }
+.hdr-filter-sale.active { background: rgba(var(--rg),.1); color: #ff6f7b; text-shadow: 0 0 12px rgba(var(--rg),.95); box-shadow: 0 0 0 1px rgba(var(--rg),.6), 0 0 18px rgba(var(--rg),.45), inset 0 0 14px rgba(var(--rg),.16); }
+
+.hdr-filter-select, .hdr-sort {
+  color: var(--y); font-weight: 500; letter-spacing: .1em; text-shadow: 0 0 10px rgba(var(--yg),.6);
+  background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23ffe600%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
+}
+.hdr-sort:hover { box-shadow: 0 1px 0 0 var(--y), 0 6px 14px -6px rgba(var(--yg),.8); }
+.hdr-filter-select option, .hdr-sort option { background: #000; color: #fff; text-shadow: none; }
+
+/* cards: dark glass with a soft neon halo */
+.card { background: linear-gradient(180deg, rgba(26,26,26,.92), rgba(8,8,8,.96)); border-radius: 16px; box-shadow: 0 0 0 1px rgba(var(--yg),.16), 0 0 26px rgba(var(--yg),.09), 0 14px 44px rgba(0,0,0,.65); transition: transform .3s ease, box-shadow .3s ease; }
+.card::after { box-shadow: inset 0 0 0 1px rgba(var(--yg),.14), inset 0 1px 0 rgba(255,255,255,.07); }
+.card:hover { box-shadow: 0 0 0 1px rgba(var(--yg),.75), 0 0 30px rgba(var(--yg),.45), 0 0 80px rgba(var(--rg),.35), 0 16px 50px rgba(0,0,0,.6); }
+.card-img { background: #111; }
+.card-img.skeleton { animation: skelDark 1.2s ease-in-out infinite; animation-delay: inherit; }
+@keyframes skelDark { 0%, 100% { background-color: #111; } 50% { background-color: #1c1c1c; } }
+
+#grid > div > div.card-info > div { color: #cfcfcf; font-weight: 400; }
+#grid > div > div.card-info > div.card-team { color: #ff5a67; font-weight: 500; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; text-shadow: 0 0 10px rgba(var(--rg),.55); }
+#grid > div > div.card-info > div.card-title { color: var(--y); font-weight: 600; font-size: 16px; line-height: 1.25; letter-spacing: -.012em; text-transform: none; text-shadow: 0 0 16px rgba(var(--yg),.4); margin-top: 9px; margin-bottom: 10px; }
+#grid > div > div.card-info > div.card-player { color: #fff; font-weight: 500; font-size: 12px; letter-spacing: 0; text-transform: none; }
+#grid > div > div.card-info > div.card-sub { color: #9d9d9d; }
+
+/* buttons: glowing yellow pills */
+.cta-buy { background: var(--y); color: #000; font-weight: 600; font-style: normal; font-stretch: 100%; letter-spacing: .005em; text-transform: none; border-radius: 999px; padding: 14px 32px; clip-path: none; box-shadow: 0 0 0 1px rgba(255,255,255,.25) inset, 0 0 18px rgba(var(--yg),.6), 0 0 52px rgba(var(--yg),.28); transition: background .2s, box-shadow .2s, transform .2s; }
+.cta-buy:hover { background: #fff35c; box-shadow: 0 0 0 1px rgba(255,255,255,.4) inset, 0 0 26px rgba(var(--yg),.9), 0 0 80px rgba(var(--yg),.45); }
+.dp-contact a.cta-buy { color: #000; }
+#grid .card-cta { padding: 12px 18px; font-size: 13px; }
+
+/* detail page */
+.detail-main { background: #111; border-radius: 16px; box-shadow: 0 0 0 1px rgba(var(--yg),.28), 0 0 44px rgba(var(--yg),.18), 0 30px 100px rgba(var(--rg),.32); }
+.detail-thumb { background: #111; border-radius: 10px; transition: box-shadow .2s; }
+.detail-thumb.on { box-shadow: 0 0 20px rgba(var(--yg),.6); }
+.detail-thumb.on::after { border: 2px solid var(--y); border-radius: 10px; }
+.detail-thumb:not(.on) img { opacity: .7; transition: opacity .2s; }
+.detail-thumb:not(.on):hover img { opacity: 1; }
+.detail-thumb:not(.on):hover { box-shadow: 0 0 14px rgba(var(--yg),.35); }
+
+#detail-panel > div.dp-team { color: #ff5a67; font-weight: 500; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; text-shadow: 0 0 12px rgba(var(--rg),.6); }
+#detail-panel > div.dp-title { color: var(--y); font-weight: 600; font-size: clamp(24px, 2.6vw, 36px); line-height: 1.1; letter-spacing: -.025em; text-transform: none; text-shadow: 0 0 22px rgba(var(--yg),.45); margin: 12px 0 16px; text-wrap: balance; }
+#detail-panel > div.dp-player { color: #fff; font-weight: 500; font-size: 15px; letter-spacing: 0; text-transform: none; margin-bottom: 6px; }
+#detail-panel > div.dp-meta, #detail-panel > div.dp-extra { color: #b8b8b8; font-size: 12px; font-weight: 400; line-height: 1.55; }
+.dp-rule { border-top: 1px solid var(--r); box-shadow: 0 0 12px rgba(var(--rg),.95); }
+#detail-panel > div.dp-contact-cta::after { background: var(--r); height: 1px; box-shadow: 0 0 12px rgba(var(--rg),.95); }
+.dp-contact { color: #a0a0a0; }
+.dp-contact a { color: var(--y); text-shadow: 0 0 10px rgba(var(--yg),.5); }
+.dp-contact a.cta-buy { text-decoration: none; text-shadow: none; }
+.gallery-contact { color: #a0a0a0; }
+.empty-hed { color: #8a8a8a; }
+
+</style>
+<style id="poster-skin-2">
+/* ── v3: tighter radii, glass cards with light + depth, denser grid ── */
+:root { --rad: 8px; }
+
+/* density: 4 / 3 / 2 columns */
+.grid { grid-template-columns: repeat(4, 1fr); gap: 22px 14px; }
+@media (max-width: 1180px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 760px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 601px)  { #view-gallery { padding-left: 32px; padding-right: 32px; } }
+@media (max-width: 600px)  {
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 12px 10px; }
+  .card-info { padding: 12px 12px 14px !important; }
+  .card.sale .card-info { padding-bottom: 82px !important; }
+  #grid .card-cta { left: 10px; right: 10px; bottom: 10px; font-size: 11px; padding: 10px 6px; }
+  #grid .card-cta { white-space: normal; line-height: 1.25; }
+  #grid .card-cta .cta-dot { display: block; height: 0; overflow: hidden; margin: 0; }
+  #grid > div > div.card-info > div.card-title { font-size: 13px; }
+}
+
+.card-info { padding: 16px 18px 20px; }
+.card.sale .card-info { padding-bottom: 68px; }
+#grid .card-cta { left: 18px; right: 18px; bottom: 16px; font-size: 12px; padding: 11px 10px; }
+#grid > div > div.card-info > div { font-size: 11.5px; }
+#grid > div > div.card-info > div.card-team { font-size: 10.5px; }
+#grid > div > div.card-info > div.card-title { font-size: 14.5px; margin: 7px 0 8px; }
+#grid > div > div.card-info > div.card-player { font-size: 11.5px; }
+
+/* smaller radii everywhere */
+.hdr-filter { border-radius: 8px; }
+.cta-buy { border-radius: 10px; }
+.detail-main { border-radius: var(--rad); }
+.detail-thumb, .detail-thumb.on::after { border-radius: 6px; }
+
+/* glass cards */
+.card {
+  border-radius: var(--rad);
+  background:
+    linear-gradient(160deg, rgba(255,255,255,.13) 0%, rgba(255,255,255,.045) 40%, rgba(255,255,255,.02) 100%),
+    rgba(14,14,16,.5);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6); backdrop-filter: blur(22px) saturate(1.6);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.09),
+    0 1px 0 rgba(255,255,255,.05),
+    0 8px 16px -4px rgba(0,0,0,.6),
+    0 28px 56px -16px rgba(0,0,0,.85),
+    0 0 40px rgba(var(--yg),.07);
+}
+.card::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 2;
+  background:
+    radial-gradient(120% 65% at 0% 0%, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, rgba(255,255,255,.06), transparent 28%);
+}
+.card::after {
+  z-index: 3;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.45),
+    inset 1px 0 0 rgba(255,255,255,.14),
+    inset 0 0 0 1px rgba(255,255,255,.08),
+    inset 0 -28px 44px -30px rgba(var(--yg),.22);
+}
+.card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow:
+    0 0 0 1px rgba(var(--yg),.7),
+    0 0 28px rgba(var(--yg),.42),
+    0 0 72px rgba(var(--rg),.3),
+    0 18px 30px -8px rgba(0,0,0,.7),
+    0 44px 80px -22px rgba(0,0,0,.9);
+}
+</style>
+<style id="poster-skin-3">
+/* ── v4: texture. Film grain, halftone dots, grainy glass ── */
+:root { --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.1 -.4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); --noise-soft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .8 -.33'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+/* halftone dots + grain across the whole page */
+body::before {
+  background:
+    radial-gradient(rgba(255,255,255,.085) .8px, transparent 1.1px) 0 0 / 6px 6px,
+    radial-gradient(60% 40% at 12% 0%, rgba(var(--yg),.08), transparent 70%),
+    radial-gradient(70% 38% at 0% 100%, rgba(255,150,0,.32), transparent 70%),
+    radial-gradient(95% 55% at 50% 120%, rgba(var(--rg),.55), rgba(120,10,16,.3) 42%, transparent 72%),
+    repeating-linear-gradient(125deg, rgba(var(--rg),.08) 0 1px, transparent 1px 26px);
+}
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: 60; pointer-events: none;
+  background: var(--noise); background-size: 240px 240px; opacity: .07;
+}
+
+/* grainy glass header */
+header::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: var(--noise-soft); background-size: 240px 240px; opacity: .22; }
+
+/* grainy glass cards: grain + sheen share the highlight layer */
+.card::before {
+  background:
+    radial-gradient(120% 65% at 0% 0%, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, rgba(255,255,255,.06), transparent 28%);
+  background-size: auto, auto;
+  opacity: 1;
+}
+
+/* textured highlights on buttons and the photo frame */
+.cta-buy { background-image: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 55%), var(--noise-soft); background-size: auto, 160px 160px; background-blend-mode: normal; }
+.detail-main::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: var(--noise-soft); background-size: 200px 200px; opacity: .1; }
+.detail-main { position: relative; }
+</style>
+<style id="poster-skin-7">
+/* ── v8: reference-poster glass & texture, plus a switchable blue colour set ── */
+:root {
+  --t1: #fff7b8; --t2: #ffe600; --t3: #ff9d00;           /* beveled gold lettering */
+  --sec-text: #ff5a67; --sec-hi: #ff7d87; --sec-hi2: #ff6f7b; --acc-hi: #fff35c;
+  --ga: 255,150,0; --gb: 232,32,44; --gc: 120,10,16;     /* atmosphere glows */
+  --arrow: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23ffe600%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
+}
+html[data-theme="blue"] {
+  --y: #5ab4ff; --yg: 90,180,255; --r: #12d6a0; --rg: 18,214,160; --k: #030812;
+  --t1: #f2fbff; --t2: #6cc0ff; --t3: #1f6fe0;
+  --sec-text: #3be8b8; --sec-hi: #7af2d0; --sec-hi2: #5ceec6; --acc-hi: #b9e0ff;
+  --ga: 0,200,255; --gb: 20,100,255; --gc: 4,22,80;
+  --arrow: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%235ab4ff%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
+}
+
+/* West Coast Express era: navy + royal blue base, silver accent, Orca red */
+html[data-theme="wce"] {
+  --y: #dfe6ef; --yg: 223,230,239; --r: #ff3a46; --rg: 255,58,70; --k: #040916;
+  --t1: #ffffff; --t2: #dfe6ef; --t3: #8d99aa;
+  --sec-text: #ff4b57; --sec-hi: #ff7a84; --sec-hi2: #ff6670; --acc-hi: #ffffff;
+  --ga: 36,104,235; --gb: 205,24,44; --gc: 8,26,86;
+  --arrow: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23dfe6ef%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
+}
+
+/* atmosphere: glow, light streaks, halftone, glossy ice floor */
+body::before {
+  background:
+    radial-gradient(rgba(255,255,255,.07) .8px, transparent 1.1px) 0 0 / 6px 6px,
+    repeating-linear-gradient(118deg, transparent 0 140px, rgba(255,255,255,.032) 140px 152px, transparent 152px 340px),
+    radial-gradient(55% 38% at 14% 2%, rgba(var(--yg),.14), transparent 70%),
+    radial-gradient(50% 34% at 92% 0%, rgba(var(--gb),.2), transparent 70%),
+    radial-gradient(65% 40% at 0% 100%, rgba(var(--ga),.34), transparent 70%),
+    radial-gradient(95% 55% at 50% 120%, rgba(var(--gb),.62), rgba(var(--gc),.34) 42%, transparent 72%),
+    radial-gradient(40% 30% at 100% 100%, rgba(var(--gb),.3), transparent 70%),
+    repeating-linear-gradient(125deg, rgba(var(--gb),.07) 0 1px, transparent 1px 26px);
+}
+html::after {
+  content: ''; position: fixed; left: 0; right: 0; bottom: 0; height: 26vh; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(70% 2px at 50% 0, rgba(255,255,255,.6), transparent 80%),
+    linear-gradient(180deg, rgba(var(--gb),0) 0%, rgba(var(--gb),.2) 60%, rgba(var(--ga),.3) 100%),
+    repeating-linear-gradient(171deg, rgba(255,255,255,.07) 0 1px, transparent 1px 13px),
+    repeating-linear-gradient(8deg, rgba(255,255,255,.045) 0 1px, transparent 1px 17px);
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 38%); mask-image: linear-gradient(180deg, transparent, #000 38%);
+}
+.logo { filter: drop-shadow(0 0 10px rgba(var(--yg),.4)); transition: filter .2s; }
+.logo:hover { filter: drop-shadow(0 0 16px rgba(var(--yg),.8)); }
+
+/* colour-set aware accents (replaces the hard-coded reds/yellows) */
+.hdr-filter-sale, .hdr-filter-sale.active { color: var(--sec-text); }
+.hdr-filter-sale:hover:not(.active) { color: var(--sec-hi); }
+.hdr-filter-sale.active { color: var(--sec-hi2); }
+#grid > div > div.card-info > div.card-team, #detail-panel > div.dp-team { color: var(--sec-text); }
+.hdr-filter-select, .hdr-sort { background-image: var(--arrow); }
+
+/* neon title text: solid accent colour with a glowing halo (follows the colour set) */
+#grid > div > div.card-info > div.card-title {
+  background: none; -webkit-background-clip: border-box; background-clip: border-box;
+  color: var(--y); -webkit-text-fill-color: var(--y); filter: none;
+  text-shadow: 0 0 3px rgba(var(--yg),.3), 0 0 12px rgba(var(--yg),.2);
+}
+#detail-panel > div.dp-title {
+  background: none; -webkit-background-clip: border-box; background-clip: border-box;
+  color: var(--y); -webkit-text-fill-color: var(--y); filter: none;
+  text-shadow: 0 0 4px rgba(var(--yg),.3), 0 0 16px rgba(var(--yg),.2);
+}
+
+/* glass buttons: glossy upper half, lit rim */
+.cta-buy {
+  background-color: var(--y);
+  background-image: linear-gradient(180deg, rgba(255,255,255,.62) 0%, rgba(255,255,255,.16) 49%, rgba(255,255,255,0) 50%, rgba(0,0,0,.12) 100%), var(--noise-soft);
+  background-size: auto, 160px 160px;
+}
+.cta-buy:hover {
+  background-color: var(--acc-hi);
+  background-image: linear-gradient(180deg, rgba(255,255,255,.7) 0%, rgba(255,255,255,.2) 49%, rgba(255,255,255,0) 50%, rgba(0,0,0,.1) 100%), var(--noise-soft);
+}
+
+/* glassier cards: crisp specular top edge, faint skate-scratch texture below */
+.card::before {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,.05) 18%, rgba(255,255,255,0) 34%),
+    radial-gradient(120% 65% at 0% 0%, rgba(255,255,255,.18) 0%, rgba(255,255,255,0) 55%);
+}
+.card-info {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='170' fill='none' stroke='white' stroke-linecap='round'%3E%3Cpath stroke-opacity='.075' stroke-width='.8' d='M-10 128 C50 96 140 104 290 52'/%3E%3Cpath stroke-opacity='.05' stroke-width='.6' d='M-10 150 C70 128 160 138 290 96'/%3E%3Cpath stroke-opacity='.06' stroke-width='.7' d='M40 -6 C70 40 60 90 118 176'/%3E%3C/svg%3E") 0 0 / 280px 170px,
+    repeating-linear-gradient(168deg, rgba(255,255,255,.028) 0 1px, transparent 1px 10px);
+}
+.card::after { box-shadow: inset 0 1px 0 rgba(255,255,255,.6), inset 1px 0 0 rgba(255,255,255,.14), inset 0 0 0 1px rgba(255,255,255,.08), inset 0 -28px 44px -30px rgba(var(--yg),.22); }
+
+/* detail pages: breathing room between the header and the photo */
+#view-detail .detail-wrap { padding-top: 32px; }
+@media (max-width: 768px) { #view-detail .detail-wrap { padding-top: 20px; } }
+</style>
 </head>
 <body>
 
@@ -360,6 +646,28 @@ function route() {
 }
 
 renderGallery(); route();
+</script>
+<script>
+/* click the logos to cycle colour sets: poster (red/yellow) -> blue -> WCE era -> poster */
+(function () {
+  var root = document.documentElement, SETS = ['', 'blue', 'wce'], KEY = 'pp-theme';
+  function set(name) { if (name) root.setAttribute('data-theme', name); else root.removeAttribute('data-theme'); }
+  var start = '';
+  try { var v = localStorage.getItem(KEY); if (SETS.indexOf(v) > 0) start = v; } catch (e) {}
+  var q = /[?&]theme=(blue|wce)/.exec(location.search); if (q) start = q[1];
+  set(start);
+  var logo = document.getElementById('logo'); if (logo) logo.title = 'Click to switch colour set';
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest || !e.target.closest('#logo')) return;
+    e.stopPropagation(); e.preventDefault();
+    var flip = function () {
+      var next = SETS[(SETS.indexOf(root.getAttribute('data-theme') || '') + 1) % SETS.length];
+      set(next);
+      try { localStorage.setItem(KEY, next); } catch (x) {}
+    };
+    if (document.startViewTransition) document.startViewTransition(flip); else flip();
+  }, true);
+})();
 </script>
 </body>
 </html>
