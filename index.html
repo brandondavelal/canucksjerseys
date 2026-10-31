@@ -6,6 +6,7 @@
 <title>Canucks Jerseys</title>
 <link rel="icon" type="image/png" href="images/favicon.png">
 <script src="data.js"></script>
+<script>try { var p = localStorage.getItem("palette"); var q = /[?&]palette=(blue|orange|dark)/.exec(location.search); if (q) p = q[1]; if (p === "blue" || p === "orange") document.documentElement.setAttribute("data-palette", p); } catch (e) {}</script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -142,33 +143,66 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 }
 </style>
 <style id="dark-mode">
-/* ── dark theme: the site is always dark (same clean layout, inverted palette) ── */
-html[data-theme="dark"] { color-scheme: dark; --black: #f5f5f7; --white: #0b0b0d; --grey: #9a9aa0; --lgrey: #6e6e73; }
-html[data-theme="dark"] body { background: #0b0b0d; color: #f5f5f7; }
-html[data-theme="dark"] header { background: rgba(11,11,13,.6); border-bottom-color: rgba(255,255,255,.1); }
-html[data-theme="dark"] .hdr-back { color: #f5f5f7; }
-html[data-theme="dark"] .hdr-back:hover { color: #9a9aa0; }
-html[data-theme="dark"] .hdr-filter { color: #f5f5f7; }
-html[data-theme="dark"] .hdr-filter.active { color: #f5f5f7; }
-html[data-theme="dark"] .hdr-filter-sale, html[data-theme="dark"] .hdr-filter-sale.active { color: #25c46a; }
-html[data-theme="dark"] .hdr-filter-select, html[data-theme="dark"] .hdr-sort { color: #f5f5f7; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23f5f5f7%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E'); }
-html[data-theme="dark"] .hdr-filter-select option, html[data-theme="dark"] .hdr-sort option { background: #1c1c1e; color: #f5f5f7; }
-html[data-theme="dark"] .hdr-sort:hover { box-shadow: 0 1px 0 0 #f5f5f7; }
+/* ── dark theme with switchable palettes (click the header logo): dark -> blue -> orange -> dark ── */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0b0b0d; --bg-image: none;
+  --text: #f5f5f7; --muted: #9a9aa0; --muted2: #6e6e73;
+  --hdr: rgba(11,11,13,.6); --line: rgba(255,255,255,.1); --rule: rgba(255,255,255,.2);
+  --card: #1c1c1e; --card-hi: #2a2a2d; --card-ring: rgba(255,255,255,.06); --card-ring2: rgba(255,255,255,.12); --card-filter: none; --pop: #1c1c1e; --shadow: rgba(0,0,0,.5);
+  --accent: #3375e7; --accent-h: #295eb9; --on-accent: #fff; --ring: #3375e7; --sale: #25c46a;
+  --arrow: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23f5f5f7%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
+  --black: var(--text); --white: var(--bg); --grey: var(--muted); --lgrey: var(--muted2);
+}
+/* blue: royal blue with icy glass highlights */
+html[data-theme="dark"][data-palette="blue"] {
+  --bg: #020a3d;
+  --bg-image: radial-gradient(70% 45% at 8% 0%, rgba(160,205,255,.30), transparent 65%), radial-gradient(60% 50% at 100% 30%, rgba(30,70,255,.45), transparent 70%), linear-gradient(165deg, #0a2cdc 0%, #0620a8 30%, #031054 62%, #010620 100%);
+  --text: #eaf3ff; --muted: #8fb4ff; --muted2: #5f82d6;
+  --hdr: rgba(4,18,100,.45); --line: rgba(170,210,255,.22); --rule: rgba(170,210,255,.35);
+  --card: rgba(110,160,255,.10); --card-hi: rgba(150,195,255,.18); --card-ring: rgba(170,210,255,.22); --card-ring2: rgba(205,232,255,.34); --card-filter: blur(14px) saturate(1.3); --pop: #0a1c7a; --shadow: rgba(0,6,50,.5);
+  --accent: #a6d3ff; --accent-h: #d4eaff; --on-accent: #031054; --ring: #a6d3ff; --sale: #6fe6ff;
+  --arrow: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23eaf3ff%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
+}
+/* orange: near-black with ember glow and fiery edges */
+html[data-theme="dark"][data-palette="orange"] {
+  --bg: #070304;
+  --bg-image: radial-gradient(80% 50% at 90% 105%, rgba(255,86,10,.42), transparent 70%), radial-gradient(55% 40% at 0% 100%, rgba(255,150,30,.18), transparent 70%), radial-gradient(60% 35% at 15% 0%, rgba(255,120,20,.10), transparent 70%), linear-gradient(180deg, #0a0405, #060203);
+  --text: #ffeedd; --muted: #c28f6b; --muted2: #8a6248;
+  --hdr: rgba(10,4,5,.6); --line: rgba(255,140,60,.22); --rule: rgba(255,150,70,.4);
+  --card: rgba(255,120,40,.07); --card-hi: rgba(255,150,70,.14); --card-ring: rgba(255,150,70,.24); --card-ring2: rgba(255,185,110,.34); --card-filter: blur(14px) saturate(1.2); --pop: #1a0c08; --shadow: rgba(0,0,0,.55);
+  --accent: #ff7a1f; --accent-h: #ffa04d; --on-accent: #1b0802; --ring: #ff8a2a; --sale: #ffbf47;
+  --arrow: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23ffeedd%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
+}
 
-html[data-theme="dark"] .card { background: #1c1c1e; box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 2px 10px rgba(0,0,0,.5); }
-html[data-theme="dark"] .card::after { box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
-html[data-theme="dark"] .card:hover { box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 8px 22px rgba(0,0,0,.6); }
-html[data-theme="dark"] .card-img { background: #1c1c1e; }
+html[data-theme="dark"] body { background-color: var(--bg); background-image: var(--bg-image); background-attachment: fixed; color: var(--text); }
+html[data-theme="dark"] header { background: var(--hdr); border-bottom-color: var(--line); }
+html[data-theme="dark"] .hdr-back { color: var(--text); }
+html[data-theme="dark"] .hdr-back:hover { color: var(--muted); }
+html[data-theme="dark"] .hdr-filter, html[data-theme="dark"] .hdr-filter.active { color: var(--text); }
+html[data-theme="dark"] .hdr-filter-sale, html[data-theme="dark"] .hdr-filter-sale.active { color: var(--sale); }
+html[data-theme="dark"] .hdr-filter-select, html[data-theme="dark"] .hdr-sort { color: var(--text); background-image: var(--arrow); }
+html[data-theme="dark"] .hdr-filter-select option, html[data-theme="dark"] .hdr-sort option { background: var(--pop); color: var(--text); }
+html[data-theme="dark"] .hdr-sort:hover { box-shadow: 0 1px 0 0 var(--text); }
+
+html[data-theme="dark"] .card { background: var(--card); -webkit-backdrop-filter: var(--card-filter); backdrop-filter: var(--card-filter); box-shadow: 0 0 0 1px var(--card-ring), 0 2px 10px var(--shadow); }
+html[data-theme="dark"] .card::after { box-shadow: inset 0 0 0 1px var(--card-ring); }
+html[data-theme="dark"] .card:hover { box-shadow: 0 0 0 1px var(--card-ring2), 0 8px 22px var(--shadow); }
+html[data-theme="dark"] .card-img { background: var(--card); }
 html[data-theme="dark"] .card-img.skeleton { animation: skelDark 1.2s ease-in-out infinite; animation-delay: inherit; }
-@keyframes skelDark { 0%, 100% { background-color: #1c1c1e; } 50% { background-color: #2a2a2d; } }
-html[data-theme="dark"] #grid > div > div.card-info > div { color: #f5f5f7; }
-html[data-theme="dark"] #grid > div > div.card-info > div.card-team { color: #9a9aa0; }
+@keyframes skelDark { 0%, 100% { background-color: var(--card); } 50% { background-color: var(--card-hi); } }
+html[data-theme="dark"] #grid > div > div.card-info > div { color: var(--text); }
+html[data-theme="dark"] #grid > div > div.card-info > div.card-team { color: var(--muted); }
 
-html[data-theme="dark"] .detail-main, html[data-theme="dark"] .detail-thumb { background: #1c1c1e; }
-html[data-theme="dark"] #detail-panel > div.dp-team, html[data-theme="dark"] #detail-panel > div.dp-title, html[data-theme="dark"] #detail-panel > div.dp-player, html[data-theme="dark"] #detail-panel > div.dp-meta, html[data-theme="dark"] #detail-panel > div.dp-extra { color: #f5f5f7; }
-html[data-theme="dark"] .dp-rule { border-top-color: rgba(255,255,255,.2); }
-html[data-theme="dark"] #detail-panel > div.dp-contact-cta::after { background: rgba(255,255,255,.2); }
-
+html[data-theme="dark"] .detail-main, html[data-theme="dark"] .detail-thumb { background: var(--card); }
+html[data-theme="dark"] .detail-thumb.on::after { border-color: var(--ring); }
+html[data-theme="dark"] #detail-panel > div.dp-team, html[data-theme="dark"] #detail-panel > div.dp-title, html[data-theme="dark"] #detail-panel > div.dp-player, html[data-theme="dark"] #detail-panel > div.dp-meta, html[data-theme="dark"] #detail-panel > div.dp-extra { color: var(--text); }
+html[data-theme="dark"] .dp-rule { border-top-color: var(--rule); }
+html[data-theme="dark"] #detail-panel > div.dp-contact-cta::after { background: var(--rule); }
+html[data-theme="dark"] .dp-contact { color: var(--muted); }
+html[data-theme="dark"] .cta-buy { background: var(--accent); color: var(--on-accent); }
+html[data-theme="dark"] .cta-buy:hover { background: var(--accent-h); }
+html[data-theme="dark"] .dp-contact a.cta-buy { color: var(--on-accent); }
 </style>
 </head>
 <body>
@@ -390,6 +424,23 @@ function route() {
 }
 
 renderGallery(); route();
+</script>
+<script>
+/* click the header logo to cycle palettes: dark (default) -> blue -> orange -> dark */
+(function () {
+  var root = document.documentElement, SETS = ['', 'blue', 'orange'];
+  var logo = document.getElementById('logo'); if (logo) logo.title = 'Click to change colours';
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest || !e.target.closest('#logo')) return;
+    e.stopPropagation(); e.preventDefault();
+    var flip = function () {
+      var next = SETS[(SETS.indexOf(root.getAttribute('data-palette') || '') + 1) % SETS.length];
+      if (next) root.setAttribute('data-palette', next); else root.removeAttribute('data-palette');
+      try { localStorage.setItem('palette', next || 'dark'); } catch (x) {}
+    };
+    if (document.startViewTransition) document.startViewTransition(flip); else flip();
+  }, true);
+})();
 </script>
 </body>
 </html>
