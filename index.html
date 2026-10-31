@@ -52,7 +52,8 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 .hdr-sort:focus { outline: none; }
 .hdr-sort:hover { box-shadow: 0 1px 0 0 #000000; border-radius: 0; }
 
-.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px 16px; }
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 48px 16px; }
+@media (max-width: 1180px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 924px)  {
   .grid { grid-template-columns: repeat(2, 1fr); }
   .hdr-filter { display: none; }
