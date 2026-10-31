@@ -421,6 +421,38 @@ html::after {
 #view-detail .detail-wrap { padding-top: 32px; }
 @media (max-width: 768px) { #view-detail .detail-wrap { padding-top: 20px; } }
 </style>
+<style id="poster-skin-8">
+/* ── header: frosted ice (smooth, no grain) ── */
+header {
+  background:
+    linear-gradient(105deg, rgba(255,255,255,0) 18%, rgba(255,255,255,.07) 26%, rgba(255,255,255,0) 36%),
+    linear-gradient(105deg, rgba(255,255,255,0) 62%, rgba(255,255,255,.05) 70%, rgba(255,255,255,0) 78%),
+    linear-gradient(180deg, rgba(232,246,255,.15) 0%, rgba(208,232,255,.06) 100%),
+    rgba(8,16,30,.52);
+  -webkit-backdrop-filter: blur(46px) saturate(1.7) brightness(1.05);
+  backdrop-filter: blur(46px) saturate(1.7) brightness(1.05);
+  border-bottom: 1px solid rgba(226,243,255,.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.6),
+    inset 0 -1px 0 rgba(170,212,255,.42),
+    inset 0 0 46px rgba(206,233,255,.14),
+    0 10px 30px -6px rgba(0,8,26,.55),
+    0 0 44px rgba(150,205,255,.12);
+}
+/* the old grain layer becomes a smooth frost bloom */
+header::before {
+  background:
+    radial-gradient(55% 150% at 14% -10%, rgba(255,255,255,.26), rgba(255,255,255,0) 62%),
+    radial-gradient(48% 130% at 88% 115%, rgba(188,224,255,.24), rgba(188,224,255,0) 70%);
+  opacity: 1;
+}
+/* icy bottom edge instead of the coloured hairline */
+header::after {
+  background: linear-gradient(90deg, rgba(226,243,255,0), rgba(226,243,255,.95) 28%, rgba(226,243,255,.95) 72%, rgba(226,243,255,0));
+  box-shadow: 0 0 16px rgba(176,218,255,.7);
+  opacity: .7;
+}
+</style>
 </head>
 <body>
 
