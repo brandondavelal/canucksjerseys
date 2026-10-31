@@ -216,6 +216,14 @@ html[data-theme="dark"] .cta-buy { background: var(--accent); color: var(--on-ac
 html[data-theme="dark"] .cta-buy:hover { background: var(--accent-h); }
 html[data-theme="dark"] .dp-contact a.cta-buy { color: var(--on-accent); }
 
+/* very light, desaturated ice texture over the page background */
+html[data-theme="dark"] body::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: url('images/ice-texture.jpg') center / cover no-repeat;
+  filter: grayscale(1);
+  mix-blend-mode: screen; opacity: .1;
+}
+
 /* jersey pages: space between the header and the photo */
 #view-detail .detail-wrap { padding-top: 32px; }
 @media (max-width: 768px) { #view-detail .detail-wrap { padding-top: 24px; } }
