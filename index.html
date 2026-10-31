@@ -456,6 +456,32 @@ header::after {
 .hdr-filter.active { box-shadow: 0 0 0 .75px rgba(var(--yg),.6), 0 0 18px rgba(var(--yg),.36), inset 0 0 14px rgba(var(--yg),.12); }
 .hdr-filter-sale.active { box-shadow: 0 0 0 .75px rgba(var(--rg),.6), 0 0 18px rgba(var(--rg),.4), inset 0 0 14px rgba(var(--rg),.14); }
 </style>
+<style id="poster-skin-9">
+/* ── homepage cards: no accent colours (neutral text + neutral glass) ── */
+#grid > div > div.card-info > div.card-title { color: #fff; -webkit-text-fill-color: #fff; text-shadow: none; }
+#grid > div > div.card-info > div.card-team { color: rgba(255,255,255,.62); text-shadow: none; }
+
+.card {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.12),
+    0 1px 0 rgba(255,255,255,.05),
+    0 8px 16px -4px rgba(0,0,0,.6),
+    0 28px 56px -16px rgba(0,0,0,.85);
+}
+.card::after {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.5),
+    inset 1px 0 0 rgba(255,255,255,.14),
+    inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.card:hover {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.55),
+    0 0 30px rgba(255,255,255,.14),
+    0 18px 30px -8px rgba(0,0,0,.7),
+    0 44px 80px -22px rgba(0,0,0,.9);
+}
+</style>
 </head>
 <body>
 
