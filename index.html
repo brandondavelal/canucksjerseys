@@ -145,18 +145,19 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: r
 /* ── dark theme ── */
 html[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #151517; --bg-image: none;
+  --bg: #070a0c; --bg-image: none;
   --text: #f5f5f7; --muted: #9a9aa0; --muted2: #6e6e73;
-  --hdr: rgba(38,38,42,.6); --line: rgba(255,255,255,.12); --rule: rgba(255,255,255,.2);
-  --card: rgba(40,40,44,.6); --card-hi: #343438; --stroke-hi: #5a5a62; --card-filter: blur(14px) saturate(1.2); --pop: #232326; --shadow: rgba(0,0,0,.28);
-  --accent: #3375e7; --accent-h: #295eb9; --on-accent: #fff; --ring: #3375e7; --sale: #25c46a;
+  --grain: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='240'%20height='240'%3E%3Cfilter%20id='n'%20x='0'%20y='0'%20width='100%25'%20height='100%25'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='.85'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3CfeColorMatrix%20values='0%200%200%200%201%20%200%200%200%200%201%20%200%200%200%200%201%20%20.08%200%200%200%20-.032'/%3E%3C/filter%3E%3Crect%20width='240'%20height='240'%20filter='url(%23n)'/%3E%3C/svg%3E");
+  --hdr: rgba(11,18,22,.6); --line: rgba(255,255,255,.12); --rule: rgba(255,255,255,.2);
+  --card: rgba(12,19,24,.6); --card-hi: #18232a; --stroke-hi: #5a5a62; --card-filter: blur(14px) saturate(1.2); --pop: #0e161a; --shadow: rgba(0,0,0,.28);
+  --accent: #fff; --accent-h: #dfe8ec; --on-accent: #17323a; --ring: #3375e7; --sale: #25c46a;
   --arrow: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cpath fill=%22none%22 stroke=%22%23f5f5f7%22 stroke-width=%221.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M4 6l4 4 4-4%22/%3E%3C/svg%3E');
   --black: var(--text); --white: var(--bg); --grey: var(--muted); --lgrey: var(--muted2);
 }
 
 
 html[data-theme="dark"] body { background-color: var(--bg); background-image: var(--bg-image); background-attachment: fixed; color: var(--text); }
-html[data-theme="dark"] header { background: var(--hdr); border-bottom-color: var(--line); }
+html[data-theme="dark"] header { background: var(--grain), var(--hdr); border-bottom-color: var(--line); }
 html[data-theme="dark"] .hdr-back { color: var(--text); }
 html[data-theme="dark"] .hdr-back:hover { color: var(--muted); }
 html[data-theme="dark"] .hdr-filter, html[data-theme="dark"] .hdr-filter.active { color: var(--text); }
@@ -165,7 +166,7 @@ html[data-theme="dark"] .hdr-filter-select, html[data-theme="dark"] .hdr-sort { 
 html[data-theme="dark"] .hdr-filter-select option, html[data-theme="dark"] .hdr-sort option { background: var(--pop); color: var(--text); }
 html[data-theme="dark"] .hdr-sort:hover { box-shadow: 0 1px 0 0 var(--text); }
 
-html[data-theme="dark"] .card { background: var(--hdr); -webkit-backdrop-filter: blur(40px); backdrop-filter: blur(40px); box-shadow: 0 2px 10px var(--shadow); }
+html[data-theme="dark"] .card { background: var(--grain), var(--hdr); -webkit-backdrop-filter: blur(40px); backdrop-filter: blur(40px); box-shadow: 0 2px 10px var(--shadow); }
 html[data-theme="dark"] .card::after { box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow .25s ease; }
 html[data-theme="dark"] .card:hover { box-shadow: 0 8px 22px var(--shadow); }
 html[data-theme="dark"] .card:hover::after { box-shadow: inset 0 0 0 1px var(--stroke-hi); }
@@ -188,6 +189,31 @@ html[data-theme="dark"] .dp-contact { color: var(--muted); }
 html[data-theme="dark"] .cta-buy { background: var(--accent); color: var(--on-accent); }
 html[data-theme="dark"] .cta-buy:hover { background: var(--accent-h); }
 html[data-theme="dark"] .dp-contact a.cta-buy { color: var(--on-accent); }
+
+/* background gradient + grain: fixed, extended past the viewport so the bounce never shows its edge */
+html[data-theme="dark"]::before { content: ''; position: fixed; inset: -200px 0; z-index: -2; pointer-events: none; background: var(--grain), radial-gradient(ellipse 110% 85% at 50% 200px, #33454e 0%, #1f2c33 38%, #0d1418 68%, #050708 100%); }
+/* ice texture, fixed behind everything */
+html[data-theme="dark"] body::before { content: ''; position: fixed; inset: -200px 0; z-index: -1; pointer-events: none; background: url('images/ice-bg.jpg') center / cover no-repeat; opacity: .04; mix-blend-mode: luminosity; }
+
+/* polished-metal strokes: header rule + card outlines */
+html[data-theme="dark"] header { border-bottom: none; box-shadow: 0 4px 18px rgba(0,0,0,.35); }
+html[data-theme="dark"] header::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; pointer-events: none; background: linear-gradient(90deg, rgba(150,168,180,.3) 0%, rgba(175,190,202,.5) 22%, rgba(255,255,255,.95) 50%, rgba(175,190,202,.5) 78%, rgba(150,168,180,.3) 100%) 0 0 / 50vw 100% repeat-x; -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent); animation: metalSheen 10s linear infinite; }
+@keyframes metalSheen { from { background-position-x: 0; } to { background-position-x: 50vw; } }
+@media (prefers-reduced-motion: reduce) { html[data-theme="dark"] header::after { animation: none; } }
+html[data-theme="dark"] .card::after { padding: 1px; box-shadow: none; opacity: .75; background: linear-gradient(135deg, #f4f8fb 0%, #7d8d99 18%, #cfdae2 36%, #4d5963 54%, #aebdc8 72%, #5f6d78 88%, #eef3f7 100%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); transition: opacity .25s ease; }
+@property --stroke-a { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+html[data-theme="dark"] .card:hover::after { box-shadow: none; opacity: 1; background: conic-gradient(from var(--stroke-a), #f4f8fb 0%, #7d8d99 12%, #cfdae2 25%, #4d5963 38%, #aebdc8 52%, #5f6d78 66%, #eef3f7 80%, #7d8d99 90%, #f4f8fb 100%); animation: strokeSpin 12s linear infinite; }
+@keyframes strokeSpin { to { --stroke-a: 360deg; } }
+@media (prefers-reduced-motion: reduce) { html[data-theme="dark"] .card:hover::after { animation: none; } }
+
+/* jersey pages: metal stroke round the photos; selected thumb = same stroke, 4px */
+html[data-theme="dark"] .detail-main { position: relative; }
+html[data-theme="dark"] .detail-main::before, html[data-theme="dark"] .detail-thumb::before { content: ''; position: absolute; inset: 0; padding: 1px; border-radius: inherit; pointer-events: none; z-index: 1; opacity: .75; background: linear-gradient(135deg, #f4f8fb 0%, #7d8d99 18%, #cfdae2 36%, #4d5963 54%, #aebdc8 72%, #5f6d78 88%, #eef3f7 100%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); transition: opacity .25s ease; }
+html[data-theme="dark"] .detail-main { overflow: visible; }
+html[data-theme="dark"] .detail-main img { border-radius: inherit; }
+html[data-theme="dark"] .detail-main { border-radius: 3px; }
+html[data-theme="dark"] .detail-main::before { display: none; }
+html[data-theme="dark"] .detail-thumb::before { display: none; }
 
 /* jersey pages: space between the header and the photo */
 #view-detail .detail-wrap { padding-top: 32px; }
