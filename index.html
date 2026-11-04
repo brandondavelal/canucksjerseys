@@ -214,7 +214,7 @@ html[data-theme="dark"] .detail-thumb::before { display: none; }
 .hdr-right { right: max(48px, calc(50% - 582px)); }
 @media (max-width: 600px) { .hdr-filters, .hdr-back { left: 24px; } .hdr-right { right: 24px; } }
 /* phones: the three dropdowns need the room the centre logo takes on the gallery view */
-@media (max-width: 600px) { .hdr-left:not(.detail) .logo { display: none; } .hdr-right { gap: 10px; } #style-select { max-width: 108px; } }
+@media (max-width: 600px) { .hdr-left:not(.detail) .logo { display: none; } html[data-theme="dark"] .hdr-right { gap: 9px; } #style-select { max-width: 108px; } }
 /* the style picker stays on jersey pages; the sort menu doesn't */
 .hdr-left.detail ~ .hdr-right { display: flex; }
 .hdr-left.detail ~ .hdr-right #sort-select { display: none; }
@@ -224,7 +224,7 @@ html[data-theme="dark"] .detail-thumb::before { display: none; }
 html[data-theme="dark"] .logo { filter: drop-shadow(0 -0.5px 0 rgba(0,0,0,.42)) drop-shadow(0 0.5px 0 rgba(255,255,255,.42)) saturate(.97); opacity: .97; }
 
 /* matte plastic nav buttons: flush with the bar when idle, pushed in when selected */
-html[data-theme="dark"] .hdr-filters { gap: 9px; }
+html[data-theme="dark"] .hdr-filters, html[data-theme="dark"] .hdr-right { gap: 9px; }
 html[data-theme="dark"] .hdr-filter, html[data-theme="dark"] .hdr-sort, html[data-theme="dark"] .hdr-filter-select, html[data-theme="dark"] .hdr-back {
   border-radius: 999px; border: none;
   background-color: #1e365e;
@@ -741,7 +741,7 @@ STYLES.current.extra = '';
 STYLES.current.nameTrack = .8;
 STYLES.current.numGap = 8;
 STYLES.skate.numGap = 35;
-STYLES.skate.extra = 'html[data-theme="dark"] #view-detail #detail-panel > div.dp-name { color: #ffe84a; }\n/* the yellow nav trim as glass: vivid and glowing, with an inner highlight, still see-through */\nhtml[data-theme="dark"] header::after { opacity: .85; filter: saturate(1.7) brightness(1.12); box-shadow: 0 0 12px 1px rgba(255,205,0,.5), inset 0 1px 0 rgba(255,255,255,.6), inset 0 -2px 3px rgba(255,150,0,.55), inset 0 0 8px rgba(255,235,120,.55); }';
+STYLES.skate.extra = 'html[data-theme="dark"] #view-detail #detail-panel > div.dp-name { color: #ffe84a; }\n/* the yellow nav trim as glass: vivid and glowing, with an inner highlight, still see-through */\nhtml[data-theme="dark"] header::after { opacity: .85; filter: saturate(1.6) brightness(.9); box-shadow: 0 0 10px 1px rgba(255,195,0,.4), inset 0 1px 0 rgba(255,255,255,.25), inset 0 -2px 3px rgba(255,140,0,.5), inset 0 0 6px rgba(255,220,90,.35); }';
 
 function remapCss(css, st) {
   /* the other styles remap Orca's original background stops, not its darker deep-navy ones */
@@ -853,6 +853,14 @@ function fitName() {
   var measure = function(fs) { c.font = cs.fontWeight + ' ' + fs + 'px ' + cs.fontFamily; c.letterSpacing = (fs * lsEm) + 'px'; return c.measureText(text); };
   var m = measure(fs0), fs = fs0, inkW = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
   if (panelW > 0 && inkW + 16 > panelW) { fs = fs0 * (panelW - 16) / inkW; box.style.fontSize = fs + 'px'; m = measure(fs); }
+  /* an initial's full stop: halve the space between it and the surname */
+  var ws = 0, di = text.indexOf('. ');
+  if (di >= 0 && text[di + 2]) {
+    c.font = cs.fontWeight + ' ' + fs + 'px ' + cs.fontFamily; c.letterSpacing = '0px';
+    var md = c.measureText('.'), msp = c.measureText(' '), mn = c.measureText(text[di + 2]);
+    ws = -.5 * ((md.width - md.actualBoundingBoxRight) + msp.width + 2 * fs * lsEm + mn.actualBoundingBoxLeft * -1);
+  }
+  sp.style.wordSpacing = ws + 'px';
   var L = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
   var off = (L - (m.fontBoundingBoxAscent + m.fontBoundingBoxDescent)) / 2 + m.fontBoundingBoxAscent - m.actualBoundingBoxAscent;
   var pl = 8 + m.actualBoundingBoxLeft, pr = 8 - (m.width - m.actualBoundingBoxRight);
