@@ -18,8 +18,8 @@
   --lgrey:  #bbb;
   --bg:     #fff;
   --f: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --hdr1: 54px;
-  --top:  54px;
+  --hdr1: 62px; /* nav: +4px top and bottom on mobile (and web) */
+  --top:  62px;
 }
 /* web: the nav bar is 4px taller top and bottom than on phones */
 @media (min-width: 769px) { :root { --hdr1: 62px; --top: 62px; } }
@@ -216,7 +216,7 @@ html[data-theme="dark"] .detail-thumb::before { display: none; }
 .hdr-right { right: max(48px, calc(50% - 582px)); }
 @media (max-width: 600px) { .hdr-filters, .hdr-back { left: 24px; } .hdr-right { right: 24px; } }
 /* phones: the three dropdowns need the room the centre logo takes on the gallery view */
-@media (max-width: 768px) { #view-gallery { padding-top: calc(var(--top) + 16px); } }
+@media (max-width: 768px) { #view-gallery { padding-top: calc(var(--top) + 24px); } }
 /* phones: no style dropdown on the grid (it stays on jersey pages), so the logo has its room back */
 @media (max-width: 768px) { .hdr-left:not(.detail) ~ .hdr-right #style-select { display: none; } }
 @media (max-width: 600px) { html[data-theme="dark"] .hdr-right { gap: 9px; } #style-select { max-width: 108px; } }
@@ -465,24 +465,29 @@ html[data-theme="dark"] #view-detail .detail-thumb.on::before { inset: 3.5px; }
 @media (max-width: 768px) { #view-gallery { padding-bottom: 24px; } }
 /* mobile: the number and the MeiGray tag are exactly as wide as the twill stack round the photo */
 @media (max-width: 768px) {
-  html[data-theme="dark"] #view-detail #detail-panel > div.dp-num svg { max-width: none !important; width: calc(100% + 2 * var(--stack-out-768, 22px)); flex: none; }
+  html[data-theme="dark"] #view-detail #detail-panel > div.dp-num svg { max-width: none !important; width: calc(100% + 2 * var(--stack-out-768, 22px)); margin: 0 calc(-1 * var(--stack-out-768, 22px)) !important; flex: none; }
   html[data-theme="dark"] #view-detail #detail-panel .dp-tag { margin: 0 calc(-1 * var(--stack-out-768, 22px)); }
 }
 @media (max-width: 600px) {
-  html[data-theme="dark"] #view-detail #detail-panel > div.dp-num svg { width: calc(100% + 2 * var(--stack-out-600, 18px)); }
+  html[data-theme="dark"] #view-detail #detail-panel > div.dp-num svg { width: calc(100% + 2 * var(--stack-out-600, 18px)); margin: 0 calc(-1 * var(--stack-out-600, 18px)) !important; }
   html[data-theme="dark"] #view-detail #detail-panel .dp-tag { margin: 0 calc(-1 * var(--stack-out-600, 18px)); }
 }
-/* mobile: the name plate spans the same width as the twill stack round the photo */
+/* mobile: the name plate hugs its lettering (centred even if it is wider than the column) */
 @media (max-width: 768px) {
-  html[data-theme="dark"] #view-detail #detail-panel > div.dp-name.dp-name-tw { width: calc(100% + 2 * var(--stack-out-768, 22px)); max-width: none !important; margin-left: calc(-1 * var(--stack-out-768, 22px)); margin-right: calc(-1 * var(--stack-out-768, 22px)); }
+  html[data-theme="dark"] #view-detail #detail-panel > div.dp-name.dp-name-tw { align-self: flex-start; position: relative; left: 50%; transform: translateX(-50%); width: fit-content; max-width: none !important; margin-left: 0; margin-right: 0; }
   html[data-theme="dark"] #view-detail #detail-panel > div.dp-name.dp-name-tw svg { max-width: none !important; }
 }
-@media (max-width: 600px) {
-  html[data-theme="dark"] #view-detail #detail-panel > div.dp-name.dp-name-tw { width: calc(100% + 2 * var(--stack-out-600, 18px)); margin-left: calc(-1 * var(--stack-out-600, 18px)); margin-right: calc(-1 * var(--stack-out-600, 18px)); }
+/* phones and touch screens: flatten the cards. No 3D flip means no per-card GPU layers, hidden back faces or perspective, so fast scrolling doesn't run the browser out of memory */
+@media (max-width: 768px), (hover: none) {
+  html[data-theme="dark"] .card-tilt, html[data-theme="dark"] .card-flip { perspective: none; transform-style: flat; -webkit-transform-style: flat; will-change: auto; transition: none; transform: none; }
+  html[data-theme="dark"] .card-back, html[data-theme="dark"] .card-edge { display: none !important; }
+  html[data-theme="dark"] .card-face, html[data-theme="dark"] .card-face *, html[data-theme="dark"] .card-face::before, html[data-theme="dark"] .card-face::after { -webkit-backface-visibility: visible; backface-visibility: visible; }
+  html[data-theme="dark"] .card-front { transform: none; }
+  html[data-theme="dark"] .card::after { display: none; }
+  html[data-theme="dark"] .card-img.skeleton { animation: none; }
 }
-/* web: each layer of the photo's twill stack is 1/4 thinner (phones keep their own sizes) */
-:root { --tw: 1; }
-@media (min-width: 769px) { :root { --tw: .75; } }
+/* phones: a lighter blur on the nav keeps scrolling smooth */
+@media (max-width: 768px) { html[data-theme="dark"] header { -webkit-backdrop-filter: blur(12px) saturate(1.6); backdrop-filter: blur(12px) saturate(1.6); } }
 </style>
 </head>
 <body>
@@ -630,9 +635,9 @@ function renderGallery() {
       (sub      ? '<div class="card-sub">'    + esc(sub)           + '</div>' : '');
     return '<div class="card' + (img2 ? ' has-back' : '') + '" data-id="' + esc(p.id) + '" tabindex="0" role="button" style="animation-delay:' + (i * 40) + 'ms">' +
       '<div class="card-tilt"><div class="card-flip"><div class="card-face card-front">' +
-      '<div class="card-img skeleton"><img src="' + img + '" alt="' + esc(p.player) + '"></div><div class="card-info">' + info +
+      '<div class="card-img skeleton"><img loading="lazy" decoding="async" src="' + img + '" alt="' + esc(p.player) + '"></div><div class="card-info">' + info +
       '</div></div>' +
-      (img2 ? '<div class="card-face card-back"><div class="card-img"><img class="loaded" src="' + img2 + '" alt="' + esc(p.player) + '"></div><div class="card-info" aria-hidden="true">' + info + '</div></div>' : '') +
+      (img2 ? '<div class="card-face card-back"><div class="card-img"><img class="loaded" loading="lazy" decoding="async" src="' + img2 + '" alt="' + esc(p.player) + '"></div><div class="card-info" aria-hidden="true">' + info + '</div></div>' : '') +
       '<i class="card-edge e-l"></i><i class="card-edge e-r"></i><i class="card-edge e-t"></i><i class="card-edge e-b"></i>' +
       '</div></div></div>';
   }).join('');
@@ -687,7 +692,7 @@ function openDetail(id, skipPush) {
   var imgs = (p.images && p.images.length) ? p.images : fillImgs;
   var di = document.getElementById('detail-imgs');
   di.innerHTML = (imgs.length > 1 ? '<div class="detail-thumbs"><div class="detail-thumbs-in">' + imgs.map(function(src, i) {
-      return '<button type="button" class="detail-thumb' + (i === 0 ? ' on' : '') + '" data-i="' + i + '" aria-label="Photo ' + (i + 1) + '"><img src="' + src + '" alt=""></button>';
+      return '<button type="button" class="detail-thumb' + (i === 0 ? ' on' : '') + '" data-i="' + i + '" aria-label="Photo ' + (i + 1) + '"><img loading="lazy" decoding="async" src="' + src + '" alt=""></button>';
     }).join('') + '</div></div>' : '') +
     '<div class="detail-main"><img src="' + imgs[0] + '" alt="' + esc(p.player) + '"></div>';
   di.querySelectorAll('.detail-thumb').forEach(function(t) {
@@ -1024,6 +1029,32 @@ function twillMarkup(o) {
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" aria-hidden="true" style="display:block;max-width:100%;margin:0 auto;overflow:visible;font-family:' + o.FONT + ';font-size:' + o.FS + 'px">' + defs + body + '</svg>';
 }
 
+/* glyph ink bounds measured from the rendered pixels: Safari's canvas actualBoundingBox values are unreliable for this font, so the name/number layout does not depend on them */
+var INK_CACHE = {};
+function inkMeasure(fs, family, ch) {
+  var key = fs.toFixed(2) + '|' + family + '|' + ch;
+  if (INK_CACHE[key]) return INK_CACHE[key];
+  var out, cv = document.createElement('canvas'), x = cv.getContext('2d');
+  var W = Math.ceil(fs * 2), H = Math.ceil(fs * 2), x0 = Math.ceil(fs * .5), y0 = Math.ceil(fs * 1.3);
+  cv.width = W; cv.height = H;
+  x.font = fs + 'px ' + family; x.textBaseline = 'alphabetic'; x.textAlign = 'left'; x.fillStyle = '#000';
+  var adv = x.measureText(ch).width;
+  try {
+    x.fillText(ch, x0, y0);
+    var d = x.getImageData(0, 0, W, H).data, minX = W, maxX = -1, minY = H, maxY = -1;
+    for (var yy = 0; yy < H; yy++) {
+      for (var xx = 0; xx < W; xx++) {
+        if (d[(yy * W + xx) * 4 + 3] > 24) { if (xx < minX) minX = xx; if (xx > maxX) maxX = xx; if (yy < minY) minY = yy; if (yy > maxY) maxY = yy; }
+      }
+    }
+    if (maxX >= 0) out = { width: adv, actualBoundingBoxLeft: x0 - minX, actualBoundingBoxRight: maxX + 1 - x0, actualBoundingBoxAscent: y0 - minY, actualBoundingBoxDescent: maxY + 1 - y0 };
+  } catch (e) {}
+  if (!out) { var m = x.measureText(ch); out = { width: adv, actualBoundingBoxLeft: m.actualBoundingBoxLeft, actualBoundingBoxRight: m.actualBoundingBoxRight, actualBoundingBoxAscent: m.actualBoundingBoxAscent, actualBoundingBoxDescent: m.actualBoundingBoxDescent }; }
+  /* only cache once the real font is in use (not a fallback measured before it loaded) */
+  if (!document.fonts || !document.fonts.check || document.fonts.check(fs + 'px ' + family)) INK_CACHE[key] = out;
+  return out;
+}
+
 /* the jersey number is drawn as stacked twill in the shape of its digits (layers come from the style), stitched at each layer's edge */
 function tightenNumber() {
   var el = document.querySelector('#detail-panel .dp-num');
@@ -1034,7 +1065,7 @@ function tightenNumber() {
   var layers = STY.layers, K = layers.length, OUT = BAND * (K - 1) + BOLD / 2;
   var c = document.createElement('canvas').getContext('2d');
   c.font = FS + 'px ' + FONT;
-  var m = digits.map(function(d) { return c.measureText(d); });
+  var m = digits.map(function(d) { return inkMeasure(FS, FONT, d); });
   var asc = Math.max.apply(null, m.map(function(x) { return x.actualBoundingBoxAscent; }));
   var desc = Math.max.apply(null, m.map(function(x) { return x.actualBoundingBoxDescent; }));
   var x = [], cur = 0;
@@ -1067,7 +1098,7 @@ function renderNameTwill(box) {
     var gs = 0, gn = 0;
     for (var gi = 0; gi < text.length - 1; gi++) {
       if (text[gi] === ' ' || text[gi + 1] === ' ') continue;
-      var ma = c.measureText(text[gi]), mb = c.measureText(text[gi + 1]);
+      var ma = inkMeasure(75.4, FONT, text[gi]), mb = inkMeasure(75.4, FONT, text[gi + 1]);
       gs += (ma.width - ma.actualBoundingBoxRight) - mb.actualBoundingBoxLeft; gn++;
     }
     var avg = gn ? gs / gn : 0;
@@ -1076,10 +1107,10 @@ function renderNameTwill(box) {
   var layout = function(fs) {
     c.font = fs + 'px ' + FONT; c.letterSpacing = '0px';
     var cur = 0, xs = [], ys = [], asc = 0, desc = 0, first = true, minL = Infinity, maxR = -Infinity;
-    var dotDown = c.measureText('H').actualBoundingBoxDescent - c.measureText('.').actualBoundingBoxDescent;
+    var dotDown = inkMeasure(fs, FONT, 'H').actualBoundingBoxDescent - inkMeasure(fs, FONT, '.').actualBoundingBoxDescent;
     chars.forEach(function(ch, i) {
       if (ch === ' ') { cur += fixedGap ? fs * SPACE : (c.measureText(' ').width + fs * lsEm) * (chars[i - 1] === '.' ? .5 : 1); xs[i] = null; return; }
-      var m = c.measureText(ch);
+      var m = inkMeasure(fs, FONT, ch);
       if (fixedGap) {
         if (!first) cur += LETTER_GAP;
         xs[i] = cur + m.actualBoundingBoxLeft;
@@ -1097,9 +1128,7 @@ function renderNameTwill(box) {
     xs = xs.map(function(x) { return x === null ? null : x - (fixedGap ? 0 : minL); });
     return { xs: xs, ys: ys, w: fixedGap ? cur : maxR - minL, asc: asc, desc: desc };
   };
-  var FS = 75.4, L = layout(FS);
-  /* phones: the plate is as wide as the twill stack round the photo (lettering grows to fill it, up to 1.6x) */
-  if (window.innerWidth <= 768 && panelW > 0 && L.w > 0) { FS = Math.min(FS * 1.6, FS * (panelW - 2 * PAD) / L.w); L = layout(FS); }
+  var FS = 75.4 * (window.innerWidth <= 768 ? 1.2 : 1), L = layout(FS); /* phones: lettering 20% larger; the plate just hugs it */
   if (panelW > 0 && L.w + 2 * PAD > panelW) { FS = FS * (panelW - 2 * PAD) / L.w; L = layout(FS); }
   var W = Math.ceil(L.w + 2 * PAD), H = Math.ceil(L.asc + L.desc + 2 * PAD), base = PAD + L.asc, off = (W - L.w) / 2;
   var texts = chars.map(function(ch, i) { return L.xs[i] === null ? '' : '<text x="' + (L.xs[i] + PAD).toFixed(1) + '" y="' + (base + L.ys[i]).toFixed(1) + '">' + esc(ch) + '</text>'; }).join('');
