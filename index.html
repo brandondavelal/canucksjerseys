@@ -1029,9 +1029,13 @@ function twillMarkup(o) {
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" aria-hidden="true" style="display:block;max-width:100%;margin:0 auto;overflow:visible;font-family:' + o.FONT + ';font-size:' + o.FS + 'px">' + defs + body + '</svg>';
 }
 
+/* glyph metrics read straight from the two font files (em units: advance, left, right, ascent, descent; left is negative where the ink starts right of the origin), so the name/number layout never depends on how a browser's canvas measures text */
+var FONT_METRICS = {"NHL Edge Vancouver":{"0":[0.804,-0.18,0.625,0.8,0.2],"1":[0.567,-0.164,0.387,0.8,0.2],"2":[0.803,-0.18,0.625,0.8,0.2],"3":[0.804,-0.18,0.625,0.8,0.2],"4":[0.795,-0.134,0.635,0.8,0.2],"5":[0.804,-0.18,0.625,0.8,0.2],"6":[0.804,-0.18,0.625,0.8,0.2],"7":[0.784,-0.17,0.615,0.8,0.2],"8":[0.804,-0.18,0.625,0.8,0.2],"9":[0.804,-0.18,0.625,0.8,0.2],"A":[0.811,-0.151,0.655,0.8,0.2],"B":[0.817,-0.181,0.638,0.8,0.2],"C":[0.818,-0.18,0.639,0.8,0.2],"D":[0.822,-0.181,0.645,0.8,0.2],"E":[0.729,-0.181,0.552,0.8,0.2],"F":[0.716,-0.181,0.549,0.8,0.2],"G":[0.82,-0.18,0.64,0.8,0.2],"H":[0.83,-0.181,0.649,0.8,0.2],"I":[0.517,-0.181,0.336,0.8,0.2],"J":[0.777,-0.154,0.597,0.8,0.2],"K":[0.834,-0.181,0.66,0.8,0.2],"L":[0.689,-0.181,0.533,0.8,0.2],"M":[0.946,-0.181,0.766,0.8,0.2],"N":[0.844,-0.181,0.664,0.8,0.2],"O":[0.828,-0.18,0.648,0.8,0.2],"P":[0.809,-0.181,0.635,0.8,0.2],"Q":[0.875,-0.18,0.705,0.8,0.2],"R":[0.836,-0.181,0.664,0.8,0.2],"S":[0.813,-0.18,0.634,0.8,0.2],"T":[0.771,-0.166,0.602,0.8,0.2],"U":[0.829,-0.18,0.648,0.8,0.2],"V":[0.828,-0.163,0.661,0.8,0.2],"W":[1.05,-0.165,0.881,0.8,0.2],"X":[0.855,-0.174,0.681,0.8,0.2],"Y":[0.832,-0.161,0.669,0.8,0.2],"Z":[0.763,-0.176,0.587,0.8,0.2]," ":[0.72,0,0,0,0]},"NHL Vancouver":{"0":[0.479,0,0.397,0.8,0],"1":[0.323,0,0.252,0.8,0],"2":[0.463,0,0.397,0.8,0],"3":[0.479,0,0.398,0.8,0],"4":[0.477,0,0.402,0.8,0],"5":[0.464,0,0.398,0.8,0],"6":[0.467,0,0.397,0.8,0],"7":[0.467,0,0.398,0.8,0],"8":[0.478,0,0.397,0.8,0],"9":[0.479,0,0.398,0.8,0],"A":[0.469,0,0.396,0.8,0],"B":[0.438,0,0.356,0.8,0],"C":[0.407,0,0.353,0.8,0],"D":[0.438,0,0.356,0.8,0],"E":[0.404,0,0.352,0.8,0],"F":[0.399,0,0.352,0.8,0],"G":[0.426,0,0.355,0.8,0],"H":[0.438,0,0.355,0.8,0],"I":[0.189,0,0.106,0.8,0],"J":[0.438,0,0.355,0.8,0],"K":[0.42,0,0.35,0.8,0],"L":[0.392,0,0.35,0.8,0],"M":[0.451,0,0.368,0.8,0],"N":[0.438,0,0.355,0.8,0],"O":[0.437,0,0.355,0.8,0],"P":[0.413,0,0.355,0.8,0],"Q":[0.437,0,0.355,0.8,0.063],"R":[0.437,0,0.356,0.8,0],"S":[0.427,0,0.356,0.8,0],"T":[0.448,0,0.386,0.8,0],"U":[0.437,0,0.355,0.8,0],"V":[0.429,0,0.359,0.8,0],"W":[0.459,0,0.381,0.8,0],"X":[0.425,0,0.35,0.8,0],"Y":[0.427,0,0.362,0.8,0],"Z":[0.446,0,0.383,0.8,0]," ":[0.5,0,0,0,0]}};
 /* glyph ink bounds measured from the rendered pixels: Safari's canvas actualBoundingBox values are unreliable for this font, so the name/number layout does not depend on them */
 var INK_CACHE = {};
 function inkMeasure(fs, family, ch) {
+  var fam = (/'([^']+)'/.exec(family) || [])[1], fm = fam && FONT_METRICS[fam], gm = fm && fm[ch];
+  if (gm) return { width: gm[0] * fs, actualBoundingBoxLeft: gm[1] * fs, actualBoundingBoxRight: gm[2] * fs, actualBoundingBoxAscent: gm[3] * fs, actualBoundingBoxDescent: gm[4] * fs };
   var key = fs.toFixed(2) + '|' + family + '|' + ch;
   if (INK_CACHE[key]) return INK_CACHE[key];
   var out, cv = document.createElement('canvas'), x = cv.getContext('2d');
@@ -1086,7 +1090,7 @@ function renderNameTwill(box) {
   var text = (box.getAttribute('data-t') || '').toUpperCase(), tgt = box.querySelector('.nt');
   if (!text || !tgt) return;
   var FONT = STY.font + ", Impact, 'Arial Narrow Bold', sans-serif", fixedGap = !!STY.nameTwill, layers = STY.nameLayers || [getComputedStyle(box).color], K = layers.length;
-  var BAND = STY.band, OUT = BAND * (K - 1), PAD = OUT + 12, RING = 2.4, LETTER_GAP = 8, SPACE = .28;
+  var BAND = STY.band, OUT = BAND * (K - 1), PAD = OUT + 12, RING = 2.4, LETTER_GAP = 8, SPACE = .28, DOT = .15;
   var panelW = document.getElementById('detail-panel').clientWidth, c = document.createElement('canvas').getContext('2d');
   /* phones: the name may be as wide as the twill stack round the photo */
   if (window.innerWidth <= 768) panelW += 2 * (parseFloat(getComputedStyle(document.documentElement).getPropertyValue(window.innerWidth <= 600 ? '--stack-out-600' : '--stack-out-768')) || 0);
@@ -1107,10 +1111,10 @@ function renderNameTwill(box) {
   var layout = function(fs) {
     c.font = fs + 'px ' + FONT; c.letterSpacing = '0px';
     var cur = 0, xs = [], ys = [], asc = 0, desc = 0, first = true, minL = Infinity, maxR = -Infinity;
-    var dotDown = inkMeasure(fs, FONT, 'H').actualBoundingBoxDescent - inkMeasure(fs, FONT, '.').actualBoundingBoxDescent;
     chars.forEach(function(ch, i) {
-      if (ch === ' ') { cur += fixedGap ? fs * SPACE : (c.measureText(' ').width + fs * lsEm) * (chars[i - 1] === '.' ? .5 : 1); xs[i] = null; return; }
-      var m = inkMeasure(fs, FONT, ch);
+      if (ch === ' ') { cur += fixedGap ? fs * SPACE : (inkMeasure(fs, FONT, ' ').width + fs * lsEm) * (chars[i - 1] === '.' ? .5 : 1); xs[i] = null; return; }
+      /* neither font has a full stop, so it is drawn as a small square sitting on the baseline */
+      var m = ch === '.' ? { width: fs * DOT, actualBoundingBoxLeft: 0, actualBoundingBoxRight: fs * DOT, actualBoundingBoxAscent: fs * DOT, actualBoundingBoxDescent: 0 } : inkMeasure(fs, FONT, ch);
       if (fixedGap) {
         if (!first) cur += LETTER_GAP;
         xs[i] = cur + m.actualBoundingBoxLeft;
@@ -1122,7 +1126,7 @@ function renderNameTwill(box) {
         cur += m.width + fs * lsEm;
       }
       /* a full stop sits on the baseline, level with the bottom of the capitals */
-      ys[i] = ch === '.' ? dotDown : 0;
+      ys[i] = 0;
       asc = Math.max(asc, m.actualBoundingBoxAscent); desc = Math.max(desc, m.actualBoundingBoxDescent + ys[i]); first = false;
     });
     xs = xs.map(function(x) { return x === null ? null : x - (fixedGap ? 0 : minL); });
@@ -1131,7 +1135,7 @@ function renderNameTwill(box) {
   var FS = 75.4 * (window.innerWidth <= 768 ? 1.2 : 1), L = layout(FS); /* phones: lettering 20% larger; the plate just hugs it */
   if (panelW > 0 && L.w + 2 * PAD > panelW) { FS = FS * (panelW - 2 * PAD) / L.w; L = layout(FS); }
   var W = Math.ceil(L.w + 2 * PAD), H = Math.ceil(L.asc + L.desc + 2 * PAD), base = PAD + L.asc, off = (W - L.w) / 2;
-  var texts = chars.map(function(ch, i) { return L.xs[i] === null ? '' : '<text x="' + (L.xs[i] + PAD).toFixed(1) + '" y="' + (base + L.ys[i]).toFixed(1) + '">' + esc(ch) + '</text>'; }).join('');
+  var texts = chars.map(function(ch, i) { if (L.xs[i] === null) return ''; if (ch === '.') { var ds = FS * DOT; return '<rect x="' + (L.xs[i] + PAD).toFixed(1) + '" y="' + (base - ds).toFixed(1) + '" width="' + ds.toFixed(1) + '" height="' + ds.toFixed(1) + '"/>'; } return '<text x="' + (L.xs[i] + PAD).toFixed(1) + '" y="' + (base + L.ys[i]).toFixed(1) + '">' + esc(ch) + '</text>'; }).join('');
   tgt.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: 0, RING: RING, FONT: FONT, FS: FS, p: 'm', spark: false });
   box.style.marginBottom = (4 * FS / 75.4).toFixed(2) + 'px'; /* 4px at web size, scaled with the lettering on phones */
 }
