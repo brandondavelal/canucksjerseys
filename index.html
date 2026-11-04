@@ -659,7 +659,7 @@ function colourClass(h, s, l) {
 }
 /* silver/red/royal/navy -> [h, s, l] for each style; 'ink' is the royal on the paper tag, 'outer' the silver of the bottom twill layer */
 var STYLES = {
-  orca: { label: 'Orca' },
+  orca: { label: 'Orca', numGap: 27.3 },
   rink: {
     label: 'Stick-in-Rink', layers: ['#f3f3f0', '#2fa30f', '#fbfaf4'], ring: 'g',
     map: { royal: function(h, s, l) { return [104, s * .9, l]; }, red: function(h, s, l) { return [104, .78, l]; }, silver: function(h, s, l) { return [220, .04, .45 + .55 * l]; } },
@@ -741,7 +741,7 @@ STYLES.current.extra = '';
 STYLES.current.nameTrack = .8;
 STYLES.current.numGap = 8;
 STYLES.skate.numGap = 35;
-STYLES.skate.extra = 'html[data-theme="dark"] #view-detail #detail-panel > div.dp-name { color: #ffe84a; }\n/* the yellow nav trim as glass: vivid and glowing, with an inner highlight, still see-through */\nhtml[data-theme="dark"] header::after { opacity: .85; filter: saturate(1.6) brightness(.9); box-shadow: 0 0 10px 1px rgba(255,195,0,.4), inset 0 1px 0 rgba(255,255,255,.25), inset 0 -2px 3px rgba(255,140,0,.5), inset 0 0 6px rgba(255,220,90,.35); }';
+STYLES.skate.extra = 'html[data-theme="dark"] #view-detail #detail-panel > div.dp-name { color: #ffe84a; }\n/* the yellow nav trim as glass: vivid and glowing, with an inner highlight, still see-through */\nhtml[data-theme="dark"] header::after { opacity: .85; filter: saturate(1.7) brightness(1.12); box-shadow: 0 0 12px 1px rgba(255,205,0,.5), inset 0 1px 0 rgba(255,255,255,.6), inset 0 -2px 3px rgba(255,150,0,.55), inset 0 0 8px rgba(255,235,120,.55); }';
 
 function remapCss(css, st) {
   /* the other styles remap Orca's original background stops, not its darker deep-navy ones */
@@ -982,9 +982,9 @@ function route() {
   try { saved = localStorage.getItem('cj-style') || 'orca'; } catch (e) {}
   sel.innerHTML = Object.keys(STYLES).map(function(k) { return '<option value="' + k + '">' + STYLES[k].label + '</option>'; }).join('');
   sel.addEventListener('change', function() { applyStyle(sel.value); });
-  /* the home page opens in a random style (never the one just used); a link straight to a jersey keeps the last one */
-  var pick = saved, keys = Object.keys(STYLES), others = keys.filter(function(k) { return k !== saved; });
-  if (!location.hash.slice(1)) pick = others[Math.floor(Math.random() * others.length)] || saved;
+  /* the home page always opens in Orca; a link straight to a jersey keeps the last style until that jersey's own default applies */
+  var pick = saved;
+  if (!location.hash.slice(1)) pick = 'orca';
   applyStyle(pick);
 })();
 renderGallery(); route();
