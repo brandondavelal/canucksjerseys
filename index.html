@@ -523,6 +523,11 @@ html.lb-open, html.lb-open body { overflow: hidden; }
 /* jersey pages fade in on load, like the grid cards */
 #view-detail.on .detail-layout { animation: detailIn .3s ease-out backwards; }
 @keyframes detailIn { from { opacity: .55; } }
+/* phones: smooth scrolling on jersey pages. Fixed-attachment backgrounds repaint on every scroll frame on iOS, and the stitched SVG lettering is expensive to redraw, so lighting is attached to each element and the heavy pieces are rasterised once and just composited while scrolling */
+@media (max-width: 768px), (hover: none) {
+  #view-detail .dl, #view-detail .dl::after { background-attachment: scroll !important; }
+  html[data-theme="dark"] #view-detail #detail-panel .dp-num svg, html[data-theme="dark"] #view-detail #detail-panel .dp-name svg, html[data-theme="dark"] #view-detail #detail-panel .dp-tag, #view-detail .dl, #view-detail .detail-main { will-change: transform; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+}
 </style>
 </head>
 <body>
@@ -780,7 +785,7 @@ function openDetail(id, skipPush) {
   di.innerHTML = (imgs.length > 1 ? '<div class="detail-thumbs"><div class="detail-thumbs-in">' + imgs.map(function(src, i) {
       return '<button type="button" class="detail-thumb' + (i === 0 ? ' on' : '') + '" data-i="' + i + '" aria-label="Photo ' + (i + 1) + '"><img loading="lazy" decoding="async" src="' + src + '" alt=""></button>';
     }).join('') + '</div></div>' : '') +
-    '<div class="detail-main"><img src="' + imgs[0] + '" alt="' + esc(p.player) + '">' + (imgs.length > 1 ? navBtn('prev') + navBtn('next') : '') + '<button type="button" class="dm-max" aria-label="View full screen"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5L9 7M2.5 13.5L7 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>';
+    '<div class="detail-main"><img decoding="async" src="' + imgs[0] + '" alt="' + esc(p.player) + '">' + (imgs.length > 1 ? navBtn('prev') + navBtn('next') : '') + '<button type="button" class="dm-max" aria-label="View full screen"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5L9 7M2.5 13.5L7 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>';
   var cur = 0, thumbs = di.querySelectorAll('.detail-thumb'), prevB = di.querySelector('.dm-prev'), nextB = di.querySelector('.dm-next');
   /* show photo i; the arrows only appear where there is another photo in that direction */
   var showPhoto = function(i) {
