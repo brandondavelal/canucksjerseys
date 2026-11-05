@@ -520,14 +520,18 @@ html[data-theme="dark"] #view-detail .dm-max svg { display: block; width: 12px; 
 .lb-next { right: 16px; top: 50%; transform: translateY(-50%); }
 html.lb-open, html.lb-open body { overflow: hidden; }
 @media (max-width: 768px) { .lb-prev { left: 6px; } .lb-next { right: 6px; } .lb-close { top: 10px; right: 10px; } }
-/* jersey pages fade in on load, like the grid cards */
-#view-detail.on .detail-layout { animation: detailIn .3s ease-out backwards; }
-@keyframes detailIn { from { opacity: .55; } }
 /* phones: smooth scrolling on jersey pages. Fixed-attachment backgrounds repaint on every scroll frame on iOS, and the stitched SVG lettering is expensive to redraw, so lighting is attached to each element and the heavy pieces are rasterised once and just composited while scrolling */
 @media (max-width: 768px), (hover: none) {
   #view-detail .dl, #view-detail .dl::after { background-attachment: scroll !important; }
   html[data-theme="dark"] #view-detail #detail-panel .dp-num svg, html[data-theme="dark"] #view-detail #detail-panel .dp-name svg, html[data-theme="dark"] #view-detail #detail-panel .dp-tag, #view-detail .dl, #view-detail .detail-main { will-change: transform; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
 }
+/* black scrim + loader while a jersey page is built */
+#page-loader { position: fixed; inset: 0; z-index: 900; display: none; align-items: center; justify-content: center; background: #000; opacity: 1; transition: opacity .4s ease; touch-action: none; }
+#page-loader.on { display: flex; }
+#page-loader.out { opacity: 0; pointer-events: none; }
+.pl-spin { width: 26px; height: 26px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,.16); border-top-color: rgba(255,255,255,.75); animation: plFade .3s .3s both, plSpin .8s linear infinite; }
+@keyframes plSpin { to { transform: rotate(360deg); } }
+@keyframes plFade { from { opacity: 0; } to { opacity: 1; } }
 </style>
 </head>
 <body>
@@ -773,9 +777,47 @@ function openLightbox(i) {
   lightboxShow(i);
 }
 
+/* jersey pages open behind a black scrim with a small loader. Everything (fonts, photos, stitched name and number) is built and painted first, then the scrim fades away */
+var LOAD = { n: 0, el: null, timer: 0 };
+function pageLoadStart() {
+  if (!LOAD.el) {
+    var el = document.createElement('div'); el.id = 'page-loader'; el.setAttribute('aria-hidden', 'true'); el.innerHTML = '<div class="pl-spin"></div>';
+    document.body.appendChild(el); LOAD.el = el;
+  }
+  clearTimeout(LOAD.timer);
+  LOAD.el.classList.remove('out'); LOAD.el.classList.add('on');
+  return ++LOAD.n;
+}
+function pageLoadEnd(tok) {
+  if (tok !== LOAD.n || !LOAD.el) return;
+  LOAD.el.classList.add('out');
+  LOAD.timer = setTimeout(function() { if (tok === LOAD.n) LOAD.el.classList.remove('on', 'out'); }, 450);
+}
+function pageLoadReady(tok, di) {
+  var frame = function() { return new Promise(function(r) { requestAnimationFrame(function() { requestAnimationFrame(r); }); }); };
+  var pause = function(ms) { return new Promise(function(r) { setTimeout(r, ms); }); };
+  var waits = [].map.call(di.querySelectorAll('img'), function(img) { return img.decode ? img.decode().catch(function() {}) : Promise.resolve(); });
+  if (document.fonts && document.fonts.load) waits.push(document.fonts.load('100px ' + STY.font).catch(function() {}));
+  if (document.fonts && document.fonts.ready) waits.push(document.fonts.ready.catch(function() {}));
+  /* never keep the page hidden for more than a few seconds */
+  return Promise.race([Promise.all(waits), pause(6000)]).then(function() {
+    if (tok !== LOAD.n) return;
+    tightenNumber(); fitName(); alignBack();
+    return frame();
+  }).then(function() {
+    if (tok !== LOAD.n) return;
+    /* scroll through the whole page behind the scrim so every part of it is painted before it is shown */
+    var h = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight), step = Math.max(200, innerHeight * .8);
+    var chain = Promise.resolve();
+    for (var y = step; y < h + step; y += step) (function(yy) { chain = chain.then(function() { if (tok !== LOAD.n) return; window.scrollTo(0, yy); return frame(); }); })(y);
+    return chain.then(function() { if (tok !== LOAD.n) return; window.scrollTo(0, 0); return frame(); });
+  }).then(function() { pageLoadEnd(tok); });
+}
+
 function openDetail(id, skipPush) {
   var p = S.products.filter(function(x) { return x.id === id; })[0];
   if (!p) return;
+  var loadTok = pageLoadStart();
   if (!skipPush) history.pushState({ id: id }, '', '#' + encodeURIComponent(id));
   var want = JERSEY_STYLE_BY_TITLE[p.title] || JERSEY_STYLE_BY_YEAR[String(p.year || '').trim()] || JERSEY_STYLE_DEFAULT;
   if (want && STYLES[want] && STY.key !== want) applyStyle(want);
@@ -783,7 +825,7 @@ function openDetail(id, skipPush) {
   var di = document.getElementById('detail-imgs');
   var navBtn = function(dir) { return '<button type="button" class="dm-nav dm-' + dir + '" aria-label="' + (dir === 'prev' ? 'Previous' : 'Next') + ' photo"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="' + (dir === 'prev' ? 'M10 3L5 8l5 5' : 'M6 3l5 5-5 5') + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'; };
   di.innerHTML = (imgs.length > 1 ? '<div class="detail-thumbs"><div class="detail-thumbs-in">' + imgs.map(function(src, i) {
-      return '<button type="button" class="detail-thumb' + (i === 0 ? ' on' : '') + '" data-i="' + i + '" aria-label="Photo ' + (i + 1) + '"><img loading="lazy" decoding="async" src="' + src + '" alt=""></button>';
+      return '<button type="button" class="detail-thumb' + (i === 0 ? ' on' : '') + '" data-i="' + i + '" aria-label="Photo ' + (i + 1) + '"><img decoding="async" src="' + src + '" alt=""></button>';
     }).join('') + '</div></div>' : '') +
     '<div class="detail-main"><img decoding="async" src="' + imgs[0] + '" alt="' + esc(p.player) + '">' + (imgs.length > 1 ? navBtn('prev') + navBtn('next') : '') + '<button type="button" class="dm-max" aria-label="View full screen"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5L9 7M2.5 13.5L7 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>';
   var cur = 0, thumbs = di.querySelectorAll('.detail-thumb'), prevB = di.querySelector('.dm-prev'), nextB = di.querySelector('.dm-next');
@@ -822,7 +864,7 @@ function openDetail(id, skipPush) {
     '</div>';
   show('detail');
   tightenNumber(); fitName();
-  if (document.fonts && document.fonts.load) document.fonts.load('100px ' + STY.font).then(function() { tightenNumber(); fitName(); });
+  pageLoadReady(loadTok, di);
 }
 
 /* ---- styles: Orca is the baseline; every other style remaps its colours (and a few structural bits) ---- */
