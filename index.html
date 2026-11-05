@@ -526,7 +526,11 @@ html.lb-open, html.lb-open body { overflow: hidden; }
 /* phones: smooth scrolling on jersey pages. Fixed-attachment backgrounds repaint on every scroll frame on iOS, and the stitched SVG lettering is expensive to redraw, so lighting is attached to each element and the heavy pieces are rasterised once and just composited while scrolling */
 @media (max-width: 768px), (hover: none) {
   #view-detail .dl, #view-detail .dl::after { background-attachment: scroll !important; }
-  html[data-theme="dark"] #view-detail #detail-panel .dp-num svg, html[data-theme="dark"] #view-detail #detail-panel .dp-name svg, html[data-theme="dark"] #view-detail #detail-panel .dp-tag, #view-detail .dl, #view-detail .detail-main { will-change: transform; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+  html[data-theme="dark"] #view-detail #detail-panel .dp-num svg, html[data-theme="dark"] #view-detail #detail-panel .dp-name svg { will-change: transform; }
+}
+/* phones and touch screens: the page background is plain gradients (no noise tiles, no blend modes) so iOS can paint it quickly while scrolling */
+@media (max-width: 768px), (hover: none) {
+html[data-theme="dark"]::before { background: conic-gradient(from 65deg at 50% 120px, rgba(70,110,210,0) 0deg, rgba(70,110,210,0.015) 20deg, rgba(74,114,214,0.05) 48deg, rgba(78,120,222,0.15) 80deg, rgba(86,130,232,0.31) 115deg, rgba(78,120,222,0.15) 150deg, rgba(74,114,214,0.05) 182deg, rgba(70,110,210,0.015) 210deg, rgba(70,110,210,0) 230deg, rgba(70,110,210,0) 360deg), radial-gradient(ellipse 42% 9% at 50% 200px, rgba(150,185,255,0.3), rgba(150,185,255,0) 100%), linear-gradient(180deg, rgba(3,5,16,.36) 0, rgba(3,5,16,.36) 200px, rgba(3,5,16,.46) 32%, rgba(3,5,16,.7) 62%, rgba(3,5,16,.94) 100%), radial-gradient(ellipse 110% 80% at 50% 120px, #02071a 0%, #01030f 40%, #000105 100%); background-blend-mode: normal; }
 }
 </style>
 </head>
