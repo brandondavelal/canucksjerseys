@@ -636,7 +636,7 @@ function alignBack() {
   });
   if (isFinite(left)) rs.setProperty('--back-left', Math.max(0, left).toFixed(1) + 'px');
 }
-window.addEventListener('resize', alignBack);
+window.addEventListener('resize', function() { alignBack(); if (S.view === 'detail') { cancelAnimationFrame(window.__nnRaf); window.__nnRaf = requestAnimationFrame(fitName); } });
 
 function renderGallery() {
   var g = document.getElementById('grid');
@@ -1254,12 +1254,26 @@ function renderNameTwill(box) {
     xs = xs.map(function(x) { return x === null ? null : x - (fixedGap ? 0 : minL); });
     return { xs: xs, ys: ys, w: fixedGap ? cur : maxR - minL, asc: asc, desc: desc };
   };
-  var FS = 75.4 * (window.innerWidth <= 768 ? 1.2 : 1), L = layout(FS); /* phones: lettering 20% larger; the plate just hugs it */
-  if (panelW > 0 && L.w + 2 * PAD > panelW) { FS = FS * (panelW - 2 * PAD) / L.w; L = layout(FS); }
+  /* the name and the number always scale together, at the same rate, as the window is resized */
+  var webScale = 1, numSvg = document.querySelector('#detail-panel .dp-num svg'), numW = numSvg && numSvg.viewBox && numSvg.viewBox.baseVal.width || 0, FS, L;
+  if (window.innerWidth <= 768) {
+    /* phones: the number fills the stack width, so the name (20% larger lettering at a 390px-wide phone) follows the same width */
+    var so6 = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--stack-out-600')) || 0;
+    FS = 75.4 * 1.2; L = layout(FS); webScale = panelW / (327 + 2 * so6);
+    if (numSvg) numSvg.style.width = '';
+  } else {
+    /* web: one shared scale, 1 until the details column is narrower than the wider of the two */
+    var nat = layout(75.4).w + 2 * PAD, sc = panelW > 0 ? Math.min(1, panelW / Math.max(nat, numW)) : 1;
+    FS = 75.4; L = layout(FS); webScale = sc; /* the name is drawn at full size and the whole plate (padding and stitching too) is scaled with the number */
+    if (numSvg) { numSvg.style.maxWidth = 'none'; numSvg.style.width = (numW * sc).toFixed(2) + 'px'; }
+  }
   var W = Math.ceil(L.w + 2 * PAD), H = Math.ceil(L.asc + L.desc + 2 * PAD), base = PAD + L.asc, off = (W - L.w) / 2;
+  if (panelW > 0 && W * webScale > panelW) webScale = panelW / W; /* a very long name never outgrows the column */
   var texts = chars.map(function(ch, i) { if (L.xs[i] === null) return ''; if (ch === '.') { var ds = FS * DOT; return '<rect x="' + (L.xs[i] + PAD).toFixed(1) + '" y="' + (base + inkMeasure(FS, FONT, 'H').actualBoundingBoxDescent - ds).toFixed(1) + '" width="' + ds.toFixed(1) + '" height="' + ds.toFixed(1) + '"/>'; } return '<text x="' + (L.xs[i] + PAD).toFixed(1) + '" y="' + (base + L.ys[i]).toFixed(1) + '">' + esc(ch) + '</text>'; }).join('');
   tgt.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: 0, RING: RING, FONT: FONT, FS: FS, p: 'm', spark: false, plain: STY.key === 'canada' });
-  box.style.marginBottom = (4 * FS / 75.4).toFixed(2) + 'px'; /* 4px at web size, scaled with the lettering on phones */
+  var nameSvg = tgt.querySelector('svg');
+  if (nameSvg) { nameSvg.style.maxWidth = 'none'; nameSvg.style.width = (W * webScale).toFixed(2) + 'px'; }
+  box.style.marginBottom = (4 * webScale * FS / 75.4).toFixed(2) + 'px'; /* 4px at web size, scaled with the lettering on phones */
 }
 
 document.getElementById('sort-select').addEventListener('change', function(e) { S.sort = e.target.value; e.target.classList.toggle('on', e.target.value !== 'default'); renderGallery(); });
