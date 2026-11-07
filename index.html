@@ -764,8 +764,7 @@ function openLightbox(i) {
     document.addEventListener('keydown', function(e) {
       if (!el.classList.contains('on')) return;
       if (e.key === 'Escape') closeLightbox();
-      else if (e.key === 'ArrowLeft' && LB.i > 0) lightboxShow(LB.i - 1);
-      else if (e.key === 'ArrowRight' && LB.i < LB.imgs.length - 1) lightboxShow(LB.i + 1);
+      else if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && LB.imgs.length > 1) lightboxShow((LB.i + (e.key === 'ArrowRight' ? 1 : -1) + LB.imgs.length) % LB.imgs.length);
     });
     document.body.appendChild(el); LB.el = el;
   }
@@ -1355,8 +1354,7 @@ document.addEventListener('keydown', function(e) {
   if (LB.el && LB.el.classList.contains('on')) return;
   var t = e.target && e.target.tagName; if (t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return;
   if (!LB.go || !LB.get || LB.imgs.length < 2) return;
-  var i = LB.get() + (e.key === 'ArrowRight' ? 1 : -1);
-  if (i < 0 || i >= LB.imgs.length) return;
+  var n = LB.imgs.length, i = (LB.get() + (e.key === 'ArrowRight' ? 1 : -1) + n) % n; /* cycles: past the last photo is the first */
   e.preventDefault(); LB.go(i);
 });
 
