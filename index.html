@@ -1349,6 +1349,16 @@ document.getElementById('btn-back').addEventListener('click', function() { histo
 document.getElementById('logo').addEventListener('click', function() { if (S.view !== 'gallery') { history.pushState({}, '', location.pathname + location.search); show('gallery'); renderGallery(); } });
 document.addEventListener('keydown', function(e) { if (e.key==='Escape' && S.view==='detail') { history.pushState({}, '', location.pathname + location.search); show('gallery'); renderGallery(); } });
 window.addEventListener('popstate', function() { route(); });
+/* detail page: left / right arrow keys step through the photos (the lightbox has its own handler while it is open) */
+document.addEventListener('keydown', function(e) {
+  if (S.view !== 'detail' || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+  if (LB.el && LB.el.classList.contains('on')) return;
+  var t = e.target && e.target.tagName; if (t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return;
+  if (!LB.go || !LB.get || LB.imgs.length < 2) return;
+  var i = LB.get() + (e.key === 'ArrowRight' ? 1 : -1);
+  if (i < 0 || i >= LB.imgs.length) return;
+  e.preventDefault(); LB.go(i);
+});
 
 function route() {
   var id = decodeURIComponent(location.hash.slice(1));
