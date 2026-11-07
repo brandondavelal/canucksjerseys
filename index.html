@@ -6,6 +6,8 @@
 <title>Canucks Jerseys</title>
 <link rel="icon" type="image/png" href="images/favicon.png">
 <script src="data.js"></script>
+<script src="order.js"></script>
+<script src="inventory.js"></script>
 <style>
 @font-face { font-family: 'NHL Edge Vancouver'; src: url('fonts/NHL-Edge-Vancouver.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: 'NHL Vancouver'; src: url('fonts/NHL-Vancouver.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
@@ -546,14 +548,14 @@ html.lb-open, html.lb-open body { overflow: hidden; }
       <button class="hdr-filter active" data-filter="all">All</button>
       <button class="hdr-filter" data-filter="canucks">Canucks</button>
       <button class="hdr-filter" data-filter="canada">Canada</button>
-      <!-- hidden for now: <button class="hdr-filter" data-filter="other">Other</button> -->
-      <button class="hdr-filter hdr-filter-sale" data-filter="sale">For Sale</button>
+      <button class="hdr-filter" data-filter="other">Other</button>
+      <!-- hidden: the sheet has no for-sale column: <button class="hdr-filter hdr-filter-sale" data-filter="sale">For Sale</button> -->
       <select class="hdr-filter-select" id="filter-select">
         <option value="all">All</option>
         <option value="canucks">Canucks</option>
         <option value="canada">Canada</option>
-        <!-- hidden for now: <option value="other">Other</option> -->
-        <option value="sale">For Sale</option>
+        <option value="other">Other</option>
+        <!-- hidden: the sheet has no for-sale column: <option value="sale">For Sale</option> -->
       </select>
     </div>
     <div class="hdr-right">
@@ -587,7 +589,9 @@ var ph = function(c) { return 'data:image/svg+xml,' + encodeURIComponent('<svg x
 var fillColors = ['#edebe7', '#d6cfc7', '#c9ddd4', '#e8d6c3'];
 var fillImgs = fillColors.map(ph);
 
-var S = { products: typeof GALLERY_DATA !== 'undefined' ? GALLERY_DATA : [], view: 'gallery', sort: 'default', filter: 'all' };
+/* the inventory is the Google Sheet (columns A-M): a snapshot paints first, the live sheet replaces it when it arrives; the admin's saved order decides the default sort */
+var GALLERY_ORDER_IDS = typeof GALLERY_ORDER !== 'undefined' ? GALLERY_ORDER : [];
+var S = { products: applyOrder(rowsToProducts(SNAPSHOT_ROWS), GALLERY_ORDER_IDS), view: 'gallery', sort: 'default', filter: 'all' };
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -652,8 +656,7 @@ function renderGallery() {
   var list = S.products.filter(function(p) { return p.status !== 'Draft'; });
   if (S.filter !== 'all') {
     list = list.filter(function(p) {
-      var cat = p.category || (p.team === 'Vancouver Canucks' ? 'canucks' : p.team === 'Team Canada' ? 'canada' : 'other');
-      return S.filter === 'sale' ? !!p.onSale : cat === S.filter;
+      return p.category === S.filter; /* from the Team column */
     });
   }
   if (S.sort === 'newest' || S.sort === 'oldest') {
@@ -719,25 +722,18 @@ function renderGallery() {
 function shownTitle(t) { return String(t || '').replace(/\b(?:19|20)\d{2}\b(?!\s+Olympics)\s*/g, '').replace(/\s{2,}/g, ' ').replace(/'\s+/g, "' ").trim(); }
 /* the tag's title also drops the Home / Away / Alt designation */
 function tagTitle(t) { return shownTitle(t).replace(/\b(?:Home|Away|Alt)\b\s*/g, '').replace(/(Reverse Retro 1\.0)\s+Gradient\b/, '$1').replace(/\s{2,}/g, ' ').trim(); }
-var NAME_ON_TWILL = { 'Henrik Sedin': 'H. Sedin' };
-/* the style a jersey's page opens in: by title, then by year, otherwise the default */
-var JERSEY_STYLE_BY_TITLE = {
-  "'2011 Stanley Cup Final' Wordmark Orca Home Blue": 'current',
-  "'Sprite Can' Reverse Retro 1.0 Alt Gradient": 'rr',
-  'Modern Orca Home Blue': 'current',
-  "'Modern Stick in Rink' Alt Blue": 'current',
-  "'50th Anniversary' Stick in Rink Heritage Blue": 'current',
-  "'West Coast Express' Orca Home Navy": 'orca',
-  "'West Coast Express' Orca Away White": 'orca',
-  "'West Coast Express' Orca Home White": 'orca',
-  "'Stick in Rink' Vintage Program Alt Blue": 'rink',
-  "'Stick in Rink' Vintage Program Alt White": 'rink',
-  "'Vancouver Millionaires' 2015 Heritage Classic Alt": 'millionaires',
-  "'Flying Skate' Alt Black": 'mskate',
-  "'Flying V' Vintage Program Home Yellow": 'flyingv'
-};
-var JERSEY_STYLE_BY_YEAR = { '2010': 'canada' };
-var JERSEY_STYLE_DEFAULT = 'skate';
+/* the style a jersey's page opens in, worked out from the sheet's Team / Style / Year columns */
+function jerseyStyle(p) {
+  var t = String(p.title || '').toLowerCase(), yr = firstYear(p) || 0;
+  if (/millionaires/.test(t)) return 'millionaires';
+  if (/flying v/.test(t)) return 'flyingv';
+  if (/reverse retro/.test(t)) return 'rr';
+  if (/canada/i.test(p.team) || /olympics/.test(t)) return 'canada';
+  if (/skate/.test(t)) return yr >= 2019 ? 'mskate' : 'skate';
+  if (/stick (in|and) rink/.test(t)) return yr >= 2010 ? 'current' : 'rink';
+  if (/orca/.test(t)) return (yr >= 2019 || /modern/.test(t)) ? 'current' : 'orca';
+  return 'current';
+}
 function nameHtml(n) {
   return '<div class="dp-name dp-name-tw" data-t="' + esc(n) + '"><i class="dl dl-patch"></i><div class="nt"></div></div>';
 }
@@ -819,7 +815,7 @@ function openDetail(id, skipPush) {
   if (!p) return;
   var loadTok = pageLoadStart();
   if (!skipPush) history.pushState({ id: id }, '', '#' + encodeURIComponent(id));
-  var want = JERSEY_STYLE_BY_TITLE[p.title] || JERSEY_STYLE_BY_YEAR[String(p.year || '').trim()] || JERSEY_STYLE_DEFAULT;
+  var want = jerseyStyle(p);
   if (want && STYLES[want] && STY.key !== want) applyStyle(want);
   var imgs = (p.images && p.images.length) ? p.images : fillImgs;
   var di = document.getElementById('detail-imgs');
@@ -845,13 +841,16 @@ function openDetail(id, skipPush) {
   if (prevB) prevB.hidden = true;
   LB.imgs = imgs; LB.go = showPhoto; LB.get = function() { return cur; };
   di.querySelector('.dm-max').addEventListener('click', function() { openLightbox(cur); });
-  var patches = [p.patch1, p.patch2, p.patch3].filter(Boolean);
-  /* the tag omits "Retail On-Ice" and abbreviates Team Issued / Game Worn */
-  var tagType = { 'Retail On-Ice': '', 'Team Issued': 'TI', 'Game Worn': 'GW' };
-  var jt = Object.prototype.hasOwnProperty.call(tagType, p.jerseyType) ? tagType[p.jerseyType] : p.jerseyType;
-  var mfr = [p.year, p.manufacturer, p.model, jt, p.size ? 'Size ' + String(p.size).replace(/Goalie Cut/i, 'GC') : ''].filter(Boolean).join(' · ');
-  /* the name patch shows the surname; players who share one with a teammate get an initial */
-  var lastName = NAME_ON_TWILL[(p.player || '').trim()] || (p.player || '').trim().split(/\s+/).pop();
+  var patches = p.patches || [];
+  /* the tag drops "On-Ice Authentic", abbreviates Team Issued / Game Worn, and spells out the condition code */
+  var tagType = { 'On-Ice Authentic MiC': '', 'Team Issued MiC': 'TI', 'Game Worn': 'GW' };
+  var jt = Object.prototype.hasOwnProperty.call(tagType, p.jerseyType) ? tagType[p.jerseyType] : String(p.jerseyType || '').replace(/\s*MiC$/, '');
+  var sz = p.size ? 'Size ' + String(p.size).replace(/Goalie Cut/i, 'GC').replace(/^(\d+)\s*G$/i, '$1 GC') : '';
+  var mfr = [p.year, p.manufacturer, p.model, jt, sz].filter(Boolean).join(' · ');
+  var condText = { NWOT: 'New without tags', NWT: 'New with tags' }[p.condition] || p.condition;
+  var madeIn = /MiC$/.test(p.jerseyType || '') ? 'Made in Canada' : '';
+  /* the name patch is the Player column as written (e.g. "H. Sedin") */
+  var lastName = (p.player || '').trim();
   S.curName = lastName;
   var nameLine = lastName ? nameHtml(lastName) : '';
   var numLine = p.number ? '<div class="dp-num" role="img" aria-label="' + esc(p.number) + '" data-n="' + esc(p.number) + '"></div>' : '';
@@ -860,7 +859,9 @@ function openDetail(id, skipPush) {
     (p.title  ? '<div class="dp-title">'  + esc(tagTitle(p.title)) + '</div>' : '') +
     (mfr  ? '<div class="dp-meta">'   + esc(mfr)     + '</div>' : '') +
     (patches.length ? '<div class="dp-extra">Patches: ' + esc(patches.join(' · ')) + '</div>' : '') +
-    (p.country ? '<div class="dp-extra">' + esc(p.country) + '</div>' : '') +
+    (condText ? '<div class="dp-extra">Condition: ' + esc(condText) + '</div>' : '') +
+    (p.notes ? '<div class="dp-extra">' + esc(p.notes) + '</div>' : '') +
+    (madeIn ? '<div class="dp-extra">' + madeIn + '</div>' : '') +
     '</div>';
   show('detail');
   tightenNumber(); fitName();
@@ -1392,6 +1393,19 @@ function route() {
   applyStyle(pick);
 })();
 renderGallery(); route();
+
+/* the live sheet is the source of truth: when it arrives (and differs from the snapshot) the inventory is swapped in */
+(function() {
+  var sig = function(list) { return JSON.stringify(list.map(function(p) { return [p.id, p.player, p.number, p.team, p.title, p.year, p.manufacturer, p.model, p.jerseyType, p.condition, p.size, p.designation, p.patches, p.notes]; })); };
+  loadInventoryLive().then(function(list) {
+    list = applyOrder(list, GALLERY_ORDER_IDS);
+    if (sig(list) === sig(S.products)) return;
+    var hadId = decodeURIComponent(location.hash.slice(1)), wasOpen = S.view === 'detail' && S.products.some(function(p) { return p.id === hadId; });
+    S.products = list;
+    if (S.view === 'gallery') { renderGallery(); if (hadId) route(); }
+    else if (!wasOpen) route();
+  }).catch(function(e) { if (window.console) console.warn('Live inventory unavailable, showing the saved snapshot.', e); });
+})();
 </script>
 </body>
 </html>
