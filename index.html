@@ -516,7 +516,7 @@ html[data-theme="dark"] #view-detail .dm-max svg { display: block; width: 12px; 
 .lb-btn[hidden] { display: none; }
 .lb-btn svg { display: block; width: 20px; height: 20px; }
 .lb-btn:hover { background: rgba(255,255,255,.14); }
-.lb-btn:disabled { opacity: .33; cursor: default; pointer-events: none; } /* first / last photo: the arrow stays, faded */
+.lb-btn:disabled { opacity: .2; cursor: default; pointer-events: none; } /* first / last photo: the arrow stays, faded */
 .lb-close { top: 16px; right: 16px; }
 .lb-prev { left: 16px; top: 50%; transform: translateY(-50%); }
 .lb-next { right: 16px; top: 50%; transform: translateY(-50%); }
@@ -549,13 +549,13 @@ html.lb-open, html.lb-open body { overflow: hidden; }
       <button class="hdr-filter" data-filter="canucks">Canucks</button>
       <button class="hdr-filter" data-filter="canada">Canada</button>
       <button class="hdr-filter" data-filter="other">Other</button>
-      <!-- hidden: the sheet has no for-sale column: <button class="hdr-filter hdr-filter-sale" data-filter="sale">For Sale</button> -->
+      <button class="hdr-filter hdr-filter-sale" data-filter="sale">For Sale</button>
       <select class="hdr-filter-select" id="filter-select">
         <option value="all">All</option>
         <option value="canucks">Canucks</option>
         <option value="canada">Canada</option>
         <option value="other">Other</option>
-        <!-- hidden: the sheet has no for-sale column: <option value="sale">For Sale</option> -->
+        <option value="sale">For Sale</option>
       </select>
     </div>
     <div class="hdr-right">
@@ -656,7 +656,7 @@ function renderGallery() {
   var list = S.products.filter(function(p) { return p.status !== 'Draft'; });
   if (S.filter !== 'all') {
     list = list.filter(function(p) {
-      return p.category === S.filter; /* from the Team column */
+      return S.filter === 'sale' ? !!p.onSale : p.category === S.filter; /* Team column; For Sale = State "Sell" (column U) */
     });
   }
   if (S.sort === 'newest' || S.sort === 'oldest') {
@@ -1404,7 +1404,7 @@ renderGallery(); route();
 
 /* the live sheet is the source of truth: when it arrives (and differs from the snapshot) the inventory is swapped in */
 (function() {
-  var sig = function(list) { return JSON.stringify(list.map(function(p) { return [p.id, p.player, p.number, p.team, p.title, p.year, p.manufacturer, p.model, p.jerseyType, p.condition, p.size, p.designation, p.patches, p.notes]; })); };
+  var sig = function(list) { return JSON.stringify(list.map(function(p) { return [p.id, p.player, p.number, p.team, p.title, p.year, p.manufacturer, p.model, p.jerseyType, p.condition, p.size, p.designation, p.patches, p.notes, p.onSale]; })); };
   loadInventoryLive().then(function(list) {
     list = applyOrder(list, GALLERY_ORDER_IDS);
     if (sig(list) === sig(S.products)) return;

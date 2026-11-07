@@ -1,4 +1,4 @@
-/* snapshot of the inventory sheet (columns A-M): first paint and fallback. The live sheet replaces it when it loads. */
+/* snapshot of the inventory sheet (columns A-M, plus State from column U as the last value): first paint and fallback. The live sheet replaces it when it loads. */
 var GALLERY_ROWS = [
  [
   "Player",
@@ -13,7 +13,8 @@ var GALLERY_ROWS = [
   "Size",
   "Designation",
   "Patches",
-  "Notes"
+  "Notes",
+  "State"
  ],
  [
   "Bure",
@@ -28,7 +29,8 @@ var GALLERY_ROWS = [
   "56",
   "",
   "Stanley Cup 100",
-  "Buttercup Yellow"
+  "Buttercup Yellow",
+  "In Work"
  ],
  [
   "Linden",
@@ -43,7 +45,8 @@ var GALLERY_ROWS = [
   "54",
   "Captain",
   "1994 Stanley Cup Finals, 2 Pts F.G.",
-  ""
+  "",
+  "Ready for Work"
  ],
  [
   "Linden",
@@ -58,7 +61,8 @@ var GALLERY_ROWS = [
   "52",
   "Captain",
   "1994 Stanley Cup Finals, 2 Pts F.G.",
-  ""
+  "",
+  "Ready for Work"
  ],
  [
   "Bure",
@@ -73,7 +77,8 @@ var GALLERY_ROWS = [
   "52",
   "Alternate",
   "-",
-  "Autogrpahed, No LoA"
+  "Autogrpahed, No LoA",
+  "Ready for Work"
  ],
  [
   "Bure",
@@ -88,7 +93,8 @@ var GALLERY_ROWS = [
   "54",
   "Alternate",
   "1998 All-Star Game, 1997 Japan Game ONe",
-  ""
+  "",
+  "Ready for Work"
  ],
  [
   "Bure",
@@ -103,7 +109,8 @@ var GALLERY_ROWS = [
   "54",
   "Alternate",
   "1998 All-Star Game, 1997 Japan Game ONe",
-  ""
+  "",
+  "Ready for Work"
  ],
  [
   "Naslund",
@@ -118,7 +125,8 @@ var GALLERY_ROWS = [
   "52",
   "Captain",
   "-",
-  ""
+  "",
+  "Complete"
  ],
  [
   "Linden",
@@ -133,7 +141,8 @@ var GALLERY_ROWS = [
   "52",
   "Alternate",
   "-",
-  "Autographed LoA"
+  "Autographed LoA",
+  "Held Internationally"
  ],
  [
   "Linden",
@@ -148,7 +157,8 @@ var GALLERY_ROWS = [
   "54",
   "Alternate",
   "",
-  ""
+  "",
+  "Paused"
  ],
  [
   "Iginla",
@@ -163,7 +173,8 @@ var GALLERY_ROWS = [
   "56",
   "Alternate",
   "",
-  ""
+  "",
+  "In Work"
  ],
  [
   "Naslund",
@@ -178,7 +189,8 @@ var GALLERY_ROWS = [
   "56",
   "Captain",
   "-",
-  ""
+  "",
+  "Sell"
  ],
  [
   "Naslund",
@@ -193,7 +205,8 @@ var GALLERY_ROWS = [
   "56",
   "Captain",
   "-",
-  ""
+  "",
+  "Sell"
  ],
  [
   "Naslund",
@@ -208,7 +221,8 @@ var GALLERY_ROWS = [
   "52",
   "Captain",
   "-",
-  ""
+  "",
+  "Awaiting Parts"
  ],
  [
   "Naslund",
@@ -223,7 +237,8 @@ var GALLERY_ROWS = [
   "56",
   "Captain",
   "NHL Vintage Program",
-  ""
+  "",
+  "Complete"
  ],
  [
   "Naslund",
@@ -238,7 +253,8 @@ var GALLERY_ROWS = [
   "56",
   "Captain",
   "NHL Vintage Program",
-  ""
+  "",
+  "Complete"
  ],
  [
   "Smyl",
@@ -253,7 +269,8 @@ var GALLERY_ROWS = [
   "56",
   "Captain",
   "-",
-  ""
+  "",
+  "Complete"
  ],
  [
   "Linden",
@@ -268,7 +285,8 @@ var GALLERY_ROWS = [
   "56",
   "Alternate",
   "-",
-  ""
+  "",
+  "In Work"
  ],
  [
   "H. Sedin",
@@ -283,7 +301,8 @@ var GALLERY_ROWS = [
   "56",
   "Captain",
   "2011 Stanley Cup Final",
-  ""
+  "",
+  "Ready for Work"
  ],
  [
   "D. Sedin",
@@ -298,7 +317,8 @@ var GALLERY_ROWS = [
   "56",
   "Alternate",
   "2011 Stanley Cup Final",
-  ""
+  "",
+  "In Work"
  ],
  [
   "H. Sedin",
@@ -313,7 +333,8 @@ var GALLERY_ROWS = [
   "56",
   "Alternate",
   "NHL 100",
-  ""
+  "",
+  "Paused"
  ],
  [
   "H. Sedin ",
@@ -328,7 +349,8 @@ var GALLERY_ROWS = [
   "54",
   "Captain",
   "Heritage Classic",
-  ""
+  "",
+  "In Work"
  ],
  [
   "H. Sedin",
@@ -343,7 +365,8 @@ var GALLERY_ROWS = [
   "54",
   "Captain",
   "",
-  "GM Place 20th Anniversary"
+  "GM Place 20th Anniversary",
+  "In Work"
  ],
  [
   "H. Sedin ",
@@ -358,7 +381,8 @@ var GALLERY_ROWS = [
   "56",
   "Captain",
   "Vancouver Millionaires Patch",
-  ""
+  "",
+  "In Work"
  ],
  [
   "Petterson",
@@ -373,7 +397,8 @@ var GALLERY_ROWS = [
   "56",
   "",
   "50th Anniversary, 2020 All-Star Skills",
-  ""
+  "",
+  "Paused"
  ],
  [
   "Petterson",
@@ -388,7 +413,8 @@ var GALLERY_ROWS = [
   "56",
   "",
   "50th Anniversary",
-  ""
+  "",
+  "Paused"
  ],
  [
   "Petterson",
@@ -403,7 +429,8 @@ var GALLERY_ROWS = [
   "56",
   "",
   "50th Anniversary",
-  ""
+  "",
+  "Complete"
  ],
  [
   "Petterson",
@@ -418,7 +445,8 @@ var GALLERY_ROWS = [
   "56",
   "",
   "50th Anniversary",
-  ""
+  "",
+  "Complete"
  ],
  [
   "Miller",
@@ -433,7 +461,8 @@ var GALLERY_ROWS = [
   "56",
   "",
   "",
-  ""
+  "",
+  "Complete"
  ],
  [
   "Hughes",
@@ -448,7 +477,8 @@ var GALLERY_ROWS = [
   "54",
   "Captain",
   "TD Sponsor",
-  ""
+  "",
+  "Complete"
  ],
  [
   "Hughes",
@@ -463,7 +493,8 @@ var GALLERY_ROWS = [
   "54",
   "Captain",
   "TD Sponsor",
-  ""
+  "",
+  "Complete"
  ],
  [
   "Parekh",
@@ -478,7 +509,8 @@ var GALLERY_ROWS = [
   "56",
   "",
   "Play Albera Sponsor",
-  ""
+  "",
+  "Awaiting Parts"
  ],
  [
   "Boeser",
@@ -493,7 +525,8 @@ var GALLERY_ROWS = [
   "54",
   "Alternate",
   "RBC Sponsor",
-  ""
+  "",
+  "Awaiting Parts"
  ],
  [
   "Sakic",
@@ -508,7 +541,8 @@ var GALLERY_ROWS = [
   "56",
   "Alternate",
   "-",
-  ""
+  "",
+  "In Work"
  ],
  [
   "Crosby",
@@ -523,7 +557,8 @@ var GALLERY_ROWS = [
   "56",
   "",
   "-",
-  ""
+  "",
+  "Complete"
  ],
  [
   "Luongo",
@@ -538,7 +573,8 @@ var GALLERY_ROWS = [
   "56G",
   "",
   "Hockey Canada Inner Crest",
-  ""
+  "",
+  "Complete"
  ],
  [
   "Crosby",
@@ -553,7 +589,8 @@ var GALLERY_ROWS = [
   "54",
   "",
   "",
-  ""
+  "",
+  "Sell"
  ],
  [
   "H. Sedin",
@@ -568,7 +605,8 @@ var GALLERY_ROWS = [
   "XL",
   "Captain",
   "40th Anniversary",
-  "Collectors Hemtag"
+  "Collectors Hemtag",
+  "In Work"
  ],
  [
   "Brunson",
@@ -583,7 +621,8 @@ var GALLERY_ROWS = [
   "52",
   "",
   "Visit Abu Dhab",
-  "Factory Kit"
+  "Factory Kit",
+  "Awaiting Parts"
  ],
  [
   "Brunson",
@@ -598,7 +637,8 @@ var GALLERY_ROWS = [
   "52",
   "",
   "Visit Abu Dhabi, NBA Finals",
-  "Factory Kit"
+  "Factory Kit",
+  "Awaiting Parts"
  ],
  [
   "Brunson",
@@ -613,7 +653,8 @@ var GALLERY_ROWS = [
   "52",
   "",
   "Visit Abu Dhabi, NBA Finals",
-  "Factory Kit"
+  "Factory Kit",
+  "Awaiting Parts"
  ],
  [
   "Brunson",
@@ -628,7 +669,8 @@ var GALLERY_ROWS = [
   "56",
   "",
   "Visit Abu Dhabi, NBA Finals",
-  "MSG KIT"
+  "MSG KIT",
+  "Awaiting Parts"
  ],
  [
   "OG",
@@ -643,10 +685,12 @@ var GALLERY_ROWS = [
   "56",
   "",
   "Visit Abu Dhabi, NBA Finals",
-  "MSG KIT"
+  "MSG KIT",
+  "Awaiting Parts"
  ],
  [
   "TOTAL",
+  "",
   "",
   "",
   "",

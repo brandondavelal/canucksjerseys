@@ -4,12 +4,14 @@
    - order.js (GALLERY_ORDER) is the manual order saved from collection-admin.html; it is the only thing the admin edits */
 
 var SHEET_ID = '1SUNxAUAoEavaTudeLMIOMZmNqP95UN4pE5inHnIwwhI';
-/* only columns A-M are requested, so nothing else in the sheet is ever sent to the page */
-var SHEET_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/export?format=csv&gid=0&range=A:M';
+/* only columns A-M and U (State: "Sell" = for sale) are requested, so nothing else in the sheet is ever sent to the page */
+var SHEET_BASE = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/export?format=csv&gid=0&range=';
+var SHEET_URL = SHEET_BASE + 'A:M', SHEET_STATE_URL = SHEET_BASE + 'U:U';
 
 /* five placeholder photos for every jersey until real photos are added */
 var PLACEHOLDER_IMAGES = [1, 2, 3, 4, 5].map(function(i) { return 'images/placeholder-' + i + '.svg'; });
 
+/* U State (kept as a 14th value on each row): "Sell" puts the jersey in the For Sale filter */
 /* A Player | B # | C Team | D Style | E Year | F Brand | G Model | H Classification | I Condition | J Size | K Designation | L Patches | M Notes */
 function parseCsv(text) {
   var rows = [], row = [], cell = '', q = false, i = 0, c;
@@ -38,7 +40,7 @@ function teamCategory(team) {
 function rowsToProducts(rows) {
   var seen = {}, out = [];
   rows.forEach(function(r) {
-    var c = []; for (var k = 0; k < 13; k++) c[k] = String(r[k] == null ? '' : r[k]).replace(/\s+/g, ' ').trim();
+    var c = []; for (var k = 0; k < 14; k++) c[k] = String(r[k] == null ? '' : r[k]).replace(/\s+/g, ' ').trim();
     if (!c[0] || /^player$/i.test(c[0]) || /^total$/i.test(c[0])) return; /* header and totals rows */
     var patches = (c[11] === '-' ? '' : c[11]).split(/\s*,\s*/).filter(Boolean);
     var id = slugify([c[0], c[1], c[3], c[4], c[9]].join(' ')) || 'jersey';
@@ -46,7 +48,7 @@ function rowsToProducts(rows) {
     out.push({
       id: id, player: c[0], number: c[1], team: c[2], title: c[3], year: c[4], manufacturer: c[5], model: c[6],
       jerseyType: c[7], condition: c[8], size: c[9], designation: c[10], patches: patches, notes: c[12] === '-' ? '' : c[12],
-      category: teamCategory(c[2]), images: PLACEHOLDER_IMAGES.slice()
+      onSale: /^sell$/i.test(c[13]), category: teamCategory(c[2]), images: PLACEHOLDER_IMAGES.slice()
     });
   });
   return out;
@@ -62,12 +64,22 @@ function applyOrder(products, order) {
   }).map(function(x) { return x.p; });
 }
 
-function loadInventoryLive(timeoutMs) {
+function fetchCsv(url, timeoutMs) {
   var ctl = typeof AbortController !== 'undefined' ? new AbortController() : null;
   var timer = ctl ? setTimeout(function() { ctl.abort(); }, timeoutMs || 8000) : 0;
-  return fetch(SHEET_URL, { cache: 'no-store', signal: ctl ? ctl.signal : undefined })
+  return fetch(url, { cache: 'no-store', signal: ctl ? ctl.signal : undefined })
     .then(function(r) { if (!r.ok) throw new Error('sheet ' + r.status); return r.text(); })
-    .then(function(t) { clearTimeout(timer); var list = rowsToProducts(parseCsv(t)); if (!list.length) throw new Error('empty sheet'); return list; });
+    .then(function(t) { clearTimeout(timer); return parseCsv(t); });
+}
+
+function loadInventoryLive(timeoutMs) {
+  return Promise.all([fetchCsv(SHEET_URL, timeoutMs), fetchCsv(SHEET_STATE_URL, timeoutMs).catch(function() { return []; })]).then(function(res) {
+    var rows = res[0], state = res[1];
+    rows.forEach(function(r, i) { while (r.length < 13) r.push(''); r[13] = state[i] ? state[i][0] : ''; });
+    var list = rowsToProducts(rows);
+    if (!list.length) throw new Error('empty sheet');
+    return list;
+  });
 }
 
 var SNAPSHOT_ROWS = typeof GALLERY_ROWS !== 'undefined' ? GALLERY_ROWS : [];
