@@ -827,7 +827,7 @@ function nbaTagHtml(p, o) {
     '<div class="dp-tag-nba-logo">' + logoImg('images/nba-logo') + '<span class="dp-tag-nba-vert">AUTHENTICS</span></div>' +
     '<div class="dp-tag-nba-size">' + esc(size) + '</div>' +
     '<div class="dp-tag-nba-info"><div class="dp-tag-nba-top">' + (p.team ? '<div class="dp-tag-nba-team">' + esc(p.team) + '</div>' : '') + '<div class="dp-tag-nba-title">' + esc([tagTitle(p.title || ''), o.type, o.meta].filter(Boolean).join(' · ')) + '</div></div>' +
-      '<div class="dp-tag-nba-second"><span class="dp-tag-nba-bars"><i></i><i></i><i></i></span></div></div>' +
+      '<div class="dp-tag-nba-second"><span class="dp-tag-nba-bars"><i></i><i></i></span></div></div>' +
     '<div class="dp-tag-nba-nike">' + logoImg('images/nike-logo') + '</div>' +
     '<div class="dp-tag-nba-len"><span class="dp-tag-nba-vert">LENGTH +6</span></div>' +
     '<div class="dp-tag-nba-hand">' + hand.map(function(h) { return '<div>' + esc(h) + '</div>'; }).join('') + '</div>' +
