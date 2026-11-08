@@ -547,9 +547,11 @@ html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter { displa
 html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter svg { display: block; flex: none; }
 @media (max-width: 768px) { html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { width: auto; max-width: none; margin: 0 calc(-1 * var(--stack-out-768, 22px)) 24px; } }
 @media (max-width: 600px) { html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { margin: 0 calc(-1 * var(--stack-out-600, 18px)) 24px; } }
-/* the style dropdown stays hidden until the S key is pressed */
+/* on jersey pages the style dropdown stays hidden until the S key is pressed */
 #style-select { display: none !important; }
 html.show-style #style-select { display: block !important; }
+/* on the home grid the style dropdown is always visible (as before; phones still hide it there); only the jersey pages wait for S */
+@media (min-width: 769px) { .hdr-left:not(.detail) ~ .hdr-right #style-select { display: block !important; } }
 /* previous / next jersey: in the nav bar (after the style dropdown) on wider screens, above the name and number on phones and tablets */
 .hdr-filter.jn-hdr { display: none; }
 @media (min-width: 769px) {
