@@ -1017,6 +1017,16 @@ STYLES.flyingv.ctx = Object.assign({}, STYLES.skate.ctx, { mid: { red: function(
 /* Skate only (set after Modern Skate and Flying V copy it): 4px more space between the name's letters */
 STYLES.skate.nameExtra = 4;
 STYLES.flyingv.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(255,170,0').split('rgba(255,235,120').join('rgba(255,200,90').split('rgba(255,150,0').join('rgba(255,120,0') + '\n#view-detail .dl-blue { display: none !important; }\n/* the bottom (orange-red) layer is half as thick */\n#view-detail .dl-gold { inset: calc(-10.5px * var(--tw, 1)) !important; }\n@media (max-width: 768px) { #view-detail .dl-gold { inset: -8.25px !important; } }\n@media (max-width: 600px) { #view-detail .dl-gold { inset: -6.75px !important; } }';
+/* Skate and Modern Skate: the nav glass is yellow and the nav trim is red (set after Flying V has copied Skate, so Flying V keeps its own red glass and marigold trim) */
+var SKATE_NAV = {
+  nav: { royal: function(h, s, l) { return [52, 1, Math.min(.6, l * 1.9), 2.1]; }, silver: function(h, s, l) { return [357, .82, .22 + .5 * l]; } },
+  glow: { royal: function(h, s, l) { return [52, 1, Math.min(.7, l), 1.4]; } }
+};
+STYLES.skate.ctx = Object.assign({}, STYLES.skate.ctx, SKATE_NAV);
+STYLES.mskate.ctx = Object.assign({}, STYLES.mskate.ctx, SKATE_NAV);
+var SKATE_TRIM = '\n/* the red nav trim as glass: glowing, with an inner highlight, still see-through */\nhtml[data-theme="dark"] header::after { box-shadow: 0 0 12px 1px rgba(211,34,44,.5), inset 0 1px 0 rgba(255,255,255,.6), inset 0 -2px 3px rgba(150,15,25,.55), inset 0 0 8px rgba(240,110,120,.55); }';
+STYLES.skate.extra += SKATE_TRIM;
+STYLES.mskate.extra += SKATE_TRIM;
 
 /* Millionaires: maroon (about #5e1d32) glass and background, warm cream chrome, one cream twill layer on the photo and the number, Stick-in-Rink's lettering */
 var MAROON = 342;
