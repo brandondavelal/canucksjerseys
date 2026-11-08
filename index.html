@@ -1059,21 +1059,22 @@ STYLES.knicks = Object.assign({}, STYLES.skate, {
   layers: [KN_ORANGE, KN_BLUE, KN_WHITE], nameLayers: [KN_ORANGE, KN_BLUE, KN_WHITE]
 });
 STYLES.knicks.map = {
-  navy: kn(function(l) { return [0, 0, Math.min(.07, l * .8)]; }),
+  navy: kn(function(l) { return [214, .62, l < .045 ? l * 2 : Math.min(.36, .17 + (l - .05) * 4)]; }),
   royal: kn(function(l) { return [27, .91, Math.min(.58, l * 1.9), 2.1]; }),
   red: kn(function(l) { return [27, .91, Math.max(l, .5)]; }),
   silver: kn(function(l) { return [0, 0, l]; })
 };
 STYLES.knicks.outer = kn(function(l) { return [27, .91, .4 + .2 * l]; });   /* bottom twill layer of the photo stack: orange */
 STYLES.knicks.top = undefined;                                               /* top layer stays white */
+STYLES.knicks.bgRoyal = function(h, s, l) { return [214, .62, Math.min(.8, l), .9]; }  /* the page is Knicks blue */
 STYLES.knicks.ink = [27, .91, .5];
 STYLES.knicks.ctx = {
   mid: { red: kn(function(l) { return [214, .62, l * .93]; }) },               /* middle layer: blue */
-  nav: { silver: kn(function(l) { return [214, .62, .22 + .5 * l]; }) },     /* the nav trim is blue */
+  nav: { silver: kn(function(l) { return [0, 0, .55 + .45 * l]; }) },        /* the nav trim is white */
   card: { royal: kn(function(l) { return [27, .91, Math.min(.58, l * 1.9), 2.1]; }) },
   btn: { royal: STYLES.skate.ctx.btn.royal, red: kn(function(l) { return [27, .91, Math.max(l * .88, .43), 1]; }) }
 };
-STYLES.knicks.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(37,87,156').split('rgba(255,235,120').join('rgba(120,160,215').split('rgba(255,150,0').join('rgba(22,54,105').split('#ffe84a').join(KN_WHITE);
+STYLES.knicks.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(255,255,255').split('rgba(255,235,120').join('rgba(255,255,255').split('rgba(255,150,0').join('rgba(180,185,200').split('#ffe84a').join(KN_WHITE);
 
 /* Flames: red page, black glass, yellow trim, double twill (red on top, yellow at the bottom) */
 STYLES.flames = Object.assign({}, STYLES.canada, {
