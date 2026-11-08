@@ -878,7 +878,7 @@ function openDetail(id, skipPush) {
     (p.title  ? '<div class="dp-title">'  + esc(tagTitle(p.title)) + '</div>' : '') +
     (mfr  ? '<div class="dp-meta">'   + esc(mfr)     + '</div>' : '') +
     (patches.length ? '<div class="dp-extra">Patches: ' + esc(patches.join(' · ')) + '</div>' : '') +
-    (p.notes ? '<div class="dp-extra">' + esc(p.notes) + '</div>' : '') +
+    (p.notes ? '<div class="dp-extra">Notes: ' + esc(p.notes) + '</div>' : '') +
     '</div>' +
     /* previous / next jersey, one each side under the tag, in the same default order as the grid (wraps round) */
     '<div class="dp-jnav"><button type="button" class="hdr-filter jn-btn" data-dir="-1" aria-label="Previous jersey"><svg viewBox="0 0 12 10" width="13" height="11" aria-hidden="true"><path d="M11.2 5H1.4M5.2 1L1.2 5l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Previous</span></button><button type="button" class="hdr-filter jn-btn" data-dir="1" aria-label="Next jersey"><span>Next</span><svg viewBox="0 0 12 10" width="13" height="11" aria-hidden="true"><path d="M0.8 5H10.6M6.8 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>';
