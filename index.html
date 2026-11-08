@@ -865,7 +865,8 @@ function openDetail(id, skipPush) {
   var jt = Object.prototype.hasOwnProperty.call(tagType, p.jerseyType) ? tagType[p.jerseyType] : String(p.jerseyType || '').replace(/\s*MiC$/, '');
   var sz = p.size ? 'Size ' + String(p.size).replace(/Goalie Cut/i, 'GC').replace(/^(\d+)\s*G$/i, '$1 GC') : '';
   var madeIn = /MiC$/.test(p.jerseyType || '') ? 'Made in Canada' : '';
-  var mfr = [p.year, p.manufacturer, p.model, jt, sz, madeIn].filter(Boolean).join(' · '); /* Made in Canada is part of the same line */
+  /* year, brand, model, type, size, Made in Canada, patches and notes all run on one line */
+  var mfr = [p.year, p.manufacturer, p.model, jt, sz, madeIn, patches.length ? 'Patches: ' + patches.join(', ') : '', p.notes ? 'Notes: ' + p.notes : ''].filter(Boolean).join(' · ');
   var condText = { NWOT: 'New without tags', NWT: 'New with tags' }[p.condition] || p.condition;
   /* the name patch is the Player column as written (e.g. "H. Sedin") */
   var lastName = (p.player || '').trim();
@@ -877,8 +878,6 @@ function openDetail(id, skipPush) {
     (p.team   ? '<div class="dp-team">'   + esc(p.team)     + '</div>' : '') +
     (p.title  ? '<div class="dp-title">'  + esc(tagTitle(p.title)) + '</div>' : '') +
     (mfr  ? '<div class="dp-meta">'   + esc(mfr)     + '</div>' : '') +
-    (patches.length ? '<div class="dp-extra">Patches: ' + esc(patches.join(' · ')) + '</div>' : '') +
-    (p.notes ? '<div class="dp-extra">Notes: ' + esc(p.notes) + '</div>' : '') +
     '</div>' +
     /* previous / next jersey, one each side under the tag, in the same default order as the grid (wraps round) */
     '<div class="dp-jnav"><button type="button" class="hdr-filter jn-btn" data-dir="-1" aria-label="Previous jersey"><svg viewBox="0 0 12 10" width="13" height="11" aria-hidden="true"><path d="M11.2 5H1.4M5.2 1L1.2 5l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Previous</span></button><button type="button" class="hdr-filter jn-btn" data-dir="1" aria-label="Next jersey"><span>Next</span><svg viewBox="0 0 12 10" width="13" height="11" aria-hidden="true"><path d="M0.8 5H10.6M6.8 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>';
