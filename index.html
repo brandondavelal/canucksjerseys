@@ -859,7 +859,8 @@ function openDetail(id, skipPush) {
   /* the name patch is the Player column as written (e.g. "H. Sedin") */
   var lastName = (p.player || '').trim();
   S.curName = lastName;
-  var nameLine = lastName ? nameHtml(lastName) : '';
+  /* the 40th Anniversary jersey has no name on its page (no name, no name bar) */
+  var nameLine = lastName && !/\b40th anniversary\b/i.test(p.title || '') ? nameHtml(lastName) : '';
   var numLine = p.number ? '<div class="dp-num" role="img" aria-label="' + esc(p.number) + '" data-n="' + esc(p.number) + '"></div>' : '';
   document.getElementById('detail-panel').innerHTML = nameLine + numLine + '<div class="dp-tag">' +
     (p.team   ? '<div class="dp-team">'   + esc(p.team)     + '</div>' : '') +
