@@ -1404,7 +1404,7 @@ function tightenNumber() {
   /* the gap between the silver edge and the tag is 50px */
   el.style.marginBottom = (50 - (H - (base + desc + OUT))) + 'px';
   el.dataset.topInk = (PAD - OUT).toFixed(2); /* where the number's outline starts below its svg top (svg units) */
-  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul, shrinkTop: K > 1 && STY.numShrink ? STY.numShrink * BAND : 0, holes: STY.holes ? { r: FS * .0085 * .25, pitch: FS * .042 * .4 * 1.2 * 1.5 * .5 * (4 / 3) * 2 * .5 * 1.5, edge: FS * .8 * .03 } : null });
+  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul, shrinkTop: K > 1 && STY.numShrink ? STY.numShrink * BAND : 0, holes: STY.holes ? { r: FS * .0085 * .25, pitch: FS * .042 * .4 * 1.2 * 1.5 * .5 * (4 / 3) * 2 * .5 * 1.5, edge: FS * .8 * .045 } : null });
 }
 
 /* the name is drawn as twill too: letters sewn like the number, on the felt plate */
