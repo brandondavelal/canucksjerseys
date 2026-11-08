@@ -724,7 +724,7 @@ function tagTitle(t) { return shownTitle(t).replace(/\b(?:Home|Away|Alt)\b\s*/g,
 /* the style a jersey's page opens in, from the sheet's Team and Style (name) columns */
 function jerseyStyle(p) {
   var t = String(p.title || '').toLowerCase(), team = String(p.team || ''), yr = firstYear(p) || 0;
-  if (/knicks/i.test(team)) return /association/.test(t) ? 'knicksassoc' : 'knicks'; /* Icon (and Statement) = Knicks Icon */
+  if (/knicks/i.test(team)) return /association/.test(t) ? 'knicksassoc' : /statement/.test(t) ? 'knicksstatement' : 'knicks';
   if (/blasty/.test(t)) return 'blasty';
   if (/flames/i.test(team)) return 'flames';
   if (/millionaires/.test(t)) return 'millionaires';
@@ -1087,6 +1087,12 @@ STYLES.knicksassoc.outer = kn(function(l) { return [0, 0, .9 + .1 * l]; });     
 STYLES.knicksassoc.top = function(h, s, l) { return l > .6 ? [27, .92, .55] : [27, .92, l * .8]; }; /* top layer: orange */
 STYLES.knicksassoc.ctx = Object.assign({}, STYLES.knicks.ctx, { nav: { silver: kn(function(l) { return [214, .62, .22 + .5 * l]; }) } }); /* blue nav trim */
 STYLES.knicksassoc.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(37,87,156').split('rgba(255,235,120').join('rgba(120,160,215').split('rgba(255,150,0').join('rgba(22,54,105').split('#ffe84a').join(KN_BLUE) + '\n/* white page, and no name bar */\nhtml[data-theme="dark"]::before { background: #fff !important; }\nhtml[data-theme="dark"] body { background-color: #fff !important; }\n#view-detail .dl.dl-patch { display: none !important; }';
+
+/* Knicks Statement: Knicks Association with a black page instead of white */
+STYLES.knicksstatement = Object.assign({}, STYLES.knicksassoc, { label: 'Knicks Statement' });
+STYLES.knicksstatement.map = Object.assign({}, STYLES.knicks.map, { navy: kn(function(l) { return [0, 0, Math.min(.07, l * .8)]; }) });
+STYLES.knicksstatement.bgRoyal = STYLES.skate.bgRoyal;
+STYLES.knicksstatement.extra = STYLES.knicksassoc.extra.replace('html[data-theme="dark"]::before { background: #fff !important; }\nhtml[data-theme="dark"] body { background-color: #fff !important; }\n', '').replace('/* white page, and no name bar */', '/* no name bar */');
 
 /* Flames: red page, black glass, yellow trim, double twill (red on top, yellow at the bottom) */
 STYLES.flames = Object.assign({}, STYLES.canada, {
