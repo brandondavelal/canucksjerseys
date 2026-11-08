@@ -1092,7 +1092,7 @@ KN_ASSOC.ctx = Object.assign({}, STYLES.knicks.ctx, { nav: { silver: kn(function
 KN_ASSOC.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(37,87,156').split('rgba(255,235,120').join('rgba(120,160,215').split('rgba(255,150,0').join('rgba(22,54,105').split('#ffe84a').join(KN_BLUE) + '\n/* white page, and no name bar */\nhtml[data-theme="dark"]::before { background: #fff !important; }\nhtml[data-theme="dark"] body { background-color: #fff !important; }\n#view-detail .dl.dl-patch { display: none !important; }';
 
 /* Knicks Statement: black page, orange glass, blue trim; number and name orange on blue, photo stack orange on blue on white */
-STYLES.knicksstatement = Object.assign({}, KN_ASSOC);
+STYLES.knicksstatement = Object.assign({}, KN_ASSOC, { nameLayers: [KN_ORANGE] }); /* the name is a single orange layer */
 STYLES.knicksstatement.map = Object.assign({}, STYLES.knicks.map, { navy: kn(function(l) { return [0, 0, Math.min(.07, l * .8)]; }) });
 STYLES.knicksstatement.bgRoyal = STYLES.skate.bgRoyal;
 STYLES.knicksstatement.extra = KN_ASSOC.extra.replace('html[data-theme="dark"]::before { background: #fff !important; }\nhtml[data-theme="dark"] body { background-color: #fff !important; }\n', '').replace('/* white page, and no name bar */', '/* no name bar */');
@@ -1124,7 +1124,7 @@ STYLES.flames = Object.assign({}, STYLES.canada, {
   hideMiddle: false, stackOut: undefined, stackPinned: false, /* photo stack: the same triple twill as the number */
   numMul: [.67, 1.33], nameMul: [.67],                         /* number: outer layer 1/3 thinner, middle layer 1/3 thicker; name: back layer 1/3 thinner */
   nameGapMul: .5, numGap: 13 * .2,                             /* name letters half as far apart */
-  numClear: { seen: 13 * .2, mul: .25 }                        /* number: the clear space between the digit shapes is 1/4 of what it was */
+  numClear: { seen: 13 * .2, mul: .25 * 1.15 }                        /* number: the clear space between the digit shapes is 1/4 of what it was */
 });
 STYLES.flames.map = Object.assign({}, STYLES.canada.map, { silver: kn(function(l) { return [43, 1, .4 + .42 * l]; }) });
 STYLES.flames.outer = kn(function(l) { return [43, .95, .45 + .25 * l]; });   /* bottom layer of the photo stack: yellow */
@@ -1142,7 +1142,7 @@ STYLES.blasty = Object.assign({}, STYLES.skate, {
   layers: [FL_YELLOW, FL_RED, KN_WHITE], nameLayers: [FL_RED, KN_WHITE], /* the name is a two-layer twill: white on red */
   numMul: [.67, 1.33], nameMul: [.67],
   nameGapMul: .5, numGap: (STYLES.current.numGap + 12) * .2,
-  numClear: { seen: (STYLES.current.numGap + 12) * .2, mul: .25 }
+  numClear: { seen: (STYLES.current.numGap + 12) * .2, mul: .25 * 1.15 }
 });
 /* photo stack: the middle layer is 1/3 thicker and the outer layer 1/3 thinner (same overall depth) */
 var FL_STACK = '\n#view-detail .dl-gold { inset: calc(-14px * var(--tw, 1)) !important; }\n@media (max-width: 768px) { #view-detail .dl-gold { inset: -11px !important; } }\n@media (max-width: 600px) { #view-detail .dl-gold { inset: -9px !important; } }';
