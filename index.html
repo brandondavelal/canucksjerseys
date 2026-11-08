@@ -740,6 +740,7 @@ function jerseyStyle(p) {
   if (/modern skate/.test(t)) return 'mskate';
   if (/skate/.test(t)) return 'skate';
   if (/orca/.test(t) && /gradient/.test(t)) return 'orcagradient';
+  if (/40th anniversary/.test(t)) return 'rink'; /* the 40th Anniversary jersey is plain Stick-in-Rink */
   if (/stick (in|and) rink/.test(t)) return yr >= 2010 ? 'modernrink' : 'rink'; /* the Reebok / Adidas-era ones are Modern Stick in Rink */
   if (/orca/.test(t)) return 'orca';
   if (/modern/.test(t)) return 'current';
@@ -1004,7 +1005,7 @@ STYLES.rr.map = Object.assign({}, STYLES.current.map);
 STYLES.rr.outer = function(h, s, l) { return [h, s, Math.min(.93, .5 + .55 * l)]; };
 STYLES.rr.top = function(h, s, l) { return l > .6 ? [225, .05, .8 + .08 * l] : [225, .1, l]; };
 STYLES.rr.layers = ['#d3d6dd', '#2a58b0', '#d3d6dd'];
-STYLES.rr.extra = 'html[data-theme="dark"] #view-detail #detail-panel > div.dp-name { color: #e2e5eb; }';
+STYLES.rr.extra = 'html[data-theme="dark"] #view-detail #detail-panel > div.dp-name { color: #e2e5eb; }\n/* the page runs from navy (top) to green (bottom), like the Orca Gradient style with green in place of red */\nhtml[data-theme="dark"]::before { background: var(--grain), radial-gradient(ellipse 60% 35% at 50% 200px, rgba(70,110,210,.45), rgba(70,110,210,0) 100%), linear-gradient(180deg, #02071a 0%, #0a1838 44%, #0a4240 64%, #00805a 90%) !important; background-blend-mode: overlay, normal, normal !important; }';
 STYLES.rr.stackOut = 21;
 /* the container's top and bottom twill are Orca's sparkly outer silver */
 STYLES.rr.orcaSilver = true;
@@ -1399,7 +1400,7 @@ function tightenNumber() {
   /* the gap between the silver edge and the tag is 50px */
   el.style.marginBottom = (50 - (H - (base + desc + OUT))) + 'px';
   el.dataset.topInk = (PAD - OUT).toFixed(2); /* where the number's outline starts below its svg top (svg units) */
-  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul, holes: STY.holes ? { r: FS * .0085 * .25, pitch: FS * .042 * .4 * 1.2 * 1.5, edge: FS * .8 * .02 } : null });
+  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul, holes: STY.holes ? { r: FS * .0085 * .25, pitch: FS * .042 * .4 * 1.2 * 1.5 * .5, edge: FS * .8 * .02 } : null });
 }
 
 /* the name is drawn as twill too: letters sewn like the number, on the felt plate */
