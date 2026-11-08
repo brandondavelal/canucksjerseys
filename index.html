@@ -558,6 +558,9 @@ html.show-style #style-select { display: block !important; }
   html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { display: none !important; }
 }
 @media (min-width: 769px) and (max-width: 1100px) { .hdr-left.detail ~ .hdr-right .hdr-filter.jn-hdr span { display: none; } }
+/* back button: an arrow with the word "All" */
+html[data-theme="dark"] .hdr-back { width: auto; min-width: 31px; padding: 0 14px 0 11px; gap: 6px; border-radius: 999px; font-size: 12px; }
+html[data-theme="dark"] .hdr-back-label { display: block; line-height: 1; }
 </style>
 </head>
 <body>
@@ -566,7 +569,7 @@ html.show-style #style-select { display: block !important; }
   <div class="hdr-top">
     <div class="hdr-left">
       <img class="logo" id="logo" src="images/Frame 1 color.png" alt="Canucks Jerseys">
-      <button class="hdr-back" id="btn-back" aria-label="Back" title="Back"><span class="hdr-back-chevron"><svg viewBox="0 0 12 10" width="12" height="10" aria-hidden="true"><path d="M11.2 5H1.4M5.2 1L1.2 5l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+      <button class="hdr-back" id="btn-back" aria-label="Back to all jerseys" title="Back to all jerseys"><span class="hdr-back-chevron"><svg viewBox="0 0 12 10" width="12" height="10" aria-hidden="true"><path d="M11.2 5H1.4M5.2 1L1.2 5l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="hdr-back-label">All</span></button>
     </div>
     <div class="hdr-filters">
       <button class="hdr-filter active" data-filter="all">All</button>
@@ -748,7 +751,14 @@ function shownTitle(t) { return String(t || '').trim(); } /* titles are shown ex
 /* the tag's title also drops the Home / Away / Alt designation */
 function tagTitle(t) { return shownTitle(t); }
 /* the style a jersey's page opens in, from the sheet's Team and Style (name) columns */
-function jerseyStyle(p) {
+/* a white jersey: before 2005 the home sweater was white, from 2005 the away one is (start year, from the Year column) */
+function whiteJersey(p) {
+  var yr = firstYear(p), t = String(p.title || ''); if (!yr) return false;
+  return yr < 2005 ? /\bhome\b/i.test(t) : /\baway\b/i.test(t);
+}
+/* white jerseys open in the "(White Jersey)" twin of their style: same style, off-white grey page */
+function jerseyStyle(p) { var b = jerseyStyleBase(p); return whiteJersey(p) && STYLES[b + 'light'] ? b + 'light' : b; }
+function jerseyStyleBase(p) {
   var t = String(p.title || '').toLowerCase(), team = String(p.team || ''), yr = firstYear(p) || 0;
   if (/knicks/i.test(team)) return /statement/.test(t) ? 'knicksstatement' : 'knicks'; /* Icon and Association = Knicks */
   if (/blasty/.test(t)) return 'blasty';
@@ -1187,6 +1197,15 @@ STYLES.blasty = Object.assign({}, STYLES.skate, {
 var FL_STACK = '\n#view-detail .dl-gold { inset: calc(-14px * var(--tw, 1)) !important; }\n@media (max-width: 768px) { #view-detail .dl-gold { inset: -11px !important; } }\n@media (max-width: 600px) { #view-detail .dl-gold { inset: -9px !important; } }';
 STYLES.flames.extra = (STYLES.flames.extra || '') + FL_STACK;
 STYLES.blasty.extra = (STYLES.blasty.extra || '') + FL_STACK;
+
+/* White-jersey twins: every style also has a "(White Jersey)" version, identical except the page is an off-white neutral light grey (the lighting glow and a touch of grain stay) */
+var LIGHT_CSS = 'html[data-theme="dark"]::before { background: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27240%27%20height=%27240%27%3E%3Cfilter%20id=%27g%27%20x=%270%27%20y=%270%27%20width=%27100%25%27%20height=%27100%25%27%3E%3CfeTurbulence%20type=%27fractalNoise%27%20baseFrequency=%27.85%27%20numOctaves=%272%27%20stitchTiles=%27stitch%27/%3E%3CfeColorMatrix%20values=%270%200%200%200%200%20%200%200%200%200%200%20%200%200%200%200%200%20%20.5%200%200%200%20-.12%27/%3E%3C/filter%3E%3Crect%20width=%27240%27%20height=%27240%27%20filter=%27url%28%23g%29%27/%3E%3C/svg%3E") 0 0 / 240px 240px, radial-gradient(ellipse 60% 38% at 50% 200px, rgba(255,255,255,.95), rgba(255,255,255,0) 100%), linear-gradient(180deg, #f3f3f1 0%, #e9e9e6 55%, #dcdcd9 100%) !important; background-blend-mode: normal !important; }\nhtml[data-theme="dark"] body { background-color: #e8e8e5 !important; }';
+Object.keys(STYLES).forEach(function(k) {
+  var b = STYLES[k]; if (b.lightOf) return;
+  var key = k + 'light', ex = String(b.extra || '').split('data-style="' + k + '"').join('data-style="' + key + '"');
+  if (k === 'orca' && ORCA_SPARK) ex += '\n' + ORCA_SPARK.split('html[data-style="orca"]').join('html[data-style="' + key + '"]'); /* Orca's silver sparkle rule is keyed to its style name */
+  STYLES[key] = Object.assign({}, b, { label: b.label + ' (White Jersey)', lightOf: k, extra: ex + '\n' + LIGHT_CSS });
+});
 STYLES.blasty.outer = STYLES.flames.outer;   /* bottom layer: yellow */
 STYLES.blasty.top = undefined;               /* top layer stays white; the middle layer is Skate's red */
 STYLES.blasty.ctx = Object.assign({}, STYLES.skate.ctx, { card: { royal: STYLES.skate.map.royal } });
@@ -1276,7 +1295,7 @@ function applyStyle(key) {
   /* narrower screens shrink the twill layers, except where a style pins them to 14px */
   rs.setProperty('--stack-out-768', (st.stackPinned ? so : so * 11 / 14) + 'px');
   rs.setProperty('--stack-out-600', (st.stackPinned ? so : so * 9 / 14) + 'px');
-  STY = { key: key, layers: st.layers || ['#adafb8', '#b61d31', '#fbfaf4'], font: st.font || "'NHL Vancouver'", gap: st.numGap || 39, bold: st.numBold || 0, track: st.nameTrack || 0, band: st.numBand || 4, nameTwill: !!st.nameTwill, nameLayers: st.nameLayers || null, nameExtra: st.nameExtra || 0, sparkle: !!st.sparkle, nameArch: !!st.nameArch, nameBold: st.nameBold || 0, numMul: st.numMul || null, nameMul: st.nameMul || null, nameGapMul: st.nameGapMul != null ? st.nameGapMul : null, numClear: st.numClear || null, holes: !!st.holes, numShrink: st.numShrink || 0 };
+  STY = { key: key, base: st.lightOf || key, layers: st.layers || ['#adafb8', '#b61d31', '#fbfaf4'], font: st.font || "'NHL Vancouver'", gap: st.numGap || 39, bold: st.numBold || 0, track: st.nameTrack || 0, band: st.numBand || 4, nameTwill: !!st.nameTwill, nameLayers: st.nameLayers || null, nameExtra: st.nameExtra || 0, sparkle: !!st.sparkle, nameArch: !!st.nameArch, nameBold: st.nameBold || 0, numMul: st.numMul || null, nameMul: st.nameMul || null, nameGapMul: st.nameGapMul != null ? st.nameGapMul : null, numClear: st.numClear || null, holes: !!st.holes, numShrink: st.numShrink || 0 };
   if (key !== 'orca') {
     var src = Array.prototype.map.call(document.querySelectorAll('style:not(#theme-style)'), function(e) { return e.textContent; }).join('\n');
     var css = unifyStack(remapCss(src, st), st);
@@ -1434,7 +1453,7 @@ function tightenNumber() {
   /* the gap between the silver edge and the tag is 50px */
   el.style.marginBottom = (50 - (H - (base + desc + OUT))) + 'px';
   el.dataset.topInk = (PAD - OUT).toFixed(2); /* where the number's outline starts below its svg top (svg units) */
-  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul, shrinkTop: K > 1 && STY.numShrink ? STY.numShrink * BAND : 0, holes: STY.holes ? { r: FS * .0085 * .25, pitch: FS * .042 * .4 * 1.2 * 1.5 * .5 * (4 / 3) * 2 * .5 * 1.5, edge: FS * .8 * .045 } : null });
+  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.base === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul, shrinkTop: K > 1 && STY.numShrink ? STY.numShrink * BAND : 0, holes: STY.holes ? { r: FS * .0085 * .25, pitch: FS * .042 * .4 * 1.2 * 1.5 * .5 * (4 / 3) * 2 * .5 * 1.5, edge: FS * .8 * .045 } : null });
 }
 
 /* the name is drawn as twill too: letters sewn like the number, on the felt plate */
@@ -1552,7 +1571,7 @@ function renderNameTwill(box) {
     }).join('');
     if (panelW > 0 && W * webScale > panelW) webScale = panelW / W;
   }
-  tgt.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: (STY.nameBold || 0) * FS / 75.4, RING: RING, FONT: FONT, FS: FS, p: 'm', spark: false, plain: STY.key === 'canada', mul: STY.nameMul });
+  tgt.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: (STY.nameBold || 0) * FS / 75.4, RING: RING, FONT: FONT, FS: FS, p: 'm', spark: false, plain: STY.base === 'canada', mul: STY.nameMul });
   var nameSvg = tgt.querySelector('svg');
   if (nameSvg) { nameSvg.style.maxWidth = 'none'; nameSvg.style.width = (W * webScale).toFixed(2) + 'px'; }
   box.style.marginBottom = (4 * webScale * FS / 75.4).toFixed(2) + 'px'; /* 4px at web size, scaled with the lettering on phones */
