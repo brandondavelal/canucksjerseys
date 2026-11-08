@@ -541,6 +541,11 @@ html.lb-open, html.lb-open body { overflow: hidden; }
 html[data-theme="dark"] #view-detail .dm-ctrls { position: absolute; right: 10px; bottom: 10px; z-index: 4; display: flex; flex-direction: row; align-items: center; gap: 6px; }
 html[data-theme="dark"] #view-detail .dm-ctrls .dm-nav, html[data-theme="dark"] #view-detail .dm-ctrls .dm-max { position: static; left: auto; right: auto; top: auto; bottom: auto; transform: none; flex: none; }
 html[data-theme="dark"] #view-detail .dm-ctrls .dm-nav:active, html[data-theme="dark"] #view-detail .dm-ctrls .dm-max:active { transform: scale(.94); }
+/* previous / next jersey under the tag: the nav bar's own button style, one on each side of the tag's width */
+html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 330px; margin: 16px auto 0; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter { display: inline-block !important; flex: none; position: static; }
+@media (max-width: 768px) { html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { width: auto; max-width: none; margin: 16px calc(-1 * var(--stack-out-768, 22px)) 0; } }
+@media (max-width: 600px) { html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { margin: 16px calc(-1 * var(--stack-out-600, 18px)) 0; } }
 </style>
 </head>
 <body>
@@ -858,9 +863,9 @@ function openDetail(id, skipPush) {
   var tagType = { 'On-Ice Authentic MiC': '', 'Team Issued MiC': 'Team Issued', 'Game Worn': 'Game Worn' };
   var jt = Object.prototype.hasOwnProperty.call(tagType, p.jerseyType) ? tagType[p.jerseyType] : String(p.jerseyType || '').replace(/\s*MiC$/, '');
   var sz = p.size ? 'Size ' + String(p.size).replace(/Goalie Cut/i, 'GC').replace(/^(\d+)\s*G$/i, '$1 GC') : '';
-  var mfr = [p.year, p.manufacturer, p.model, jt, sz].filter(Boolean).join(' · ');
-  var condText = { NWOT: 'New without tags', NWT: 'New with tags' }[p.condition] || p.condition;
   var madeIn = /MiC$/.test(p.jerseyType || '') ? 'Made in Canada' : '';
+  var mfr = [p.year, p.manufacturer, p.model, jt, sz, madeIn].filter(Boolean).join(' · '); /* Made in Canada is part of the same line */
+  var condText = { NWOT: 'New without tags', NWT: 'New with tags' }[p.condition] || p.condition;
   /* the name patch is the Player column as written (e.g. "H. Sedin") */
   var lastName = (p.player || '').trim();
   S.curName = lastName;
@@ -873,8 +878,18 @@ function openDetail(id, skipPush) {
     (mfr  ? '<div class="dp-meta">'   + esc(mfr)     + '</div>' : '') +
     (patches.length ? '<div class="dp-extra">Patches: ' + esc(patches.join(' · ')) + '</div>' : '') +
     (p.notes ? '<div class="dp-extra">' + esc(p.notes) + '</div>' : '') +
-    (madeIn ? '<div class="dp-extra">' + madeIn + '</div>' : '') +
-    '</div>';
+    '</div>' +
+    /* previous / next jersey, one each side under the tag, in the same default order as the grid (wraps round) */
+    '<div class="dp-jnav"><button type="button" class="hdr-filter jn-btn" data-dir="-1" aria-label="Previous jersey">‹ Previous</button><button type="button" class="hdr-filter jn-btn" data-dir="1" aria-label="Next jersey">Next ›</button></div>';
+  S.curId = p.id;
+  document.querySelectorAll('#detail-panel .jn-btn').forEach(function(b) {
+    b.addEventListener('click', function() {
+      var list = S.products.filter(function(x) { return x.status !== 'Draft'; });
+      if (list.length < 2) return;
+      var i = 0; list.forEach(function(x, k) { if (x.id === S.curId) i = k; });
+      openDetail(list[(i + (+b.dataset.dir) + list.length) % list.length].id);
+    });
+  });
   show('detail');
   tightenNumber(); fitName();
   pageLoadReady(loadTok, di);
