@@ -1,1 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600"><rect width="800" height="600" fill="#0f2147"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+<defs><filter id="h" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" seed="4" result="n"/>
+<feColorMatrix in="n" type="matrix" values="0 0 0 0 .62  0 0 0 0 .63  0 0 0 0 .66  .9 0 0 0 -.42"/>
+</filter></defs>
+<rect width="800" height="600" fill="#17181b"/>
+<rect width="800" height="600" filter="url(#h)" opacity=".5"/>
+</svg>
