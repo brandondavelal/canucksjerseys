@@ -293,9 +293,9 @@ html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba {
 }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba > * { min-width: 0; min-height: 0; position: relative; box-sizing: border-box; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-logo { grid-column: 1; grid-row: 1 / 3; display: flex; align-items: stretch; background: #f4f4f2; border-radius: 9px; padding: 3% 0 3% 3%; margin: -.4% 0; }
-html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-logo svg { flex: 1 1 auto; min-width: 0; height: 100%; display: block; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-logo svg, html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-logo img { flex: 1 1 auto; min-width: 0; height: 100%; display: block; object-fit: contain; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-vert { writing-mode: vertical-rl; font-weight: 700; letter-spacing: .26em; font-size: clamp(5px, 1.9vw, 8.5px); text-transform: uppercase; white-space: nowrap; }
-html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-logo .dp-tag-nba-vert { color: #1d428a; flex: 0 0 auto; padding: 0 3%; display: flex; align-items: center; justify-content: center; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-logo .dp-tag-nba-vert { transform: rotate(180deg); color: #1d428a; flex: 0 0 auto; padding: 0 3%; display: flex; align-items: center; justify-content: center; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-size { grid-column: 2; grid-row: 1; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.55); outline: 1px solid #0b0b0c; outline-offset: -3px; font-size: clamp(13px, 4vw, 20px); font-weight: 500; letter-spacing: 0; text-align: center; line-height: 1.05; padding: 2px; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-info { grid-column: 3; grid-row: 1; display: grid; grid-template-rows: 1fr 1.2fr; gap: 1.6%; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-top, html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-second { border: 1px solid rgba(255,255,255,.55); display: flex; flex-direction: column; justify-content: center; padding: 3px 4px; text-align: center; overflow: hidden; overflow-wrap: anywhere; }
@@ -307,7 +307,7 @@ html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-second i:nth-chil
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-second i:nth-child(3) { top: 8px; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-meta { font-size: clamp(6px, 1.75vw, 8px); letter-spacing: .04em; text-transform: uppercase; font-weight: 600; line-height: 1.15; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-nike { grid-column: 4; grid-row: 1; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.55); padding: 0 16%; }
-html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-nike svg { width: 100%; height: auto; display: block; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-nike svg, html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-nike img { width: 100%; height: auto; display: block; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-len { grid-column: 5; grid-row: 1 / 3; margin: -3.4% -1.2% -3.4% 0; background: #0b0b0c; display: flex; align-items: center; justify-content: center; border-left: 1px solid rgba(255,255,255,.12); }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-len .dp-tag-nba-vert { font-size: clamp(5px, 1.7vw, 7.5px); }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-hand { grid-column: 2 / 5; grid-row: 2; background: #f6f6f3; color: #1c2f8f; font-family: "Bradley Hand", "Segoe Print", "Comic Sans MS", "Marker Felt", cursive; font-size: clamp(9px, 2.8vw, 12.5px); line-height: 1.15; padding: 2px 8px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
@@ -814,15 +814,21 @@ function jerseyStyle(p) {
 /* Knicks jerseys get an NBA jersey tag in place of the Mei Grey tag: size where the "52" is, team and title in the top box, year / brand / model / type in the second box, patches and notes in the white box */
 var NBA_LOGO_SVG = '<svg viewBox="0 0 205 400" aria-hidden="true"><defs><clipPath id="nbaClip"><rect width="205" height="400" rx="46"/></clipPath></defs><g clip-path="url(#nbaClip)"><rect width="205" height="400" fill="#1d428a"/><path d="M104 0H205V400H112C132 300 116 140 104 0Z" fill="#c8102e"/></g><g fill="#fff"><ellipse cx="122" cy="44" rx="23" ry="27"/><path d="M98 66C72 70 54 86 46 112L30 172L38 198C56 162 68 134 82 116C94 154 96 192 84 234C68 278 46 302 38 324C54 324 72 308 90 292C106 278 124 264 142 264L150 322C148 348 142 368 146 376C160 370 170 342 174 320C178 296 170 276 162 254C152 224 148 196 150 170C154 142 152 112 142 86C136 68 120 60 98 66Z"/><path d="M142 86C152 122 160 160 168 190L182 186C172 150 162 112 152 82Z"/><circle cx="174" cy="220" r="30"/></g><text x="102" y="392" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="800" font-size="74" letter-spacing="-3" fill="#fff" stroke="#fff" stroke-width="1.5">NBA</text></svg>';
 var NIKE_SVG = '<svg viewBox="20 195 560 215" aria-hidden="true"><path d="M98 212C60 255 25 310 38 355C55 400 110 400 165 380C280 340 420 270 570 204C440 238 300 268 160 314C118 314 85 290 85 255C85 240 90 226 98 212Z" fill="#fff"/></svg>';
+/* the real logo files win when they are in the project (images/nba-logo.svg|png, images/nike-logo.svg|png); the SVG drawings above are the fallback */
+function logoImg(base, fallbackSvg) {
+  var tries = [base + '.svg', base + '.png'];
+  return '<img alt="" src="' + tries[0] + '" onerror="if(this.src.indexOf(\'.svg\')>-1){this.src=\'' + tries[1] + '\'}else{this.outerHTML=window.NBA_FALLBACK[\'' + base + '\']}">';
+}
+window.NBA_FALLBACK = { 'images/nba-logo': NBA_LOGO_SVG, 'images/nike-logo': NIKE_SVG };
 function nbaTagHtml(p, o) {
   var size = String(p.size || '').replace(/Goalie Cut/i, 'GC').replace(/^(\d+)\s*G$/i, '$1 GC');
   var hand = [o.patches.length ? 'Patches: ' + o.patches.join(', ') : '', p.notes ? 'Notes: ' + p.notes : ''].filter(Boolean);
   return '<div class="dp-tag-nba">' +
-    '<div class="dp-tag-nba-logo">' + NBA_LOGO_SVG + '<span class="dp-tag-nba-vert">AUTHENTICS</span></div>' +
+    '<div class="dp-tag-nba-logo">' + logoImg('images/nba-logo') + '<span class="dp-tag-nba-vert">AUTHENTICS</span></div>' +
     '<div class="dp-tag-nba-size">' + esc(size) + '</div>' +
     '<div class="dp-tag-nba-info"><div class="dp-tag-nba-top">' + (p.team ? '<div class="dp-tag-nba-team">' + esc(p.team) + '</div>' : '') + '<div class="dp-tag-nba-title">' + esc(tagTitle(p.title || '')) + '</div></div>' +
       '<div class="dp-tag-nba-second"><i></i><i></i><i></i><div class="dp-tag-nba-meta">' + esc(o.meta) + '</div></div></div>' +
-    '<div class="dp-tag-nba-nike">' + NIKE_SVG + '</div>' +
+    '<div class="dp-tag-nba-nike">' + logoImg('images/nike-logo') + '</div>' +
     '<div class="dp-tag-nba-len"><span class="dp-tag-nba-vert">LENGTH +6</span></div>' +
     '<div class="dp-tag-nba-hand">' + hand.map(function(h) { return '<div>' + esc(h) + '</div>'; }).join('') + '</div>' +
   '</div>';
