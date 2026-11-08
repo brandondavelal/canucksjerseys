@@ -1056,7 +1056,9 @@ var kn = function(f) { return function(h, s, l) { return f(l); }; };
 /* Knicks: black page, orange glass, blue trim, triple twill (white on top, blue, orange at the bottom) */
 STYLES.knicks = Object.assign({}, STYLES.skate, {
   label: 'Knicks', font: STYLES.current.font, nameTrack: STYLES.current.nameTrack, numGap: STYLES.current.numGap + 12,
-  layers: [KN_ORANGE, KN_BLUE, KN_WHITE], nameLayers: [KN_WHITE]   /* the name is a single white layer */
+  layers: [KN_ORANGE, KN_WHITE],              /* number: white on orange */
+  nameLayers: [KN_WHITE],                      /* name: a single white layer */
+  stackLayers: [KN_ORANGE, KN_BLUE, KN_WHITE]  /* photo stack: white, blue, orange */
 });
 STYLES.knicks.map = {
   navy: kn(function(l) { return [214, .62, l < .045 ? l * 2 : Math.min(.36, .17 + (l - .05) * 4)]; }),
