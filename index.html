@@ -1113,7 +1113,7 @@ STYLES.orcagradient = Object.assign({}, STYLES.orca, {
   }
 });
 STYLES.orcagradient.extra = (ORCA_SPARK ? ORCA_SPARK.split('html[data-style="orca"]').join('html[data-style="orcagradient"]') + '\n' + ORCA_SPARK.split('html[data-style="orca"]').join('html[data-style="orcagradient"]').replace('.dl-blue::after', '.dl-white::after') + '\n' : '') +
-  '/* the page runs from Orca navy (top) to Orca red (bottom) */\nhtml[data-theme="dark"]::before { background: var(--grain), radial-gradient(ellipse 60% 35% at 50% 200px, rgba(70,110,210,.45), rgba(70,110,210,0) 100%), linear-gradient(180deg, #02071a 0%, #0a1838 28%, #5a1230 58%, #b61d31 88%) !important; background-blend-mode: overlay, normal, normal !important; }';
+  '/* the page runs from Orca navy (top) to Orca red (bottom) */\nhtml[data-theme="dark"]::before { background: var(--grain), radial-gradient(ellipse 60% 35% at 50% 200px, rgba(70,110,210,.45), rgba(70,110,210,0) 100%), linear-gradient(180deg, #02071a 0%, #0a1838 52%, #4a1030 70%, #b61d31 92%) !important; background-blend-mode: overlay, normal, normal !important; }';
 
 
 /* Flames: red page, black glass, yellow trim, double twill (red on top, yellow at the bottom) */
