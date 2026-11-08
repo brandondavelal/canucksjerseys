@@ -720,9 +720,9 @@ function renderGallery() {
 }
 
 /* the year is listed under the title, so the title doesn't repeat it */
-function shownTitle(t) { return String(t || '').replace(/\b(?:19|20)\d{2}\b(?!\s+Olympics)\s*/g, '').replace(/\s{2,}/g, ' ').replace(/'\s+/g, "' ").trim(); }
+function shownTitle(t) { return String(t || '').trim(); } /* titles are shown exactly as they are in the sheet */
 /* the tag's title also drops the Home / Away / Alt designation */
-function tagTitle(t) { return shownTitle(t).replace(/\b(?:Home|Away|Alt)\b\s*/g, '').replace(/(Reverse Retro 1\.0)\s+Gradient\b/, '$1').replace(/\s{2,}/g, ' ').trim(); }
+function tagTitle(t) { return shownTitle(t); }
 /* the style a jersey's page opens in, from the sheet's Team and Style (name) columns */
 function jerseyStyle(p) {
   var t = String(p.title || '').toLowerCase(), team = String(p.team || ''), yr = firstYear(p) || 0;
@@ -736,7 +736,7 @@ function jerseyStyle(p) {
   if (/modern skate/.test(t)) return 'mskate';
   if (/skate/.test(t)) return 'skate';
   if (/orca/.test(t) && /gradient/.test(t)) return 'orcagradient';
-  if (/stick (in|and) rink/.test(t)) return 'rink';
+  if (/stick (in|and) rink/.test(t)) return yr >= 2010 ? 'modernrink' : 'rink'; /* the Reebok / Adidas-era ones are Modern Stick in Rink */
   if (/orca/.test(t)) return 'orca';
   if (/modern/.test(t)) return 'current';
   if (/wordmark/.test(t) && yr && yr < 2010) return 'orca'; /* the 2007 Wordmark is the Orca look */
@@ -987,6 +987,8 @@ STYLES.current.extra = STYLES.rink.extra;
 STYLES.current.stackOut = 14;
 STYLES.current.nameTrack = .8;
 STYLES.current.numGap = 8;
+/* Modern Stick in Rink: Stick-in-Rink's colours and chrome, with Modern's twill / name / number treatment (Edge lettering, tight name, lighter number) */
+STYLES.modernrink = Object.assign({}, STYLES.rink, { label: 'Modern Stick in Rink', font: STYLES.current.font, nameTrack: STYLES.current.nameTrack, numGap: STYLES.current.numGap, numBold: STYLES.current.numBold });
 STYLES.skate.numGap = 35;
 /* the red and white bands of the number are 50% thicker */
 STYLES.skate.numBand = 6;
@@ -1023,8 +1025,8 @@ STYLES.flyingv.ctx = Object.assign({}, STYLES.skate.ctx, { mid: { red: function(
 /* Skate only (set after Modern Skate and Flying V copy it): 4px more space between the name's letters */
 STYLES.skate.nameExtra = 4;
 STYLES.flyingv.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(255,170,0').split('rgba(255,235,120').join('rgba(255,200,90').split('rgba(255,150,0').join('rgba(255,120,0') + '\n#view-detail .dl-blue { display: none !important; }\n/* the bottom (orange-red) layer is half as thick */\n#view-detail .dl-gold { inset: calc(-10.5px * var(--tw, 1)) !important; }\n@media (max-width: 768px) { #view-detail .dl-gold { inset: -8.25px !important; } }\n@media (max-width: 600px) { #view-detail .dl-gold { inset: -6.75px !important; } }';
-/* Skate and Modern Skate: the glass cards are tinted yellow, not red (set after Flying V has copied Skate, so Flying V keeps its own) */
-var SKATE_CARD = { card: { royal: function(h, s, l) { return [52, 1, Math.min(.6, l * 1.95), 2.1]; } } };
+/* Skate and Modern Skate: the glass cards are white, same as Modern (set after Flying V has copied Skate, so Flying V keeps its own) */
+var SKATE_CARD = { card: STYLES.current.ctx.card };
 STYLES.skate.ctx = Object.assign({}, STYLES.skate.ctx, SKATE_CARD);
 STYLES.mskate.ctx = Object.assign({}, STYLES.mskate.ctx, SKATE_CARD);
 
@@ -1392,6 +1394,7 @@ function tightenNumber() {
   var texts = digits.map(function(d, i) { return '<text x="' + (x[i] + off).toFixed(1) + '" y="' + base.toFixed(1) + '">' + esc(d) + '</text>'; }).join('');
   /* the gap between the silver edge and the tag is 50px */
   el.style.marginBottom = (50 - (H - (base + desc + OUT))) + 'px';
+  el.dataset.topInk = (PAD - OUT).toFixed(2); /* where the number's outline starts below its svg top (svg units) */
   el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul, holes: STY.holes ? { r: FS * .0085 * .25, pitch: FS * .042 * .4 * 1.2, edge: FS * .8 * .03 } : null });
 }
 
@@ -1481,16 +1484,23 @@ function renderNameTwill(box) {
   if (panelW > 0 && W * webScale > panelW) webScale = panelW / W; /* a very long name never outgrows the column */
   var texts = chars.map(function(ch, i) { if (L.xs[i] === null) return ''; if (ch === '.') { var ds = FS * DOT; return '<rect x="' + (L.xs[i] + PAD).toFixed(1) + '" y="' + (base + inkMeasure(FS, FONT, 'H').actualBoundingBoxDescent - ds).toFixed(1) + '" width="' + ds.toFixed(1) + '" height="' + ds.toFixed(1) + '"/>'; } return '<text x="' + (L.xs[i] + PAD).toFixed(1) + '" y="' + (base + L.ys[i]).toFixed(1) + '">' + esc(ch) + '</text>'; }).join('');
   /* arched name (Knicks): the letters keep their spacing along the arc, each standing on it and turned to follow it */
+  var archSag = 0;
   if (STY.nameArch && L.inkW) {
+    var cs = [], first = null, lastC = null;
+    chars.forEach(function(ch, i) { if (L.xs[i] === null) return; var iw0 = L.inkW[i], c0 = L.xs[i] + (iw0[1] - iw0[0]) / 2; if (first === null) first = c0; lastC = c0; });
+    /* letters are set at perfectly even steps along the arc, centred on the middle of the name */
+    var nL = 0; chars.forEach(function(ch, i) { if (L.xs[i] !== null) nL++; });
+    var stepC = nL > 1 ? (lastC - first) / (nL - 1) : 0, k = 0;
     var R = L.w * .725, pts = [], minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity, hDot = inkMeasure(FS, FONT, 'H').actualBoundingBoxDescent;
     chars.forEach(function(ch, i) {
       if (L.xs[i] === null) return;
-      var iw = L.inkW[i], oc = (iw[1] - iw[0]) / 2, th = (L.xs[i] + oc - L.w / 2) / R, hw = (iw[0] + iw[1]) / 2;
+      var iw = L.inkW[i], oc = (iw[1] - iw[0]) / 2, th = ((k++) - (nL - 1) / 2) * stepC / R, hw = (iw[0] + iw[1]) / 2;
       var bx = R * Math.sin(th), by = R * (1 - Math.cos(th)), c = Math.cos(th), sn = Math.sin(th);
       [[-hw, -L.asc], [hw, -L.asc], [-hw, L.desc], [hw, L.desc]].forEach(function(q) {
         var x = bx + q[0] * c - q[1] * sn, y = by + q[0] * sn + q[1] * c;
         minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y);
       });
+      archSag = Math.max(archSag, by);
       pts.push({ ch: ch, bx: bx, by: by, deg: th * 180 / Math.PI, oc: oc });
     });
     var tx = PAD - minX, ty = PAD - minY;
@@ -1506,6 +1516,13 @@ function renderNameTwill(box) {
   var nameSvg = tgt.querySelector('svg');
   if (nameSvg) { nameSvg.style.maxWidth = 'none'; nameSvg.style.width = (W * webScale).toFixed(2) + 'px'; }
   box.style.marginBottom = (4 * webScale * FS / 75.4).toFixed(2) + 'px'; /* 4px at web size, scaled with the lettering on phones */
+  if (STY.nameArch) {
+    /* the visible gap from the arch to the top of the number is cut by a third */
+    var numBox = document.querySelector('#detail-panel .dp-num'), numSv = numBox && numBox.querySelector('svg');
+    var nsc = numSv && numSv.viewBox.baseVal.width ? numSv.getBoundingClientRect().width / numSv.viewBox.baseVal.width : webScale;
+    var visGap = 4 * webScale * FS / 75.4 + PAD * webScale + (numBox ? parseFloat(numBox.dataset.topInk || 0) : 0) * nsc + archSag * webScale; /* measured from the arch's crown (middle letter) to the top of the number */
+    box.style.marginBottom = (4 * webScale * FS / 75.4 - visGap / 3).toFixed(2) + 'px';
+  }
 }
 
 document.getElementById('sort-select').addEventListener('change', function(e) { S.sort = e.target.value; e.target.classList.toggle('on', e.target.value !== 'default'); renderGallery(); });
