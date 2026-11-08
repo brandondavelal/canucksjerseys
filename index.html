@@ -565,6 +565,13 @@ html[data-style="other"] .hdr-left:not(.detail) ~ .hdr-right #style-select, html
 /* back button: an arrow with the word "All" */
 html[data-theme="dark"] .hdr-back { width: auto; min-width: 31px; padding: 0 14px 0 11px; gap: 6px; border-radius: 999px; font-size: 12px; }
 html[data-theme="dark"] .hdr-back-label { display: block; line-height: 1; }
+/* detail-page buttons use the home page's button metrics (the home page's pills are the reference): 10px type, .5px tracking, 7px 13px padding, 9px gaps */
+html[data-theme="dark"] .hdr-back { width: auto; height: auto; min-width: 0; padding: 7px 13px; gap: 6px; font-size: 10px; letter-spacing: .5px; line-height: 10px; }
+html[data-theme="dark"] .hdr-back-chevron { height: 10px; }
+html[data-theme="dark"] .hdr-back-chevron svg { width: 12px; height: 10px; }
+@media (min-width: 769px) { .hdr-left.detail ~ .hdr-right .hdr-filter.jn-hdr { font-size: 10px; gap: 6px; } }
+.hdr-filter.jn-hdr svg, html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter svg { width: 12px; height: 10px; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter { font-size: 10px; gap: 6px; }
 </style>
 </head>
 <body>
