@@ -547,6 +547,17 @@ html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter { displa
 html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter svg { display: block; flex: none; }
 @media (max-width: 768px) { html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { width: auto; max-width: none; margin: 0 calc(-1 * var(--stack-out-768, 22px)) 24px; } }
 @media (max-width: 600px) { html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { margin: 0 calc(-1 * var(--stack-out-600, 18px)) 24px; } }
+/* the style dropdown stays hidden until the S key is pressed */
+#style-select { display: none !important; }
+html.show-style #style-select { display: block !important; }
+/* previous / next jersey: in the nav bar (after the style dropdown) on wider screens, above the name and number on phones and tablets */
+.hdr-filter.jn-hdr { display: none; }
+@media (min-width: 769px) {
+  .hdr-left.detail ~ .hdr-right .hdr-filter.jn-hdr { display: inline-flex !important; align-items: center; gap: 7px; font-size: 12px; flex: none; }
+  .hdr-left.detail ~ .hdr-right .hdr-filter.jn-hdr svg { display: block; flex: none; }
+  html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { display: none !important; }
+}
+@media (min-width: 769px) and (max-width: 1100px) { .hdr-left.detail ~ .hdr-right .hdr-filter.jn-hdr span { display: none; } }
 </style>
 </head>
 <body>
@@ -573,6 +584,7 @@ html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter svg { di
     </div>
     <div class="hdr-right">
       <select id="style-select" class="hdr-sort" aria-label="Style"></select>
+      <button type="button" class="hdr-filter jn-btn jn-hdr" data-dir="-1" aria-label="Previous jersey"><svg viewBox="0 0 12 10" width="13" height="11" aria-hidden="true"><path d="M11.2 5H1.4M5.2 1L1.2 5l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Previous</span></button><button type="button" class="hdr-filter jn-btn jn-hdr" data-dir="1" aria-label="Next jersey"><span>Next</span><svg viewBox="0 0 12 10" width="13" height="11" aria-hidden="true"><path d="M0.8 5H10.6M6.8 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <select id="sort-select" class="hdr-sort">
         <option value="default" selected>Default</option>
         <option value="newest">Newest</option>
@@ -830,6 +842,13 @@ function pageLoadReady(tok, di) {
   }).then(function() { pageLoadEnd(tok); });
 }
 
+/* previous / next jersey through the default order (the grid's Default sort); the last wraps to the first and the first to the last */
+function stepJersey(dir) {
+  var list = S.products.filter(function(x) { return x.status !== 'Draft'; });
+  if (list.length < 2) return;
+  var i = 0; list.forEach(function(x, k) { if (x.id === S.curId) i = k; });
+  openDetail(list[(i + dir + list.length) % list.length].id);
+}
 function openDetail(id, skipPush) {
   var p = S.products.filter(function(x) { return x.id === id; })[0];
   if (!p) return;
@@ -881,14 +900,7 @@ function openDetail(id, skipPush) {
     (mfr  ? '<div class="dp-meta">'   + esc(mfr)     + '</div>' : '') +
     '</div>';
   S.curId = p.id;
-  document.querySelectorAll('#detail-panel .jn-btn').forEach(function(b) {
-    b.addEventListener('click', function() {
-      var list = S.products.filter(function(x) { return x.status !== 'Draft'; });
-      if (list.length < 2) return;
-      var i = 0; list.forEach(function(x, k) { if (x.id === S.curId) i = k; });
-      openDetail(list[(i + (+b.dataset.dir) + list.length) % list.length].id);
-    });
-  });
+  document.querySelectorAll('#detail-panel .jn-btn').forEach(function(b) { b.addEventListener('click', function() { stepJersey(+b.dataset.dir); }); });
   show('detail');
   tightenNumber(); fitName();
   pageLoadReady(loadTok, di);
@@ -1568,16 +1580,23 @@ function setFilter(f) {
   renderGallery();
 }
 
-document.querySelectorAll('.hdr-filter').forEach(function(btn) {
+document.querySelectorAll('.hdr-filter:not(.jn-btn)').forEach(function(btn) {
   btn.addEventListener('click', function() { setFilter(btn.dataset.filter); });
 });
 
 document.getElementById('filter-select').addEventListener('change', function(e) { setFilter(e.target.value); });
 
+document.querySelectorAll('.jn-hdr').forEach(function(b) { b.addEventListener('click', function() { stepJersey(+b.dataset.dir); }); });
 document.getElementById('btn-back').addEventListener('click', function() { history.pushState({}, '', location.pathname + location.search); show('gallery'); renderGallery(); });
 document.getElementById('logo').addEventListener('click', function() { if (S.view !== 'gallery') { history.pushState({}, '', location.pathname + location.search); show('gallery'); renderGallery(); } });
 document.addEventListener('keydown', function(e) { if (e.key==='Escape' && S.view==='detail') { history.pushState({}, '', location.pathname + location.search); show('gallery'); renderGallery(); } });
 window.addEventListener('popstate', function() { route(); });
+/* the style dropdown is hidden until the S key is pressed (press S again to hide it) */
+document.addEventListener('keydown', function(e) {
+  if ((e.key !== 's' && e.key !== 'S') || e.metaKey || e.ctrlKey || e.altKey) return;
+  var t = e.target && e.target.tagName; if (t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return;
+  document.documentElement.classList.toggle('show-style');
+});
 /* detail page: left / right arrow keys step through the photos (the lightbox has its own handler while it is open) */
 document.addEventListener('keydown', function(e) {
   if (S.view !== 'detail' || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
