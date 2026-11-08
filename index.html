@@ -550,6 +550,8 @@ html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter svg { di
 /* on jersey pages the style dropdown stays hidden until the S key is pressed */
 #style-select { display: none !important; }
 html.show-style #style-select { display: block !important; }
+/* the Other style isn't in any dropdown, so the (empty) dropdown is hidden while it's applied */
+html[data-style="other"] .hdr-left:not(.detail) ~ .hdr-right #style-select, html[data-style="other"] #style-select { display: none !important; }
 /* on the home grid the style dropdown is always visible (as before; phones still hide it there); only the jersey pages wait for S */
 @media (min-width: 769px) { .hdr-left:not(.detail) ~ .hdr-right #style-select { display: block !important; } }
 /* previous / next jersey: in the nav bar (after the style dropdown) on wider screens, above the name and number on phones and tablets */
@@ -650,7 +652,7 @@ var HOME_STYLES = ['orca', 'rink', 'skate', 'current'];
 function syncStyleOptions() {
   var sel = document.getElementById('style-select'); if (!sel) return;
   /* Canada is offered on the home page only while the Canada filter is on */
-  var keys = S.view === 'detail' ? Object.keys(STYLES) : (S.filter === 'canada' ? ['orca', 'rink', 'canada', 'skate', 'current'] : HOME_STYLES);
+  var keys = S.view === 'detail' ? Object.keys(STYLES).filter(function(k) { return k !== 'other'; }) : (S.filter === 'canada' ? ['orca', 'rink', 'canada', 'skate', 'current'] : HOME_STYLES);
   if (sel.options.length === keys.length && Array.prototype.every.call(sel.options, function(o, i) { return o.value === keys[i]; })) { sel.value = STY.key; return; }
   sel.innerHTML = keys.map(function(k) { return '<option value="' + k + '">' + STYLES[k].label + '</option>'; }).join('');
   sel.value = STY.key;
@@ -662,7 +664,7 @@ function show(name) {
   var og = name === 'gallery';
   document.querySelector('.hdr-left').classList.toggle('detail', !og);
   /* the home page is always Orca (Canada while the Canada filter is on), however it's reached */
-  if (og && typeof applyStyle === 'function') { var homeStyle = S.filter === 'canada' ? 'canada' : 'orca'; if (STY.key !== homeStyle) applyStyle(homeStyle); }
+  if (og && typeof applyStyle === 'function') { var homeStyle = S.filter === 'canada' ? 'canada' : (S.filter === 'other' || S.filter === 'sale') ? 'other' : 'orca'; if (STY.key !== homeStyle) applyStyle(homeStyle); }
   syncStyleOptions();
   alignBack();
   window.scrollTo(0,0);
@@ -1167,6 +1169,12 @@ STYLES.orcagradient.extra = (ORCA_SPARK ? ORCA_SPARK.split('html[data-style="orc
   '/* the page runs from Orca navy (top) to Orca red (bottom) */\nhtml[data-theme="dark"]::before { background: var(--grain), radial-gradient(ellipse 60% 35% at 50% 200px, rgba(70,110,210,.45), rgba(70,110,210,0) 100%), linear-gradient(180deg, #02071a 0%, #0a1838 44%, #4a1030 64%, #b61d31 90%) !important; background-blend-mode: overlay, normal, normal !important; }';
 
 
+/* Other (the Other filter's page; in no dropdown): Canada's black nav glass and white glass cards, Orca's silver nav chrome, and the Knicks Statement's black page */
+STYLES.other = Object.assign({}, STYLES.canada, { label: 'Other' });
+STYLES.other.map = { navy: STYLES.knicksstatement.map.navy, royal: STYLES.canada.map.royal, red: STYLES.canada.map.red }; /* no silver mapping: the nav chrome stays Orca's silver */
+STYLES.other.bgRoyal = STYLES.knicksstatement.bgRoyal;
+STYLES.other.ctx = STYLES.canada.ctx;
+
 /* Flames: red page, black glass, yellow trim, double twill (red on top, yellow at the bottom) */
 STYLES.flames = Object.assign({}, STYLES.canada, {
   label: 'Flames', font: "'NHL Calgary'",
@@ -1203,7 +1211,7 @@ STYLES.blasty.extra = (STYLES.blasty.extra || '') + FL_STACK;
 /* White-jersey twins: every style also has a "(White Jersey)" version, identical except the page is an off-white neutral light grey (the lighting glow and a touch of grain stay) */
 var LIGHT_CSS = 'html[data-theme="dark"]::before { background: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27240%27%20height=%27240%27%3E%3Cfilter%20id=%27g%27%20x=%270%27%20y=%270%27%20width=%27100%25%27%20height=%27100%25%27%3E%3CfeTurbulence%20type=%27fractalNoise%27%20baseFrequency=%27.85%27%20numOctaves=%272%27%20stitchTiles=%27stitch%27/%3E%3CfeColorMatrix%20values=%270%200%200%200%200%20%200%200%200%200%200%20%200%200%200%200%200%20%20.5%200%200%200%20-.12%27/%3E%3C/filter%3E%3Crect%20width=%27240%27%20height=%27240%27%20filter=%27url%28%23g%29%27/%3E%3C/svg%3E") 0 0 / 240px 240px, radial-gradient(ellipse 60% 38% at 50% 200px, rgba(255,255,255,.95), rgba(255,255,255,0) 100%), linear-gradient(180deg, #f3f3f1 0%, #e9e9e6 55%, #dcdcd9 100%) !important; background-blend-mode: normal !important; }\nhtml[data-theme="dark"] body { background-color: #e8e8e5 !important; }';
 Object.keys(STYLES).forEach(function(k) {
-  var b = STYLES[k]; if (b.lightOf) return;
+  var b = STYLES[k]; if (b.lightOf || k === 'other') return;
   var key = k + 'light', ex = String(b.extra || '').split('data-style="' + k + '"').join('data-style="' + key + '"');
   if (k === 'orca' && ORCA_SPARK) ex += '\n' + ORCA_SPARK.split('html[data-style="orca"]').join('html[data-style="' + key + '"]'); /* Orca's silver sparkle rule is keyed to its style name */
   STYLES[key] = Object.assign({}, b, { label: b.label + ' (White Jersey)', lightOf: k, extra: ex + '\n' + LIGHT_CSS });
@@ -1594,9 +1602,10 @@ function setFilter(f) {
     b.classList.toggle('active', b.dataset.filter === f);
   });
   document.getElementById('filter-select').value = f;
-  /* the Canada filter brings the Canada style with it; leaving the filter drops back to Orca */
+  /* the Canada filter brings the Canada style, and the Other and For Sale filters the Other style (in no dropdown); leaving the filter drops back to Orca */
   if (f === 'canada') applyStyle('canada');
-  else if (STY.key === 'canada') applyStyle('orca');
+  else if (f === 'other' || f === 'sale') applyStyle('other');
+  else if (STY.key === 'canada' || STY.key === 'other') applyStyle('orca');
   syncStyleOptions();
   renderGallery();
 }
