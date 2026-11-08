@@ -535,6 +535,10 @@ html.lb-open, html.lb-open body { overflow: hidden; }
 .pl-spin { width: 26px; height: 26px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,.16); border-top-color: rgba(255,255,255,.75); animation: plFade .3s .3s both, plSpin .8s linear infinite; }
 @keyframes plSpin { to { transform: rotate(360deg); } }
 @keyframes plFade { from { opacity: 0; } to { opacity: 1; } }
+/* photo controls: previous / next / full screen sit together in one row in the bottom-right corner of the photo */
+html[data-theme="dark"] #view-detail .dm-ctrls { position: absolute; right: 10px; bottom: 10px; z-index: 4; display: flex; flex-direction: row; align-items: center; gap: 6px; }
+html[data-theme="dark"] #view-detail .dm-ctrls .dm-nav, html[data-theme="dark"] #view-detail .dm-ctrls .dm-max { position: static; left: auto; right: auto; top: auto; bottom: auto; transform: none; flex: none; }
+html[data-theme="dark"] #view-detail .dm-ctrls .dm-nav:active, html[data-theme="dark"] #view-detail .dm-ctrls .dm-max:active { transform: scale(.94); }
 </style>
 </head>
 <body>
@@ -830,7 +834,7 @@ function openDetail(id, skipPush) {
   di.innerHTML = (imgs.length > 1 ? '<div class="detail-thumbs"><div class="detail-thumbs-in">' + imgs.map(function(src, i) {
       return '<button type="button" class="detail-thumb' + (i === 0 ? ' on' : '') + '" data-i="' + i + '" aria-label="Photo ' + (i + 1) + '"><img decoding="async" src="' + src + '" alt=""></button>';
     }).join('') + '</div></div>' : '') +
-    '<div class="detail-main"><img decoding="async" src="' + imgs[0] + '" alt="' + esc(p.player) + '">' + (imgs.length > 1 ? navBtn('prev') + navBtn('next') : '') + '<button type="button" class="dm-max" aria-label="View full screen"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5L9 7M2.5 13.5L7 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>';
+    '<div class="detail-main"><img decoding="async" src="' + imgs[0] + '" alt="' + esc(p.player) + '"><div class="dm-ctrls">' + (imgs.length > 1 ? navBtn('prev') + navBtn('next') : '') + '<button type="button" class="dm-max" aria-label="View full screen"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5L9 7M2.5 13.5L7 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>';
   var cur = 0, thumbs = di.querySelectorAll('.detail-thumb'), prevB = di.querySelector('.dm-prev'), nextB = di.querySelector('.dm-next');
   /* show photo i; the arrows only appear where there is another photo in that direction */
   var showPhoto = function(i) {
