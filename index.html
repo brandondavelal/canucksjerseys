@@ -1049,7 +1049,7 @@ STYLES.millionaires.numGap = 13;
 STYLES.millionaires.extra = '#view-detail .dl-blue, #view-detail .dl-gold { display: none !important; }\n#view-detail .dl-white { inset: calc(-14px * var(--tw, 1)) !important; box-shadow: 0 8px 18px rgba(0,0,0,.3), 0 1px 3px rgba(0,0,0,.28) !important; }\n@media (max-width: 768px) { #view-detail .dl-white { inset: -11px !important; } }\n@media (max-width: 600px) { #view-detail .dl-white { inset: -9px !important; } }\nhtml[data-theme="dark"] #view-detail #detail-panel > div.dp-name { color: #f1e6cf; }\nhtml[data-theme="dark"] .hdr-filter.hdr-filter-sale, html[data-theme="dark"] .hdr-filter.hdr-filter-sale.active, html[data-theme="dark"] .hdr-filter.hdr-filter-sale:active { color: #5e1d32 !important; }';
 
 /* ---- Knicks, Flames, Blasty ---- */
-var KN_ORANGE = '#f58426', KN_BLUE = '#006bb6', KN_WHITE = '#fbfaf4';
+var KN_ORANGE = '#f68220', KN_BLUE = '#25579c', KN_WHITE = '#fbfaf4';
 var FL_YELLOW = '#ffd23f', FL_RED = '#c8102e';
 var kn = function(f) { return function(h, s, l) { return f(l); }; };
 
@@ -1068,12 +1068,12 @@ STYLES.knicks.outer = kn(function(l) { return [27, .91, .4 + .2 * l]; });   /* b
 STYLES.knicks.top = undefined;                                               /* top layer stays white */
 STYLES.knicks.ink = [27, .91, .5];
 STYLES.knicks.ctx = {
-  mid: { red: kn(function(l) { return [205, 1, l * .88]; }) },               /* middle layer: blue */
-  nav: { silver: kn(function(l) { return [207, 1, .22 + .5 * l]; }) },      /* the nav trim is blue */
+  mid: { red: kn(function(l) { return [214, .62, l * .93]; }) },               /* middle layer: blue */
+  nav: { silver: kn(function(l) { return [214, .62, .22 + .5 * l]; }) },     /* the nav trim is blue */
   card: { royal: kn(function(l) { return [27, .91, Math.min(.58, l * 1.9), 2.1]; }) },
   btn: { royal: STYLES.skate.ctx.btn.royal, red: kn(function(l) { return [27, .91, Math.max(l * .88, .43), 1]; }) }
 };
-STYLES.knicks.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(0,107,182').split('rgba(255,235,120').join('rgba(110,180,235').split('rgba(255,150,0').join('rgba(0,70,130').split('#ffe84a').join(KN_WHITE);
+STYLES.knicks.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(37,87,156').split('rgba(255,235,120').join('rgba(120,160,215').split('rgba(255,150,0').join('rgba(22,54,105').split('#ffe84a').join(KN_WHITE);
 
 /* Flames: red page, black glass, yellow trim, double twill (red on top, yellow at the bottom) */
 STYLES.flames = Object.assign({}, STYLES.canada, {
