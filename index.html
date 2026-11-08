@@ -1100,7 +1100,7 @@ KN_ASSOC.ctx = Object.assign({}, STYLES.knicks.ctx, { nav: { silver: kn(function
 KN_ASSOC.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(25,101,200').split('rgba(255,235,120').join('rgba(120,160,215').split('rgba(255,150,0').join('rgba(22,54,105').split('#ffe84a').join(KN_BLUE) + '\n/* white page, and no name bar */\nhtml[data-theme="dark"]::before { background: #fff !important; }\nhtml[data-theme="dark"] body { background-color: #fff !important; }\n#view-detail .dl.dl-patch { display: none !important; }';
 
 /* Knicks Statement: black page, orange glass, blue trim; number and name orange on blue, photo stack orange on blue on white */
-STYLES.knicksstatement = Object.assign({}, KN_ASSOC, { nameLayers: [KN_ORANGE] }); /* the name is a single orange layer */
+STYLES.knicksstatement = Object.assign({}, KN_ASSOC, { nameLayers: [KN_ORANGE], layers: [KN_WHITE, KN_ORANGE] }); /* the name is a single orange layer; the number is orange on white */
 STYLES.knicksstatement.map = Object.assign({}, STYLES.knicks.map, { navy: kn(function(l) { return [0, 0, Math.min(.07, l * .8)]; }) });
 STYLES.knicksstatement.bgRoyal = STYLES.skate.bgRoyal;
 STYLES.knicksstatement.extra = KN_ASSOC.extra.replace('html[data-theme="dark"]::before { background: #fff !important; }\nhtml[data-theme="dark"] body { background-color: #fff !important; }\n', '').replace('/* white page, and no name bar */', '/* no name bar */');
