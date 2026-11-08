@@ -859,7 +859,6 @@ function openDetail(id, skipPush) {
     (p.title  ? '<div class="dp-title">'  + esc(tagTitle(p.title)) + '</div>' : '') +
     (mfr  ? '<div class="dp-meta">'   + esc(mfr)     + '</div>' : '') +
     (patches.length ? '<div class="dp-extra">Patches: ' + esc(patches.join(' · ')) + '</div>' : '') +
-    (condText ? '<div class="dp-extra">Condition: ' + esc(condText) + '</div>' : '') +
     (p.notes ? '<div class="dp-extra">' + esc(p.notes) + '</div>' : '') +
     (madeIn ? '<div class="dp-extra">' + madeIn + '</div>' : '') +
     '</div>';
