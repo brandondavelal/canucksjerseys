@@ -1065,7 +1065,7 @@ STYLES.knicks = Object.assign({}, STYLES.skate, {
 });
 STYLES.knicks.map = {
   navy: kn(function(l) { return [214, .78, l < .045 ? l * 2 : Math.min(.4, .19 + (l - .05) * 4.2)]; }),
-  royal: kn(function(l) { return [27, 1, Math.min(.58, l * 1.9), l < .5 ? 1.5 : 2.1]; }),
+  royal: kn(function(l) { return [27, .91, Math.min(.58, l * 1.9), 2.1]; }),
   red: kn(function(l) { return [27, .91, Math.max(l, .5)]; }),
   silver: kn(function(l) { return [0, 0, l]; })
 };
@@ -1076,7 +1076,7 @@ STYLES.knicks.ink = [27, .91, .5];
 STYLES.knicks.ctx = {
   mid: { red: kn(function(l) { return [214, .78, l * .93]; }) },               /* middle layer: blue */
   nav: { silver: kn(function(l) { return [0, 0, .55 + .45 * l]; }) },        /* the nav trim is white */
-  card: { royal: kn(function(l) { return [27, 1, Math.min(.58, l * 1.9), l < .5 ? 1.5 : 2.1]; }) },
+  card: { royal: kn(function(l) { return [27, .91, Math.min(.58, l * 1.9), 2.1]; }) },
   btn: { royal: kn(function(l) { return [214, .78, Math.min(.55, l * 1.25)]; }), red: kn(function(l) { return [27, .91, Math.max(l * .88, .43), 1]; }) }  /* buttons are Knicks blue */
 };
 STYLES.knicks.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(255,255,255').split('rgba(255,235,120').join('rgba(255,255,255').split('rgba(255,150,0').join('rgba(180,185,200').split('#ffe84a').join(KN_WHITE) + '\n/* no name bar: the white name sits straight on the page */\n#view-detail .dl.dl-patch { display: none !important; }';
