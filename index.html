@@ -550,8 +550,6 @@ html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter svg { di
 /* on jersey pages the style dropdown stays hidden until the S key is pressed */
 #style-select { display: none !important; }
 html.show-style #style-select { display: block !important; }
-/* the Other style isn't in any dropdown, so the (empty) dropdown is hidden while it's applied */
-html[data-style="other"] .hdr-left:not(.detail) ~ .hdr-right #style-select, html[data-style="other"] #style-select { display: none !important; }
 /* on the home grid the style dropdown is always visible (as before; phones still hide it there); only the jersey pages wait for S */
 @media (min-width: 769px) { .hdr-left:not(.detail) ~ .hdr-right #style-select { display: block !important; } }
 /* previous / next jersey: in the nav bar (after the style dropdown) on wider screens, above the name and number on phones and tablets */
@@ -658,8 +656,8 @@ function playerName(p) {
 var HOME_STYLES = ['orca', 'rink', 'skate', 'current'];
 function syncStyleOptions() {
   var sel = document.getElementById('style-select'); if (!sel) return;
-  /* Canada is offered on the home page only while the Canada filter is on */
-  var keys = S.view === 'detail' ? Object.keys(STYLES).filter(function(k) { return k !== 'other'; }) : (S.filter === 'canada' ? ['orca', 'rink', 'canada', 'skate', 'current'] : HOME_STYLES);
+  /* Canada is offered on the home page only while the Canada filter is on, and Other only while the Other or For Sale filter is on (both are always in the full picker on jersey pages) */
+  var keys = S.view === 'detail' ? Object.keys(STYLES) : (S.filter === 'canada' ? ['orca', 'rink', 'canada', 'skate', 'current'] : (S.filter === 'other' || S.filter === 'sale') ? ['orca', 'rink', 'other', 'skate', 'current'] : HOME_STYLES);
   if (sel.options.length === keys.length && Array.prototype.every.call(sel.options, function(o, i) { return o.value === keys[i]; })) { sel.value = STY.key; return; }
   sel.innerHTML = keys.map(function(k) { return '<option value="' + k + '">' + STYLES[k].label + '</option>'; }).join('');
   sel.value = STY.key;
@@ -1176,7 +1174,7 @@ STYLES.orcagradient.extra = (ORCA_SPARK ? ORCA_SPARK.split('html[data-style="orc
   '/* the page runs from Orca navy (top) to Orca red (bottom) */\nhtml[data-theme="dark"]::before { background: var(--grain), radial-gradient(ellipse 60% 35% at 50% 200px, rgba(70,110,210,.45), rgba(70,110,210,0) 100%), linear-gradient(180deg, #02071a 0%, #0a1838 44%, #4a1030 64%, #b61d31 90%) !important; background-blend-mode: overlay, normal, normal !important; }';
 
 
-/* Other (the Other filter's page; in no dropdown): Canada's black nav glass and white glass cards, Orca's silver nav chrome, and the Knicks Statement's black page */
+/* Other (the page for the Other and For Sale filters; in the home dropdown only while those filters are on): Canada's black nav glass and white glass cards, Orca's silver nav chrome, and the Knicks Statement's black page */
 STYLES.other = Object.assign({}, STYLES.canada, { label: 'Other' });
 STYLES.other.map = { navy: STYLES.knicksstatement.map.navy, royal: STYLES.canada.map.royal, red: STYLES.canada.map.red }; /* no silver mapping: the nav chrome stays Orca's silver */
 STYLES.other.bgRoyal = STYLES.knicksstatement.bgRoyal;
@@ -1609,7 +1607,7 @@ function setFilter(f) {
     b.classList.toggle('active', b.dataset.filter === f);
   });
   document.getElementById('filter-select').value = f;
-  /* the Canada filter brings the Canada style, and the Other and For Sale filters the Other style (in no dropdown); leaving the filter drops back to Orca */
+  /* the Canada filter brings the Canada style, and the Other and For Sale filters the Other style; leaving the filter drops back to Orca */
   if (f === 'canada') applyStyle('canada');
   else if (f === 'other' || f === 'sale') applyStyle('other');
   else if (STY.key === 'canada' || STY.key === 'other') applyStyle('orca');
