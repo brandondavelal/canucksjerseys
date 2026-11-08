@@ -535,11 +535,14 @@ html.lb-open, html.lb-open body { overflow: hidden; }
 .pl-spin { width: 26px; height: 26px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,.16); border-top-color: rgba(255,255,255,.75); animation: plFade .3s .3s both, plSpin .8s linear infinite; }
 @keyframes plSpin { to { transform: rotate(360deg); } }
 @keyframes plFade { from { opacity: 0; } to { opacity: 1; } }
+/* nav trim sparkle (only the Orca Gradient style shows it) */
+.hdr-sparkle { display: none; }
 </style>
 </head>
 <body>
 
 <header>
+  <i class="hdr-sparkle" aria-hidden="true"></i>
   <div class="hdr-top">
     <div class="hdr-left">
       <img class="logo" id="logo" src="images/Frame 1 color.png" alt="Canucks Jerseys">
@@ -735,6 +738,7 @@ function jerseyStyle(p) {
   if (/canada/i.test(team) || /olympics/.test(t)) return 'canada';
   if (/modern skate/.test(t)) return 'mskate';
   if (/skate/.test(t)) return 'skate';
+  if (/orca/.test(t) && /gradient/.test(t)) return 'orcagradient';
   if (/stick (in|and) rink/.test(t)) return 'rink';
   if (/orca/.test(t)) return 'orca';
   if (/modern/.test(t)) return 'current';
@@ -1096,6 +1100,30 @@ STYLES.knicksstatement.map = Object.assign({}, STYLES.knicks.map, { navy: kn(fun
 STYLES.knicksstatement.bgRoyal = STYLES.skate.bgRoyal;
 STYLES.knicksstatement.extra = KN_ASSOC.extra.replace('html[data-theme="dark"]::before { background: #fff !important; }\nhtml[data-theme="dark"] body { background-color: #fff !important; }\n', '').replace('/* white page, and no name bar */', '/* no name bar */');
 
+/* Orca Gradient (the Canucks alt): Orca with a navy-to-red page, red nav glass, a sparkle-silver nav trim, a silver / red / silver twill stack and a silver name */
+var ORCA_SILVER = '#adafb8', ORCA_RED = '#b61d31';
+var ORCA_SPARK = (function() {
+  var src = Array.prototype.map.call(document.querySelectorAll('style'), function(e) { return e.textContent; }).join('\n');
+  var m = src.match(/^html\[data-style="orca"\] #view-detail \.dl-blue::after[^\n]*$/m);
+  return m ? m[0] : '';
+})();
+STYLES.orcagradient = Object.assign({}, STYLES.orca, {
+  label: 'Orca Gradient',
+  layers: [ORCA_SILVER, ORCA_RED, ORCA_SILVER], nameLayers: [ORCA_SILVER], sparkle: true,
+  ctx: {
+    nav: { royal: function(h, s, l) { return [352, .75, Math.min(.5, l * 1.6), 3.4]; } },   /* the nav glass is Orca red */
+    glow: { royal: function(h, s, l) { return [352, .8, Math.min(.62, l), 1.2]; } }
+  }
+});
+(function() {
+  var urls = ORCA_SPARK.match(/url\("data:[^"]*"\)/g) || [];
+  var sparkBg = urls.length >= 2 ? urls[0] + ' 0 0 / 160px 160px, ' + urls[1] + ' 40px 70px / 220px 220px' : 'none';
+  STYLES.orcagradient.extra = (ORCA_SPARK ? ORCA_SPARK.split('html[data-style="orca"]').join('html[data-style="orcagradient"]') + '\n' : '') +
+    '/* the page runs from Orca navy (top) to Orca red (bottom) */\nhtml[data-theme="dark"]::before { background: var(--grain), radial-gradient(ellipse 60% 35% at 50% 200px, rgba(70,110,210,.45), rgba(70,110,210,0) 100%), linear-gradient(180deg, #02071a 0%, #0a1838 28%, #5a1230 58%, #b61d31 88%) !important; background-blend-mode: overlay, normal, normal !important; }\n' +
+    'html[data-theme="dark"] header .hdr-sparkle { display: block; position: absolute; left: 0; right: 0; bottom: -6px; height: 6px; pointer-events: none; z-index: 3; opacity: .9; background: ' + sparkBg + '; -webkit-mask: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); mask: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); }\n' +
+    '@media (max-width: 768px) { html[data-theme="dark"] header .hdr-sparkle { bottom: -5.33px; height: 5.33px; } }';
+})();
+
 /* Flames: red page, black glass, yellow trim, double twill (red on top, yellow at the bottom) */
 STYLES.flames = Object.assign({}, STYLES.canada, {
   label: 'Flames', font: "'NHL Calgary'",
@@ -1207,7 +1235,7 @@ function applyStyle(key) {
   /* narrower screens shrink the twill layers, except where a style pins them to 14px */
   rs.setProperty('--stack-out-768', (st.stackPinned ? so : so * 11 / 14) + 'px');
   rs.setProperty('--stack-out-600', (st.stackPinned ? so : so * 9 / 14) + 'px');
-  STY = { key: key, layers: st.layers || ['#adafb8', '#b61d31', '#fbfaf4'], font: st.font || "'NHL Vancouver'", gap: st.numGap || 39, bold: st.numBold || 0, track: st.nameTrack || 0, band: st.numBand || 4, nameTwill: !!st.nameTwill, nameLayers: st.nameLayers || null, nameExtra: st.nameExtra || 0 };
+  STY = { key: key, layers: st.layers || ['#adafb8', '#b61d31', '#fbfaf4'], font: st.font || "'NHL Vancouver'", gap: st.numGap || 39, bold: st.numBold || 0, track: st.nameTrack || 0, band: st.numBand || 4, nameTwill: !!st.nameTwill, nameLayers: st.nameLayers || null, nameExtra: st.nameExtra || 0, sparkle: !!st.sparkle };
   if (key !== 'orca') {
     var src = Array.prototype.map.call(document.querySelectorAll('style:not(#theme-style)'), function(e) { return e.textContent; }).join('\n');
     var css = unifyStack(remapCss(src, st), st);
@@ -1329,7 +1357,7 @@ function tightenNumber() {
   var texts = digits.map(function(d, i) { return '<text x="' + (x[i] + off).toFixed(1) + '" y="' + base.toFixed(1) + '">' + esc(d) + '</text>'; }).join('');
   /* the gap between the silver edge and the tag is 50px */
   el.style.marginBottom = (50 - (H - (base + desc + OUT))) + 'px';
-  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' });
+  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle });
 }
 
 /* the name is drawn as twill too: letters sewn like the number, on the felt plate */
