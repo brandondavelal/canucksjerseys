@@ -541,12 +541,12 @@ html.lb-open, html.lb-open body { overflow: hidden; }
 html[data-theme="dark"] #view-detail .dm-ctrls { position: absolute; right: 10px; bottom: 10px; z-index: 4; display: flex; flex-direction: row; align-items: center; gap: 6px; }
 html[data-theme="dark"] #view-detail .dm-ctrls .dm-nav, html[data-theme="dark"] #view-detail .dm-ctrls .dm-max { position: static; left: auto; right: auto; top: auto; bottom: auto; transform: none; flex: none; }
 html[data-theme="dark"] #view-detail .dm-ctrls .dm-nav:active, html[data-theme="dark"] #view-detail .dm-ctrls .dm-max:active { transform: scale(.94); }
-/* previous / next jersey under the tag: the nav bar's own button style, one on each side of the tag's width */
-html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 330px; margin: 24px auto 0; }
+/* previous / next jersey above the name and number: the nav bar's own button style, one on each side */
+html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 330px; margin: 0 auto 24px; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter { display: inline-flex !important; align-items: center; gap: 7px; flex: none; position: static; font-size: 12px; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter svg { display: block; flex: none; }
-@media (max-width: 768px) { html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { width: auto; max-width: none; margin: 24px calc(-1 * var(--stack-out-768, 22px)) 0; } }
-@media (max-width: 600px) { html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { margin: 24px calc(-1 * var(--stack-out-600, 18px)) 0; } }
+@media (max-width: 768px) { html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { width: auto; max-width: none; margin: 0 calc(-1 * var(--stack-out-768, 22px)) 24px; } }
+@media (max-width: 600px) { html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { margin: 0 calc(-1 * var(--stack-out-600, 18px)) 24px; } }
 </style>
 </head>
 <body>
@@ -874,13 +874,12 @@ function openDetail(id, skipPush) {
   /* the 40th Anniversary jersey has no name on its page (no name, no name bar) */
   var nameLine = lastName && !/\b40th anniversary\b/i.test(p.title || '') ? nameHtml(lastName) : '';
   var numLine = p.number ? '<div class="dp-num" role="img" aria-label="' + esc(p.number) + '" data-n="' + esc(p.number) + '"></div>' : '';
-  document.getElementById('detail-panel').innerHTML = nameLine + numLine + '<div class="dp-tag">' +
+  /* previous / next jersey sit above the name and number, one each side, in the same default order as the grid (wraps round) */
+  document.getElementById('detail-panel').innerHTML = '<div class="dp-jnav"><button type="button" class="hdr-filter jn-btn" data-dir="-1" aria-label="Previous jersey"><svg viewBox="0 0 12 10" width="13" height="11" aria-hidden="true"><path d="M11.2 5H1.4M5.2 1L1.2 5l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Previous</span></button><button type="button" class="hdr-filter jn-btn" data-dir="1" aria-label="Next jersey"><span>Next</span><svg viewBox="0 0 12 10" width="13" height="11" aria-hidden="true"><path d="M0.8 5H10.6M6.8 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' + nameLine + numLine + '<div class="dp-tag">' +
     (p.team   ? '<div class="dp-team">'   + esc(p.team)     + '</div>' : '') +
     (p.title  ? '<div class="dp-title">'  + esc(tagTitle(p.title)) + '</div>' : '') +
     (mfr  ? '<div class="dp-meta">'   + esc(mfr)     + '</div>' : '') +
-    '</div>' +
-    /* previous / next jersey, one each side under the tag, in the same default order as the grid (wraps round) */
-    '<div class="dp-jnav"><button type="button" class="hdr-filter jn-btn" data-dir="-1" aria-label="Previous jersey"><svg viewBox="0 0 12 10" width="13" height="11" aria-hidden="true"><path d="M11.2 5H1.4M5.2 1L1.2 5l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Previous</span></button><button type="button" class="hdr-filter jn-btn" data-dir="1" aria-label="Next jersey"><span>Next</span><svg viewBox="0 0 12 10" width="13" height="11" aria-hidden="true"><path d="M0.8 5H10.6M6.8 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>';
+    '</div>';
   S.curId = p.id;
   document.querySelectorAll('#detail-panel .jn-btn').forEach(function(b) {
     b.addEventListener('click', function() {
