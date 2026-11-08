@@ -1307,7 +1307,7 @@ function twillMarkup(o) {
     '<filter id="' + p + 'Shadow" ' + fr + '><feGaussianBlur stdDeviation="' + (p === 'm' ? 1 : 2) + '"/></filter>' +
     /* o.holes (the Knicks number only): perforation holes punched through the lettering (the page shows through), kept clear of the edges */
     (o.holes ? '<pattern id="' + p + 'Pat" patternUnits="userSpaceOnUse" width="' + o.holes.pitch + '" height="' + o.holes.pitch + '"><g fill="#000"><circle cx="0" cy="0" r="' + o.holes.r + '"/><circle cx="' + o.holes.pitch + '" cy="0" r="' + o.holes.r + '"/><circle cx="0" cy="' + o.holes.pitch + '" r="' + o.holes.r + '"/><circle cx="' + o.holes.pitch + '" cy="' + o.holes.pitch + '" r="' + o.holes.r + '"/><circle cx="' + (o.holes.pitch / 2) + '" cy="' + (o.holes.pitch / 2) + '" r="' + o.holes.r + '"/></g></pattern>' +
-      '<mask id="' + p + 'Hm" maskUnits="userSpaceOnUse" x="-40" y="-40" width="' + (W + 80) + '" height="' + (H + 80) + '"><rect x="-40" y="-40" width="' + (W + 80) + '" height="' + (H + 80) + '" fill="#fff"/><g fill="url(#' + p + 'Pat)" stroke="none">' + o.texts + '</g><g fill="none" stroke="#fff" stroke-width="' + (o.holes.r * 2 + 1.5) + '" stroke-linejoin="round">' + o.texts + '</g></mask>' : '') +
+      '<mask id="' + p + 'Hm" maskUnits="userSpaceOnUse" x="-40" y="-40" width="' + (W + 80) + '" height="' + (H + 80) + '"><rect x="-40" y="-40" width="' + (W + 80) + '" height="' + (H + 80) + '" fill="#fff"/><g fill="url(#' + p + 'Pat)" stroke="none">' + o.texts + '</g><g fill="none" stroke="#fff" stroke-width="' + (o.holes.edge != null ? o.holes.edge * 2 : o.holes.r * 2 + 1.5) + '" stroke-linejoin="round">' + o.texts + '</g></mask>' : '') +
     '</defs>';
   var so = p === 'n' ? ' opacity=".667"' : ''; /* the number's stitching is a third fainter */
   /* o.plain: lettering with no stitching and no drop shadow */
@@ -1391,7 +1391,7 @@ function tightenNumber() {
   var texts = digits.map(function(d, i) { return '<text x="' + (x[i] + off).toFixed(1) + '" y="' + base.toFixed(1) + '">' + esc(d) + '</text>'; }).join('');
   /* the gap between the silver edge and the tag is 50px */
   el.style.marginBottom = (50 - (H - (base + desc + OUT))) + 'px';
-  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul, holes: STY.holes ? { r: FS * .0085 * .25, pitch: FS * .042 * .4 } : null });
+  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul, holes: STY.holes ? { r: FS * .0085 * .25, pitch: FS * .042 * .4, edge: FS * .8 * .05 } : null });
 }
 
 /* the name is drawn as twill too: letters sewn like the number, on the felt plate */
