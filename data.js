@@ -669,11 +669,11 @@ var GALLERY_ROWS = [
   "56",
   "",
   "Visit Abu Dhabi, NBA Finals",
-  "MSG KIT",
+  "MSG Kit",
   "Awaiting Parts"
  ],
  [
-  "OG",
+  "Anunoby",
   "8",
   "New York Knicks",
   "Association 2026 Finals",
@@ -685,7 +685,7 @@ var GALLERY_ROWS = [
   "56",
   "",
   "Visit Abu Dhabi, NBA Finals",
-  "MSG KIT",
+  "MSG Kit",
   "Awaiting Parts"
  ],
  [

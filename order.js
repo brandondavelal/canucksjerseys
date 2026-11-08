@@ -41,5 +41,5 @@ var GALLERY_ORDER = [
   "brunson-11-icon-2026-finals-2026-52",
   "brunson-11-association-2026-finals-2026-52",
   "brunson-11-icon-2026-finals-2026-56",
-  "og-8-association-2026-finals-2026-56"
+  "anunoby-8-association-2026-finals-2026-56"
 ];
