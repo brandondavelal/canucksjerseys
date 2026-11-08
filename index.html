@@ -1080,14 +1080,15 @@ STYLES.flames = Object.assign({}, STYLES.canada, {
   label: 'Flames',
   layers: [FL_YELLOW, KN_WHITE, '#0d0e10'],   /* number: black on white on yellow */
   nameLayers: ['#0d0e10', KN_WHITE],           /* name: white on black */
-  stackLayers: [FL_YELLOW, FL_RED]             /* photo stack: red on yellow */
+  hideMiddle: false, stackOut: undefined, stackPinned: false /* photo stack: the same triple twill as the number */
 });
 STYLES.flames.map = Object.assign({}, STYLES.canada.map, { silver: kn(function(l) { return [43, 1, .4 + .42 * l]; }) });
 STYLES.flames.outer = kn(function(l) { return [43, .95, .45 + .25 * l]; });   /* bottom layer of the photo stack: yellow */
-STYLES.flames.top = function(h, s, l) { return l > .6 ? [352, .85, .46] : [352, .85, l * .8]; }; /* top layer: red */
+STYLES.flames.top = function(h, s, l) { return [0, 0, l * .1]; }; /* top layer: black */
 STYLES.flames.outerSheen = undefined;
 STYLES.flames.ctx = Object.assign({}, STYLES.canada.ctx, {
   card: { royal: kn(function(l) { return [0, 0, l * .07, 2.4]; }) },
+  mid: { red: kn(function(l) { return [0, 0, .86 + .14 * l]; }) },           /* middle layer: white */
   nav: Object.assign({}, STYLES.canada.ctx.nav, { silver: kn(function(l) { return [0, 0, .55 + .45 * l]; }) }) /* the nav trim is white */
 });
 
