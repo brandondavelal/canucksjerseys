@@ -1058,7 +1058,7 @@ var kn = function(f) { return function(h, s, l) { return f(l); }; };
 
 /* Knicks (Icon and Association jerseys): blue page, orange glass, white trim, blue buttons; number white on orange, name a single white layer (no name bar), photo stack white / blue / orange */
 STYLES.knicks = Object.assign({}, STYLES.skate, {
-  label: 'Knicks', font: "'NBA Bulls'", nameTrack: 0, numGap: 13, nameArch: true, nameExtra: -2,
+  label: 'Knicks', font: "'NBA Bulls'", nameTrack: 0, numGap: 13, nameArch: true, nameExtra: -2, holes: true,
   layers: [KN_ORANGE, KN_WHITE],              /* number: white on orange */
   nameLayers: [KN_WHITE],                      /* name: a single white layer */
   stackLayers: [KN_ORANGE, KN_BLUE, KN_WHITE]  /* photo stack: white, blue, orange */
@@ -1237,7 +1237,7 @@ function applyStyle(key) {
   /* narrower screens shrink the twill layers, except where a style pins them to 14px */
   rs.setProperty('--stack-out-768', (st.stackPinned ? so : so * 11 / 14) + 'px');
   rs.setProperty('--stack-out-600', (st.stackPinned ? so : so * 9 / 14) + 'px');
-  STY = { key: key, layers: st.layers || ['#adafb8', '#b61d31', '#fbfaf4'], font: st.font || "'NHL Vancouver'", gap: st.numGap || 39, bold: st.numBold || 0, track: st.nameTrack || 0, band: st.numBand || 4, nameTwill: !!st.nameTwill, nameLayers: st.nameLayers || null, nameExtra: st.nameExtra || 0, sparkle: !!st.sparkle, nameArch: !!st.nameArch, numMul: st.numMul || null, nameMul: st.nameMul || null, nameGapMul: st.nameGapMul != null ? st.nameGapMul : null, numClear: st.numClear || null };
+  STY = { key: key, layers: st.layers || ['#adafb8', '#b61d31', '#fbfaf4'], font: st.font || "'NHL Vancouver'", gap: st.numGap || 39, bold: st.numBold || 0, track: st.nameTrack || 0, band: st.numBand || 4, nameTwill: !!st.nameTwill, nameLayers: st.nameLayers || null, nameExtra: st.nameExtra || 0, sparkle: !!st.sparkle, nameArch: !!st.nameArch, numMul: st.numMul || null, nameMul: st.nameMul || null, nameGapMul: st.nameGapMul != null ? st.nameGapMul : null, numClear: st.numClear || null, holes: !!st.holes };
   if (key !== 'orca') {
     var src = Array.prototype.map.call(document.querySelectorAll('style:not(#theme-style)'), function(e) { return e.textContent; }).join('\n');
     var css = unifyStack(remapCss(src, st), st);
@@ -1298,7 +1298,11 @@ function twillMarkup(o) {
       '<feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="2" seed="3" result="n"/>' +
       '<feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  16 0 0 0 -10.4" result="sp"/><feComposite in="sp" in2="SourceAlpha" operator="in"/></filter>' +
     ring(p + 'rD', 'rgba(0,0,0,.55)') + layers.map(function(f, i) { return ring(p + 'r' + i, f); }).join('') +
-    '<filter id="' + p + 'Shadow" ' + fr + '><feGaussianBlur stdDeviation="' + (p === 'm' ? 1 : 2) + '"/></filter></defs>';
+    '<filter id="' + p + 'Shadow" ' + fr + '><feGaussianBlur stdDeviation="' + (p === 'm' ? 1 : 2) + '"/></filter>' +
+    /* o.holes: perforation holes punched through the lettering (the page shows through), kept clear of the edges */
+    (o.holes ? '<pattern id="' + p + 'Pat" patternUnits="userSpaceOnUse" width="' + o.holes.pitch + '" height="' + o.holes.pitch + '" patternTransform="rotate(45)"><g fill="#000"><circle cx="0" cy="0" r="' + o.holes.r + '"/><circle cx="' + o.holes.pitch + '" cy="0" r="' + o.holes.r + '"/><circle cx="0" cy="' + o.holes.pitch + '" r="' + o.holes.r + '"/><circle cx="' + o.holes.pitch + '" cy="' + o.holes.pitch + '" r="' + o.holes.r + '"/><circle cx="' + (o.holes.pitch / 2) + '" cy="' + (o.holes.pitch / 2) + '" r="' + o.holes.r + '"/></g></pattern>' +
+      '<mask id="' + p + 'Hm" maskUnits="userSpaceOnUse" x="-40" y="-40" width="' + (W + 80) + '" height="' + (H + 80) + '"><rect x="-40" y="-40" width="' + (W + 80) + '" height="' + (H + 80) + '" fill="#fff"/><g fill="url(#' + p + 'Pat)" stroke="none">' + o.texts + '</g><g fill="none" stroke="#fff" stroke-width="' + (o.holes.r * 2 + 1.5) + '" stroke-linejoin="round">' + o.texts + '</g></mask>' : '') +
+    '</defs>';
   var so = p === 'n' ? ' opacity=".667"' : ''; /* the number's stitching is a third fainter */
   /* o.plain: lettering with no stitching and no drop shadow */
   var body = (o.plain ? '' : '<g transform="translate(0 3)" opacity=".32" filter="url(#' + p + 'Shadow)">' + layer('#000', 2 * OUT) + '</g>') +
@@ -1306,6 +1310,7 @@ function twillMarkup(o) {
       var sw = 2 * rimFrom(i) + BOLD;
       return layer(f, sw, 'filter="url(#' + p + 'Tex)"') + ((i === 0 || (o.sparkMatch && f === layers[0])) && o.spark ? layer('#fff', sw, 'filter="url(#' + p + 'Spark)"') : '') + (o.plain ? '' : '<g transform="translate(0 .7)">' + layer('#000', sw, 'filter="url(#' + p + 'rD)"' + so) + '</g>' + layer('#000', sw, 'filter="url(#' + p + 'r' + i + ')"' + so));
     }).join('');
+  if (o.holes) body = '<g mask="url(#' + p + 'Hm)">' + body + '</g>';
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" aria-hidden="true" style="display:block;max-width:100%;margin:0 auto;overflow:visible;font-family:' + o.FONT + ';font-size:' + o.FS + 'px">' + defs + body + '</svg>';
 }
 
@@ -1380,7 +1385,7 @@ function tightenNumber() {
   var texts = digits.map(function(d, i) { return '<text x="' + (x[i] + off).toFixed(1) + '" y="' + base.toFixed(1) + '">' + esc(d) + '</text>'; }).join('');
   /* the gap between the silver edge and the tag is 50px */
   el.style.marginBottom = (50 - (H - (base + desc + OUT))) + 'px';
-  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul });
+  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul, holes: STY.holes ? { r: FS * .0085, pitch: FS * .042 } : null });
 }
 
 /* the name is drawn as twill too: letters sewn like the number, on the felt plate */
@@ -1490,7 +1495,7 @@ function renderNameTwill(box) {
     }).join('');
     if (panelW > 0 && W * webScale > panelW) webScale = panelW / W;
   }
-  tgt.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: 0, RING: RING, FONT: FONT, FS: FS, p: 'm', spark: false, plain: STY.key === 'canada', mul: STY.nameMul });
+  tgt.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: 0, RING: RING, FONT: FONT, FS: FS, p: 'm', spark: false, plain: STY.key === 'canada', mul: STY.nameMul, holes: STY.holes ? { r: FS * .012, pitch: FS * .065 } : null });
   var nameSvg = tgt.querySelector('svg');
   if (nameSvg) { nameSvg.style.maxWidth = 'none'; nameSvg.style.width = (W * webScale).toFixed(2) + 'px'; }
   box.style.marginBottom = (4 * webScale * FS / 75.4).toFixed(2) + 'px'; /* 4px at web size, scaled with the lettering on phones */
