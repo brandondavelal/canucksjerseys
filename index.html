@@ -1530,7 +1530,7 @@ function renderNameTwill(box) {
     var numBox = document.querySelector('#detail-panel .dp-num'), numSv = numBox && numBox.querySelector('svg');
     var nsc = numSv && numSv.viewBox.baseVal.width ? numSv.getBoundingClientRect().width / numSv.viewBox.baseVal.width : webScale;
     var visGap = 4 * webScale * FS / 75.4 + PAD * webScale + (numBox ? parseFloat(numBox.dataset.topInk || 0) : 0) * nsc + archSag * webScale; /* measured from the arch's crown (middle letter) to the top of the number */
-    box.style.marginBottom = (4 * webScale * FS / 75.4 - visGap / 3).toFixed(2) + 'px';
+    box.style.marginBottom = (4 * webScale * FS / 75.4 - visGap * (1 - (2 / 3) * 1.33)).toFixed(2) + 'px'; /* a third closer than the original gap, then the gap opened up 33% */
   }
 }
 
