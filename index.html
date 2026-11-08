@@ -1275,6 +1275,12 @@ function fitName() {
 }
 
 /* stacked twill drawn in the shape of some text: o = { texts, W, H, layers, BAND, BOLD, RING, FONT, FS, p (id prefix), spark } */
+/* the number and name twill is flat colour; only silver twill keeps its fabric texture (and sparkle) */
+function isSilverTwill(hex) {
+  var h = String(hex || '').replace('#', ''); if (h.length !== 6) return false;
+  var hs = rgb2hsl(parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16));
+  return hs[1] < .15 && hs[2] > .55 && hs[2] < .92;
+}
 function twillMarkup(o) {
   var W = o.W, H = o.H, layers = o.layers, K = layers.length, BAND = o.BAND, BOLD = o.BOLD, RING = o.RING, p = o.p;
   var rim = function(j) { return BAND * ((o.mul && o.mul[j]) || 1); };
@@ -1299,8 +1305,8 @@ function twillMarkup(o) {
       '<feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  16 0 0 0 -10.4" result="sp"/><feComposite in="sp" in2="SourceAlpha" operator="in"/></filter>' +
     ring(p + 'rD', 'rgba(0,0,0,.55)') + layers.map(function(f, i) { return ring(p + 'r' + i, f); }).join('') +
     '<filter id="' + p + 'Shadow" ' + fr + '><feGaussianBlur stdDeviation="' + (p === 'm' ? 1 : 2) + '"/></filter>' +
-    /* o.holes: perforation holes punched through the lettering (the page shows through), kept clear of the edges */
-    (o.holes ? '<pattern id="' + p + 'Pat" patternUnits="userSpaceOnUse" width="' + o.holes.pitch + '" height="' + o.holes.pitch + '" patternTransform="rotate(45)"><g fill="#000"><circle cx="0" cy="0" r="' + o.holes.r + '"/><circle cx="' + o.holes.pitch + '" cy="0" r="' + o.holes.r + '"/><circle cx="0" cy="' + o.holes.pitch + '" r="' + o.holes.r + '"/><circle cx="' + o.holes.pitch + '" cy="' + o.holes.pitch + '" r="' + o.holes.r + '"/><circle cx="' + (o.holes.pitch / 2) + '" cy="' + (o.holes.pitch / 2) + '" r="' + o.holes.r + '"/></g></pattern>' +
+    /* o.holes (the Knicks number only): perforation holes punched through the lettering (the page shows through), kept clear of the edges */
+    (o.holes ? '<pattern id="' + p + 'Pat" patternUnits="userSpaceOnUse" width="' + o.holes.pitch + '" height="' + o.holes.pitch + '"><g fill="#000"><circle cx="0" cy="0" r="' + o.holes.r + '"/><circle cx="' + o.holes.pitch + '" cy="0" r="' + o.holes.r + '"/><circle cx="0" cy="' + o.holes.pitch + '" r="' + o.holes.r + '"/><circle cx="' + o.holes.pitch + '" cy="' + o.holes.pitch + '" r="' + o.holes.r + '"/><circle cx="' + (o.holes.pitch / 2) + '" cy="' + (o.holes.pitch / 2) + '" r="' + o.holes.r + '"/></g></pattern>' +
       '<mask id="' + p + 'Hm" maskUnits="userSpaceOnUse" x="-40" y="-40" width="' + (W + 80) + '" height="' + (H + 80) + '"><rect x="-40" y="-40" width="' + (W + 80) + '" height="' + (H + 80) + '" fill="#fff"/><g fill="url(#' + p + 'Pat)" stroke="none">' + o.texts + '</g><g fill="none" stroke="#fff" stroke-width="' + (o.holes.r * 2 + 1.5) + '" stroke-linejoin="round">' + o.texts + '</g></mask>' : '') +
     '</defs>';
   var so = p === 'n' ? ' opacity=".667"' : ''; /* the number's stitching is a third fainter */
@@ -1308,7 +1314,7 @@ function twillMarkup(o) {
   var body = (o.plain ? '' : '<g transform="translate(0 3)" opacity=".32" filter="url(#' + p + 'Shadow)">' + layer('#000', 2 * OUT) + '</g>') +
     layers.map(function(f, i) {
       var sw = 2 * rimFrom(i) + BOLD;
-      return layer(f, sw, 'filter="url(#' + p + 'Tex)"') + ((i === 0 || (o.sparkMatch && f === layers[0])) && o.spark ? layer('#fff', sw, 'filter="url(#' + p + 'Spark)"') : '') + (o.plain ? '' : '<g transform="translate(0 .7)">' + layer('#000', sw, 'filter="url(#' + p + 'rD)"' + so) + '</g>' + layer('#000', sw, 'filter="url(#' + p + 'r' + i + ')"' + so));
+      return layer(f, sw, isSilverTwill(f) ? 'filter="url(#' + p + 'Tex)"' : '') + ((i === 0 || (o.sparkMatch && f === layers[0])) && o.spark ? layer('#fff', sw, 'filter="url(#' + p + 'Spark)"') : '') + (o.plain ? '' : '<g transform="translate(0 .7)">' + layer('#000', sw, 'filter="url(#' + p + 'rD)"' + so) + '</g>' + layer('#000', sw, 'filter="url(#' + p + 'r' + i + ')"' + so));
     }).join('');
   if (o.holes) body = '<g mask="url(#' + p + 'Hm)">' + body + '</g>';
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" aria-hidden="true" style="display:block;max-width:100%;margin:0 auto;overflow:visible;font-family:' + o.FONT + ';font-size:' + o.FS + 'px">' + defs + body + '</svg>';
@@ -1385,7 +1391,7 @@ function tightenNumber() {
   var texts = digits.map(function(d, i) { return '<text x="' + (x[i] + off).toFixed(1) + '" y="' + base.toFixed(1) + '">' + esc(d) + '</text>'; }).join('');
   /* the gap between the silver edge and the tag is 50px */
   el.style.marginBottom = (50 - (H - (base + desc + OUT))) + 'px';
-  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul, holes: STY.holes ? { r: FS * .0085, pitch: FS * .042 } : null });
+  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul, holes: STY.holes ? { r: FS * .0085 * .2, pitch: FS * .042 * .4 } : null });
 }
 
 /* the name is drawn as twill too: letters sewn like the number, on the felt plate */
@@ -1495,7 +1501,7 @@ function renderNameTwill(box) {
     }).join('');
     if (panelW > 0 && W * webScale > panelW) webScale = panelW / W;
   }
-  tgt.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: 0, RING: RING, FONT: FONT, FS: FS, p: 'm', spark: false, plain: STY.key === 'canada', mul: STY.nameMul, holes: STY.holes ? { r: FS * .012, pitch: FS * .065 } : null });
+  tgt.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: 0, RING: RING, FONT: FONT, FS: FS, p: 'm', spark: false, plain: STY.key === 'canada', mul: STY.nameMul });
   var nameSvg = tgt.querySelector('svg');
   if (nameSvg) { nameSvg.style.maxWidth = 'none'; nameSvg.style.width = (W * webScale).toFixed(2) + 'px'; }
   box.style.marginBottom = (4 * webScale * FS / 75.4).toFixed(2) + 'px'; /* 4px at web size, scaled with the lettering on phones */
