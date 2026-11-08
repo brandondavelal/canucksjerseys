@@ -535,14 +535,11 @@ html.lb-open, html.lb-open body { overflow: hidden; }
 .pl-spin { width: 26px; height: 26px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,.16); border-top-color: rgba(255,255,255,.75); animation: plFade .3s .3s both, plSpin .8s linear infinite; }
 @keyframes plSpin { to { transform: rotate(360deg); } }
 @keyframes plFade { from { opacity: 0; } to { opacity: 1; } }
-/* nav trim sparkle (only the Orca Gradient style shows it) */
-.hdr-sparkle { display: none; }
 </style>
 </head>
 <body>
 
 <header>
-  <i class="hdr-sparkle" aria-hidden="true"></i>
   <div class="hdr-top">
     <div class="hdr-left">
       <img class="logo" id="logo" src="images/Frame 1 color.png" alt="Canucks Jerseys">
@@ -1100,7 +1097,7 @@ STYLES.knicksstatement.map = Object.assign({}, STYLES.knicks.map, { navy: kn(fun
 STYLES.knicksstatement.bgRoyal = STYLES.skate.bgRoyal;
 STYLES.knicksstatement.extra = KN_ASSOC.extra.replace('html[data-theme="dark"]::before { background: #fff !important; }\nhtml[data-theme="dark"] body { background-color: #fff !important; }\n', '').replace('/* white page, and no name bar */', '/* no name bar */');
 
-/* Orca Gradient (the Canucks alt): Orca with a navy-to-red page, red nav glass, a sparkle-silver nav trim, a silver / red / silver twill stack and a silver name */
+/* Orca Gradient (the Canucks alt): Orca with a navy-to-red page, red nav glass, a plain silver nav trim, a silver / red / silver twill stack and a silver name */
 var ORCA_SILVER = '#adafb8', ORCA_RED = '#b61d31';
 var ORCA_SPARK = (function() {
   var src = Array.prototype.map.call(document.querySelectorAll('style'), function(e) { return e.textContent; }).join('\n');
@@ -1115,14 +1112,9 @@ STYLES.orcagradient = Object.assign({}, STYLES.orca, {
     glow: { royal: function(h, s, l) { return [352, .8, Math.min(.62, l), 1.2]; } }
   }
 });
-(function() {
-  var urls = ORCA_SPARK.match(/url\("data:[^"]*"\)/g) || [];
-  var sparkBg = urls.length >= 2 ? urls[0] + ' 0 0 / 160px 160px, ' + urls[1] + ' 40px 70px / 220px 220px' : 'none';
-  STYLES.orcagradient.extra = (ORCA_SPARK ? ORCA_SPARK.split('html[data-style="orca"]').join('html[data-style="orcagradient"]') + '\n' : '') +
-    '/* the page runs from Orca navy (top) to Orca red (bottom) */\nhtml[data-theme="dark"]::before { background: var(--grain), radial-gradient(ellipse 60% 35% at 50% 200px, rgba(70,110,210,.45), rgba(70,110,210,0) 100%), linear-gradient(180deg, #02071a 0%, #0a1838 28%, #5a1230 58%, #b61d31 88%) !important; background-blend-mode: overlay, normal, normal !important; }\n' +
-    'html[data-theme="dark"] header .hdr-sparkle { display: block; position: absolute; left: 0; right: 0; bottom: -6px; height: 6px; pointer-events: none; z-index: 3; opacity: .9; background: ' + sparkBg + '; -webkit-mask: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); mask: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); }\n' +
-    '@media (max-width: 768px) { html[data-theme="dark"] header .hdr-sparkle { bottom: -5.33px; height: 5.33px; } }';
-})();
+STYLES.orcagradient.extra = (ORCA_SPARK ? ORCA_SPARK.split('html[data-style="orca"]').join('html[data-style="orcagradient"]') + '\n' + ORCA_SPARK.split('html[data-style="orca"]').join('html[data-style="orcagradient"]').replace('.dl-blue::after', '.dl-white::after') + '\n' : '') +
+  '/* the page runs from Orca navy (top) to Orca red (bottom) */\nhtml[data-theme="dark"]::before { background: var(--grain), radial-gradient(ellipse 60% 35% at 50% 200px, rgba(70,110,210,.45), rgba(70,110,210,0) 100%), linear-gradient(180deg, #02071a 0%, #0a1838 28%, #5a1230 58%, #b61d31 88%) !important; background-blend-mode: overlay, normal, normal !important; }';
+
 
 /* Flames: red page, black glass, yellow trim, double twill (red on top, yellow at the bottom) */
 STYLES.flames = Object.assign({}, STYLES.canada, {
@@ -1299,7 +1291,7 @@ function twillMarkup(o) {
   var body = (o.plain ? '' : '<g transform="translate(0 3)" opacity=".32" filter="url(#' + p + 'Shadow)">' + layer('#000', 2 * OUT) + '</g>') +
     layers.map(function(f, i) {
       var sw = 2 * BAND * (K - 1 - i) + BOLD;
-      return layer(f, sw, 'filter="url(#' + p + 'Tex)"') + (i === 0 && o.spark ? layer('#fff', sw, 'filter="url(#' + p + 'Spark)"') : '') + (o.plain ? '' : '<g transform="translate(0 .7)">' + layer('#000', sw, 'filter="url(#' + p + 'rD)"' + so) + '</g>' + layer('#000', sw, 'filter="url(#' + p + 'r' + i + ')"' + so));
+      return layer(f, sw, 'filter="url(#' + p + 'Tex)"') + ((i === 0 || (o.sparkMatch && f === layers[0])) && o.spark ? layer('#fff', sw, 'filter="url(#' + p + 'Spark)"') : '') + (o.plain ? '' : '<g transform="translate(0 .7)">' + layer('#000', sw, 'filter="url(#' + p + 'rD)"' + so) + '</g>' + layer('#000', sw, 'filter="url(#' + p + 'r' + i + ')"' + so));
     }).join('');
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" aria-hidden="true" style="display:block;max-width:100%;margin:0 auto;overflow:visible;font-family:' + o.FONT + ';font-size:' + o.FS + 'px">' + defs + body + '</svg>';
 }
@@ -1357,7 +1349,7 @@ function tightenNumber() {
   var texts = digits.map(function(d, i) { return '<text x="' + (x[i] + off).toFixed(1) + '" y="' + base.toFixed(1) + '">' + esc(d) + '</text>'; }).join('');
   /* the gap between the silver edge and the tag is 50px */
   el.style.marginBottom = (50 - (H - (base + desc + OUT))) + 'px';
-  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle });
+  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle });
 }
 
 /* the name is drawn as twill too: letters sewn like the number, on the felt plate */
