@@ -733,6 +733,7 @@ function jerseyStyle(p) {
   if (/skate/.test(t)) return yr >= 2019 ? 'mskate' : 'skate';
   if (/stick (in|and) rink/.test(t)) return yr >= 2010 ? 'current' : 'rink';
   if (/orca/.test(t)) return (yr >= 2019 || /modern/.test(t)) ? 'current' : 'orca';
+  if (/wordmark/.test(t) && yr && yr < 2010) return 'orca';
   return 'current';
 }
 function nameHtml(n) {
