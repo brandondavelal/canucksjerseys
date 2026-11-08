@@ -738,6 +738,7 @@ function jerseyStyle(p) {
   if (/reverse retro/.test(t)) return 'rr';
   if (/canada/i.test(team) || /olympics/.test(t)) return 'canada';
   if (/modern skate/.test(t)) return 'mskate';
+  if (/throwback skate/.test(t)) return 'throwbackskate';
   if (/skate/.test(t)) return 'skate';
   if (/orca/.test(t) && /gradient/.test(t)) return 'orcagradient';
   if (/40th anniversary/.test(t)) return 'rink'; /* the 40th Anniversary jersey is plain Stick-in-Rink */
@@ -1029,11 +1030,14 @@ STYLES.flyingv.top = function(h, s, l) { return l > .6 ? [40, 1, .52 + .04 * l] 
 STYLES.flyingv.ctx = Object.assign({}, STYLES.skate.ctx, { mid: { red: function(h, s, l) { return [14, .85, l * .95]; } } });
 /* Skate only (set after Modern Skate and Flying V copy it): 4px more space between the name's letters */
 STYLES.skate.nameExtra = 4;
+STYLES.rink.nameBold = 4; /* regular Stick-in-Rink: bolder name (set after Modern Stick in Rink copied it, so that one is unchanged) */
 STYLES.flyingv.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(255,170,0').split('rgba(255,235,120').join('rgba(255,200,90').split('rgba(255,150,0').join('rgba(255,120,0') + '\n#view-detail .dl-blue { display: none !important; }\n/* the bottom (orange-red) layer is half as thick */\n#view-detail .dl-gold { inset: calc(-10.5px * var(--tw, 1)) !important; }\n@media (max-width: 768px) { #view-detail .dl-gold { inset: -8.25px !important; } }\n@media (max-width: 600px) { #view-detail .dl-gold { inset: -6.75px !important; } }';
 /* Skate and Modern Skate: the glass cards are white, same as Modern (set after Flying V has copied Skate, so Flying V keeps its own) */
 var SKATE_CARD = { card: STYLES.current.ctx.card };
 STYLES.skate.ctx = Object.assign({}, STYLES.skate.ctx, SKATE_CARD);
 STYLES.mskate.ctx = Object.assign({}, STYLES.mskate.ctx, SKATE_CARD);
+/* Throwback Skate: exactly Skate, with bold name lettering (Millionaires also gets a bolder name) */
+STYLES.throwbackskate = Object.assign({}, STYLES.skate, { label: 'Throwback Skate', nameBold: 4 });
 
 /* Millionaires: maroon (about #5e1d32) glass and background, warm cream chrome, one cream twill layer on the photo and the number, Stick-in-Rink's lettering */
 var MAROON = 342;
@@ -1054,6 +1058,7 @@ STYLES.millionaires = {
     btn: { royal: function(h, s, l) { return [MAROON, .55, l * .6]; }, red: function(h, s, l) { return [41, .45, Math.min(.9, l * 1.6)]; } }
   }
 };
+STYLES.millionaires.nameBold = 4;
 STYLES.millionaires.stackOut = 14;
 STYLES.millionaires.numBold = 11;
 STYLES.millionaires.numGap = 13;
@@ -1246,7 +1251,7 @@ function applyStyle(key) {
   /* narrower screens shrink the twill layers, except where a style pins them to 14px */
   rs.setProperty('--stack-out-768', (st.stackPinned ? so : so * 11 / 14) + 'px');
   rs.setProperty('--stack-out-600', (st.stackPinned ? so : so * 9 / 14) + 'px');
-  STY = { key: key, layers: st.layers || ['#adafb8', '#b61d31', '#fbfaf4'], font: st.font || "'NHL Vancouver'", gap: st.numGap || 39, bold: st.numBold || 0, track: st.nameTrack || 0, band: st.numBand || 4, nameTwill: !!st.nameTwill, nameLayers: st.nameLayers || null, nameExtra: st.nameExtra || 0, sparkle: !!st.sparkle, nameArch: !!st.nameArch, numMul: st.numMul || null, nameMul: st.nameMul || null, nameGapMul: st.nameGapMul != null ? st.nameGapMul : null, numClear: st.numClear || null, holes: !!st.holes, numShrink: st.numShrink || 0 };
+  STY = { key: key, layers: st.layers || ['#adafb8', '#b61d31', '#fbfaf4'], font: st.font || "'NHL Vancouver'", gap: st.numGap || 39, bold: st.numBold || 0, track: st.nameTrack || 0, band: st.numBand || 4, nameTwill: !!st.nameTwill, nameLayers: st.nameLayers || null, nameExtra: st.nameExtra || 0, sparkle: !!st.sparkle, nameArch: !!st.nameArch, nameBold: st.nameBold || 0, numMul: st.numMul || null, nameMul: st.nameMul || null, nameGapMul: st.nameGapMul != null ? st.nameGapMul : null, numClear: st.numClear || null, holes: !!st.holes, numShrink: st.numShrink || 0 };
   if (key !== 'orca') {
     var src = Array.prototype.map.call(document.querySelectorAll('style:not(#theme-style)'), function(e) { return e.textContent; }).join('\n');
     var css = unifyStack(remapCss(src, st), st);
@@ -1412,7 +1417,7 @@ function renderNameTwill(box) {
   var text = (box.getAttribute('data-t') || '').toUpperCase(), tgt = box.querySelector('.nt');
   if (!text || !tgt) return;
   var FONT = STY.font + ", Impact, 'Arial Narrow Bold', sans-serif", fixedGap = !!STY.nameTwill, layers = STY.nameLayers || [getComputedStyle(box).color], K = layers.length;
-  var BAND = STY.band, OUT = BAND * (STY.nameMul ? STY.nameMul.reduce(function(a, b) { return a + b; }, 0) : K - 1), PAD = OUT + 12, RING = 2.4, LETTER_GAP = 8, SPACE = .28, DOT = .15;
+  var BAND = STY.band, OUT = BAND * (STY.nameMul ? STY.nameMul.reduce(function(a, b) { return a + b; }, 0) : K - 1), PAD = OUT + 12 + (STY.nameBold || 0) / 2, RING = 2.4, LETTER_GAP = 8, SPACE = .28, DOT = .15;
   var panelW = document.getElementById('detail-panel').clientWidth, c = document.createElement('canvas').getContext('2d');
   /* phones: the name may be as wide as the twill stack round the photo */
   if (window.innerWidth <= 768) panelW += 2 * (parseFloat(getComputedStyle(document.documentElement).getPropertyValue(window.innerWidth <= 600 ? '--stack-out-600' : '--stack-out-768')) || 0);
@@ -1432,6 +1437,7 @@ function renderNameTwill(box) {
   }
   /* some styles open the name up by a fixed number of px (at the 75.4px web size) */
   if (!fixedGap && STY.nameExtra) lsEm += STY.nameExtra / 75.4;
+  if (!fixedGap && STY.nameBold) lsEm += STY.nameBold / 75.4; /* bolder letters keep the gap they had */
   /* some styles scale the whole gap between the letters (1 = as is, .5 = half) */
   if (!fixedGap && STY.nameGapMul != null) lsEm = (STY.nameGapMul * (avg + lsEm * 75.4) - avg) / 75.4;
   var DOTPAD = .1; /* extra room either side of the full stop */
@@ -1521,7 +1527,7 @@ function renderNameTwill(box) {
     }).join('');
     if (panelW > 0 && W * webScale > panelW) webScale = panelW / W;
   }
-  tgt.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: 0, RING: RING, FONT: FONT, FS: FS, p: 'm', spark: false, plain: STY.key === 'canada', mul: STY.nameMul });
+  tgt.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: (STY.nameBold || 0) * FS / 75.4, RING: RING, FONT: FONT, FS: FS, p: 'm', spark: false, plain: STY.key === 'canada', mul: STY.nameMul });
   var nameSvg = tgt.querySelector('svg');
   if (nameSvg) { nameSvg.style.maxWidth = 'none'; nameSvg.style.width = (W * webScale).toFixed(2) + 'px'; }
   box.style.marginBottom = (4 * webScale * FS / 75.4).toFixed(2) + 'px'; /* 4px at web size, scaled with the lettering on phones */
