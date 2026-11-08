@@ -284,6 +284,36 @@ html[data-theme="dark"] #view-detail #detail-panel .dp-tag {
     #f1f1ee;
   box-shadow: 0 1px 4px rgba(0,0,0,.22), 0 0 0 1px rgba(0,0,0,.1);
 }
+/* NBA Authentics jersey tag (Knicks): size, team/title, year/brand/model, Nike swoosh, and a white handwriting box for patches and notes */
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba {
+  position: relative; box-sizing: border-box; width: 100%; max-width: 440px; aspect-ratio: 2 / 1; padding: 3.2% 1.2% 3.2% 2.2%;
+  display: grid; grid-template-columns: 16% 14% 1fr 19% 6.8%; grid-template-rows: 63% 1fr; gap: 1.2% 1%;
+  background: #0b0b0c; border-radius: 3px; color: #fff; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; text-shadow: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.08);
+}
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba > * { min-width: 0; min-height: 0; position: relative; box-sizing: border-box; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-logo { grid-column: 1; grid-row: 1 / 3; display: flex; align-items: stretch; background: #f4f4f2; border-radius: 9px; padding: 3% 0 3% 3%; margin: -.4% 0; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-logo svg { flex: 1 1 auto; min-width: 0; height: 100%; display: block; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-vert { writing-mode: vertical-rl; font-weight: 700; letter-spacing: .26em; font-size: clamp(5px, 1.9vw, 8.5px); text-transform: uppercase; white-space: nowrap; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-logo .dp-tag-nba-vert { color: #1d428a; flex: 0 0 auto; padding: 0 3%; display: flex; align-items: center; justify-content: center; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-size { grid-column: 2; grid-row: 1; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.55); outline: 1px solid #0b0b0c; outline-offset: -3px; font-size: clamp(13px, 4vw, 20px); font-weight: 500; letter-spacing: 0; text-align: center; line-height: 1.05; padding: 2px; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-info { grid-column: 3; grid-row: 1; display: grid; grid-template-rows: 1fr 1fr; gap: 1.6%; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-top, html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-second { border: 1px solid rgba(255,255,255,.55); display: flex; flex-direction: column; justify-content: center; padding: 3px 4px; text-align: center; overflow: hidden; overflow-wrap: anywhere; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-team { font-size: clamp(5.5px, 1.6vw, 7px); letter-spacing: .12em; text-transform: uppercase; font-weight: 600; opacity: .85; line-height: 1.15; margin-bottom: 2px; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-title { font-size: clamp(8px, 2.5vw, 11px); letter-spacing: .05em; text-transform: uppercase; font-weight: 600; line-height: 1.12; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-second { position: relative; padding-top: 11px; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-second i { position: absolute; left: 10%; right: 10%; height: 1.5px; background: #fff; top: 3px; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-second i:nth-child(2) { top: 5.5px; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-second i:nth-child(3) { top: 8px; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-meta { font-size: clamp(6px, 1.75vw, 8px); letter-spacing: .04em; text-transform: uppercase; font-weight: 600; line-height: 1.15; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-nike { grid-column: 4; grid-row: 1; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.55); padding: 0 16%; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-nike svg { width: 100%; height: auto; display: block; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-len { grid-column: 5; grid-row: 1 / 3; margin: -3.4% -1.2% -3.4% 0; background: #0b0b0c; display: flex; align-items: center; justify-content: center; border-left: 1px solid rgba(255,255,255,.12); }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-len .dp-tag-nba-vert { font-size: clamp(5px, 1.7vw, 7.5px); }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-hand { grid-column: 2 / 5; grid-row: 2; background: #f6f6f3; color: #1c2f8f; font-family: "Bradley Hand", "Segoe Print", "Comic Sans MS", "Marker Felt", cursive; font-size: clamp(9px, 2.8vw, 12.5px); line-height: 1.15; padding: 2px 8px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-hand:empty { background: #f6f6f3; }
+@media (max-width: 768px) { html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba { width: auto; max-width: none; margin: 0 calc(-1 * var(--stack-out-768, 22px)); } }
+@media (max-width: 600px) { html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba { margin: 0 calc(-1 * var(--stack-out-600, 18px)); } }
 /* the printed blue keyline */
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag::before { content: ''; position: absolute; inset: 11px; border: 4px solid #2d7bd0; border-radius: 9px; pointer-events: none; }
 /* running stitch round the woven edge */
@@ -542,22 +572,22 @@ html[data-theme="dark"] #view-detail .dm-ctrls { position: absolute; right: 10px
 html[data-theme="dark"] #view-detail .dm-ctrls .dm-nav, html[data-theme="dark"] #view-detail .dm-ctrls .dm-max { position: static; left: auto; right: auto; top: auto; bottom: auto; transform: none; flex: none; }
 html[data-theme="dark"] #view-detail .dm-ctrls .dm-nav:active, html[data-theme="dark"] #view-detail .dm-ctrls .dm-max:active { transform: scale(.94); }
 /* previous / next jersey above the name and number: the nav bar's own button style, one on each side */
-html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 330px; margin: 0 auto 24px; }
-html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter { display: inline-flex !important; align-items: center; gap: 7px; flex: none; position: static; font-size: 12px; }
-html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter svg { display: block; flex: none; }
-@media (max-width: 768px) { html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { width: auto; max-width: none; margin: 0 calc(-1 * var(--stack-out-768, 22px)) 24px; } }
-@media (max-width: 600px) { html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { margin: 0 calc(-1 * var(--stack-out-600, 18px)) 24px; } }
+html[data-theme="dark"] #view-detail .dp-jnav { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 330px; margin: 0 auto; }
+html[data-theme="dark"] #view-detail .dp-jnav .hdr-filter { display: inline-flex !important; align-items: center; gap: 7px; flex: none; position: static; font-size: 12px; }
+html[data-theme="dark"] #view-detail .dp-jnav .hdr-filter svg { display: block; flex: none; }
+@media (max-width: 768px) { html[data-theme="dark"] #view-detail .dp-jnav { max-width: none; margin: 22px 38.5px -10px; width: auto; } }
+@media (max-width: 600px) { html[data-theme="dark"] #view-detail .dp-jnav { margin: 18px 31.5px -8px; } }
 /* on jersey pages the style dropdown stays hidden until the S key is pressed */
 #style-select { display: none !important; }
 html.show-style #style-select { display: block !important; }
 /* on the home grid the style dropdown is always visible (as before; phones still hide it there); only the jersey pages wait for S */
 @media (min-width: 769px) { .hdr-left:not(.detail) ~ .hdr-right #style-select { display: block !important; } }
-/* previous / next jersey: in the nav bar (after the style dropdown) on wider screens, above the name and number on phones and tablets */
+/* previous / next jersey: in the nav bar (after the style dropdown) on wider screens, above the image container in the single-column layout */
 .hdr-filter.jn-hdr { display: none; }
 @media (min-width: 769px) {
   .hdr-left.detail ~ .hdr-right .hdr-filter.jn-hdr { display: inline-flex !important; align-items: center; gap: 7px; font-size: 12px; flex: none; }
   .hdr-left.detail ~ .hdr-right .hdr-filter.jn-hdr svg { display: block; flex: none; }
-  html[data-theme="dark"] #view-detail #detail-panel .dp-jnav { display: none !important; }
+  html[data-theme="dark"] #view-detail .dp-jnav { display: none !important; }
 }
 @media (min-width: 769px) and (max-width: 1100px) { .hdr-left.detail ~ .hdr-right .hdr-filter.jn-hdr span { display: none; } }
 /* back button: an arrow with the word "All" */
@@ -568,8 +598,8 @@ html[data-theme="dark"] .hdr-back { width: auto; height: auto; min-width: 0; pad
 html[data-theme="dark"] .hdr-back-chevron { height: 10px; }
 html[data-theme="dark"] .hdr-back-chevron svg { width: 12px; height: 10px; }
 @media (min-width: 769px) { .hdr-left.detail ~ .hdr-right .hdr-filter.jn-hdr { font-size: 10px; gap: 6px; } }
-.hdr-filter.jn-hdr svg, html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter svg { width: 12px; height: 10px; }
-html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter { font-size: 10px; gap: 6px; }
+.hdr-filter.jn-hdr svg, html[data-theme="dark"] #view-detail .dp-jnav .hdr-filter svg { width: 12px; height: 10px; }
+html[data-theme="dark"] #view-detail .dp-jnav .hdr-filter { font-size: 10px; gap: 6px; }
 </style>
 </head>
 <body>
@@ -612,6 +642,7 @@ html[data-theme="dark"] #view-detail #detail-panel .dp-jnav .hdr-filter { font-s
 </main>
 
 <main class="view" id="view-detail">
+  <div class="dp-jnav dp-jnav-top"><button type="button" class="hdr-filter jn-btn" data-dir="-1" aria-label="Previous jersey"><svg viewBox="0 0 12 10" width="13" height="11" aria-hidden="true"><path d="M11.2 5H1.4M5.2 1L1.2 5l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Previous</span></button><button type="button" class="hdr-filter jn-btn" data-dir="1" aria-label="Next jersey"><span>Next</span><svg viewBox="0 0 12 10" width="13" height="11" aria-hidden="true"><path d="M0.8 5H10.6M6.8 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
   <div class="detail-layout">
     <div class="detail-wrap">
       <i class="dl dl-blue"></i><i class="dl dl-gold"></i><i class="dl dl-white"></i>
@@ -780,6 +811,22 @@ function jerseyStyle(p) {
   if (/wordmark/.test(t) && yr && yr < 2010) return 'orca'; /* the 2007 Wordmark is the Orca look */
   return 'current';
 }
+/* Knicks jerseys get an NBA jersey tag in place of the Mei Grey tag: size where the "52" is, team and title in the top box, year / brand / model / type in the second box, patches and notes in the white box */
+var NBA_LOGO_SVG = '<svg viewBox="0 0 205 400" aria-hidden="true"><defs><clipPath id="nbaClip"><rect width="205" height="400" rx="46"/></clipPath></defs><g clip-path="url(#nbaClip)"><rect width="205" height="400" fill="#1d428a"/><path d="M104 0H205V400H112C132 300 116 140 104 0Z" fill="#c8102e"/></g><g fill="#fff"><ellipse cx="122" cy="44" rx="23" ry="27"/><path d="M98 66C72 70 54 86 46 112L30 172L38 198C56 162 68 134 82 116C94 154 96 192 84 234C68 278 46 302 38 324C54 324 72 308 90 292C106 278 124 264 142 264L150 322C148 348 142 368 146 376C160 370 170 342 174 320C178 296 170 276 162 254C152 224 148 196 150 170C154 142 152 112 142 86C136 68 120 60 98 66Z"/><path d="M142 86C152 122 160 160 168 190L182 186C172 150 162 112 152 82Z"/><circle cx="174" cy="220" r="30"/></g><text x="102" y="392" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="800" font-size="74" letter-spacing="-3" fill="#fff" stroke="#fff" stroke-width="1.5">NBA</text></svg>';
+var NIKE_SVG = '<svg viewBox="20 195 560 215" aria-hidden="true"><path d="M98 212C60 255 25 310 38 355C55 400 110 400 165 380C280 340 420 270 570 204C440 238 300 268 160 314C118 314 85 290 85 255C85 240 90 226 98 212Z" fill="#fff"/></svg>';
+function nbaTagHtml(p, o) {
+  var size = String(p.size || '').replace(/Goalie Cut/i, 'GC').replace(/^(\d+)\s*G$/i, '$1 GC');
+  var hand = [o.patches.length ? 'Patches: ' + o.patches.join(', ') : '', p.notes ? 'Notes: ' + p.notes : ''].filter(Boolean);
+  return '<div class="dp-tag-nba">' +
+    '<div class="dp-tag-nba-logo">' + NBA_LOGO_SVG + '<span class="dp-tag-nba-vert">AUTHENTICS</span></div>' +
+    '<div class="dp-tag-nba-size">' + esc(size) + '</div>' +
+    '<div class="dp-tag-nba-info"><div class="dp-tag-nba-top">' + (p.team ? '<div class="dp-tag-nba-team">' + esc(p.team) + '</div>' : '') + '<div class="dp-tag-nba-title">' + esc(tagTitle(p.title || '')) + '</div></div>' +
+      '<div class="dp-tag-nba-second"><i></i><i></i><i></i><div class="dp-tag-nba-meta">' + esc(o.meta) + '</div></div></div>' +
+    '<div class="dp-tag-nba-nike">' + NIKE_SVG + '</div>' +
+    '<div class="dp-tag-nba-len"><span class="dp-tag-nba-vert">LENGTH +6</span></div>' +
+    '<div class="dp-tag-nba-hand">' + hand.map(function(h) { return '<div>' + esc(h) + '</div>'; }).join('') + '</div>' +
+  '</div>';
+}
 function nameHtml(n) {
   return '<div class="dp-name dp-name-tw" data-t="' + esc(n) + '"><i class="dl dl-patch"></i><div class="nt"></div></div>';
 }
@@ -906,13 +953,17 @@ function openDetail(id, skipPush) {
   var nameLine = lastName && !/\b40th anniversary\b/i.test(p.title || '') ? nameHtml(lastName) : '';
   var numLine = p.number ? '<div class="dp-num" role="img" aria-label="' + esc(p.number) + '" data-n="' + esc(p.number) + '"></div>' : '';
   /* previous / next jersey sit above the name and number, one each side, in the same default order as the grid (wraps round) */
-  document.getElementById('detail-panel').innerHTML = '<div class="dp-jnav"><button type="button" class="hdr-filter jn-btn" data-dir="-1" aria-label="Previous jersey"><svg viewBox="0 0 12 10" width="13" height="11" aria-hidden="true"><path d="M11.2 5H1.4M5.2 1L1.2 5l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Previous</span></button><button type="button" class="hdr-filter jn-btn" data-dir="1" aria-label="Next jersey"><span>Next</span><svg viewBox="0 0 12 10" width="13" height="11" aria-hidden="true"><path d="M0.8 5H10.6M6.8 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' + nameLine + numLine + '<div class="dp-tag">' +
+  var html = nameLine + numLine + '<div class="dp-tag">' +
     (p.team   ? '<div class="dp-team">'   + esc(p.team)     + '</div>' : '') +
     (p.title  ? '<div class="dp-title">'  + esc(tagTitle(p.title)) + '</div>' : '') +
     (mfr  ? '<div class="dp-meta">'   + esc(mfr)     + '</div>' : '') +
     '</div>';
+  if (/knicks/i.test(p.team || '')) {
+    var tagStart = html.indexOf('<div class="dp-tag">');
+    html = html.slice(0, tagStart) + nbaTagHtml(p, { patches: patches, meta: [p.year, p.manufacturer, p.model, jt, madeIn].filter(Boolean).join(' · ') });
+  }
+  document.getElementById('detail-panel').innerHTML = html;
   S.curId = p.id;
-  document.querySelectorAll('#detail-panel .jn-btn').forEach(function(b) { b.addEventListener('click', function() { stepJersey(+b.dataset.dir); }); });
   show('detail');
   tightenNumber(); fitName();
   pageLoadReady(loadTok, di);
@@ -1606,7 +1657,7 @@ document.querySelectorAll('.hdr-filter:not(.jn-btn)').forEach(function(btn) {
 
 document.getElementById('filter-select').addEventListener('change', function(e) { setFilter(e.target.value); });
 
-document.querySelectorAll('.jn-hdr').forEach(function(b) { b.addEventListener('click', function() { stepJersey(+b.dataset.dir); }); });
+document.querySelectorAll('.jn-hdr, .dp-jnav-top .jn-btn').forEach(function(b) { b.addEventListener('click', function() { stepJersey(+b.dataset.dir); }); });
 document.getElementById('btn-back').addEventListener('click', function() { history.pushState({}, '', location.pathname + location.search); show('gallery'); renderGallery(); });
 document.getElementById('logo').addEventListener('click', function() { if (S.view !== 'gallery') { history.pushState({}, '', location.pathname + location.search); show('gallery'); renderGallery(); } });
 document.addEventListener('keydown', function(e) { if (e.key==='Escape' && S.view==='detail') { history.pushState({}, '', location.pathname + location.search); show('gallery'); renderGallery(); } });
