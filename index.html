@@ -1085,13 +1085,13 @@ STYLES.flames.top = function(h, s, l) { return l > .6 ? [352, .85, .46] : [352, 
 STYLES.flames.outerSheen = undefined;
 STYLES.flames.ctx = Object.assign({}, STYLES.canada.ctx, { card: { royal: kn(function(l) { return [0, 0, l * .07, 2.4]; }) } });
 
-/* Blasty: black page, red glass, yellow trim, the same red-over-yellow double twill */
+/* Blasty: black page, red glass, yellow trim, triple twill (white on top, red, yellow at the bottom) */
 STYLES.blasty = Object.assign({}, STYLES.skate, {
   label: 'Blasty', font: STYLES.current.font, nameTrack: STYLES.current.nameTrack, numGap: STYLES.current.numGap + 12,
-  layers: [FL_YELLOW, FL_RED], nameLayers: [FL_YELLOW, FL_RED], hideMiddle: true, stackOut: 10.5, stackPinned: true
+  layers: [FL_YELLOW, FL_RED, KN_WHITE], nameLayers: [FL_YELLOW, FL_RED, KN_WHITE]
 });
-STYLES.blasty.outer = STYLES.flames.outer;
-STYLES.blasty.top = STYLES.flames.top;
+STYLES.blasty.outer = STYLES.flames.outer;   /* bottom layer: yellow */
+STYLES.blasty.top = undefined;               /* top layer stays white; the middle layer is Skate's red */
 STYLES.blasty.ctx = Object.assign({}, STYLES.skate.ctx, { card: { royal: STYLES.skate.map.royal } });
 
 function remapCss(css, st) {
