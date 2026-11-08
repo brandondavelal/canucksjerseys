@@ -1088,7 +1088,7 @@ STYLES.flames.ctx = Object.assign({}, STYLES.canada.ctx, { card: { royal: kn(fun
 /* Blasty: black page, red glass, yellow trim, triple twill (white on top, red, yellow at the bottom) */
 STYLES.blasty = Object.assign({}, STYLES.skate, {
   label: 'Blasty', font: STYLES.current.font, nameTrack: STYLES.current.nameTrack, numGap: STYLES.current.numGap + 12,
-  layers: [FL_YELLOW, FL_RED, KN_WHITE], nameLayers: [FL_YELLOW, FL_RED, KN_WHITE]
+  layers: [FL_YELLOW, FL_RED, KN_WHITE], nameLayers: [FL_RED, KN_WHITE] /* the name is a two-layer twill: white on red */
 });
 STYLES.blasty.outer = STYLES.flames.outer;   /* bottom layer: yellow */
 STYLES.blasty.top = undefined;               /* top layer stays white; the middle layer is Skate's red */
