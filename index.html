@@ -851,8 +851,8 @@ function openDetail(id, skipPush) {
   LB.imgs = imgs; LB.go = showPhoto; LB.get = function() { return cur; };
   di.querySelector('.dm-max').addEventListener('click', function() { openLightbox(cur); });
   var patches = p.patches || [];
-  /* the tag drops "On-Ice Authentic", abbreviates Team Issued / Game Worn, and spells out the condition code */
-  var tagType = { 'On-Ice Authentic MiC': '', 'Team Issued MiC': 'TI', 'Game Worn': 'GW' };
+  /* the tag drops "On-Ice Authentic" and spells out Team Issued / Game Worn */
+  var tagType = { 'On-Ice Authentic MiC': '', 'Team Issued MiC': 'Team Issued', 'Game Worn': 'Game Worn' };
   var jt = Object.prototype.hasOwnProperty.call(tagType, p.jerseyType) ? tagType[p.jerseyType] : String(p.jerseyType || '').replace(/\s*MiC$/, '');
   var sz = p.size ? 'Size ' + String(p.size).replace(/Goalie Cut/i, 'GC').replace(/^(\d+)\s*G$/i, '$1 GC') : '';
   var mfr = [p.year, p.manufacturer, p.model, jt, sz].filter(Boolean).join(' · ');
