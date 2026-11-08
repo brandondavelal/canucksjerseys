@@ -1015,6 +1015,10 @@ STYLES.flyingv.ctx = Object.assign({}, STYLES.skate.ctx, { mid: { red: function(
 /* Skate only (set after Modern Skate and Flying V copy it): 4px more space between the name's letters */
 STYLES.skate.nameExtra = 4;
 STYLES.flyingv.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(255,170,0').split('rgba(255,235,120').join('rgba(255,200,90').split('rgba(255,150,0').join('rgba(255,120,0') + '\n#view-detail .dl-blue { display: none !important; }\n/* the bottom (orange-red) layer is half as thick */\n#view-detail .dl-gold { inset: calc(-10.5px * var(--tw, 1)) !important; }\n@media (max-width: 768px) { #view-detail .dl-gold { inset: -8.25px !important; } }\n@media (max-width: 600px) { #view-detail .dl-gold { inset: -6.75px !important; } }';
+/* Skate and Modern Skate: the glass cards are tinted yellow, not red (set after Flying V has copied Skate, so Flying V keeps its own) */
+var SKATE_CARD = { card: { royal: function(h, s, l) { return [52, 1, Math.min(.6, l * 1.95), 2.1]; } } };
+STYLES.skate.ctx = Object.assign({}, STYLES.skate.ctx, SKATE_CARD);
+STYLES.mskate.ctx = Object.assign({}, STYLES.mskate.ctx, SKATE_CARD);
 
 /* Millionaires: maroon (about #5e1d32) glass and background, warm cream chrome, one cream twill layer on the photo and the number, Stick-in-Rink's lettering */
 var MAROON = 342;
