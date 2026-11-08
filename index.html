@@ -1077,13 +1077,19 @@ STYLES.knicks.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(0,10
 
 /* Flames: red page, black glass, yellow trim, double twill (red on top, yellow at the bottom) */
 STYLES.flames = Object.assign({}, STYLES.canada, {
-  label: 'Flames', layers: [FL_YELLOW, FL_RED], nameLayers: [FL_YELLOW, FL_RED]
+  label: 'Flames',
+  layers: [FL_YELLOW, KN_WHITE, '#0d0e10'],   /* number: black on white on yellow */
+  nameLayers: ['#0d0e10', KN_WHITE],           /* name: white on black */
+  stackLayers: [FL_YELLOW, FL_RED]             /* photo stack: red on yellow */
 });
 STYLES.flames.map = Object.assign({}, STYLES.canada.map, { silver: kn(function(l) { return [43, 1, .4 + .42 * l]; }) });
 STYLES.flames.outer = kn(function(l) { return [43, .95, .45 + .25 * l]; });   /* bottom layer of the photo stack: yellow */
 STYLES.flames.top = function(h, s, l) { return l > .6 ? [352, .85, .46] : [352, .85, l * .8]; }; /* top layer: red */
 STYLES.flames.outerSheen = undefined;
-STYLES.flames.ctx = Object.assign({}, STYLES.canada.ctx, { card: { royal: kn(function(l) { return [0, 0, l * .07, 2.4]; }) } });
+STYLES.flames.ctx = Object.assign({}, STYLES.canada.ctx, {
+  card: { royal: kn(function(l) { return [0, 0, l * .07, 2.4]; }) },
+  nav: Object.assign({}, STYLES.canada.ctx.nav, { silver: kn(function(l) { return [0, 0, .55 + .45 * l]; }) }) /* the nav trim is white */
+});
 
 /* Blasty: black page, red glass, yellow trim, triple twill (white on top, red, yellow at the bottom) */
 STYLES.blasty = Object.assign({}, STYLES.skate, {
@@ -1158,7 +1164,7 @@ function unifyStack(css, st) {
   if (st.hideMiddle) vis = vis.filter(function(v) { return v !== 'gold'; });
   if (/\.dl-blue, #view-detail \.dl-gold \{ display: none/.test(ex)) vis = ['white'];
   else if (/\.dl-blue \{ display: none/.test(ex)) vis = vis.filter(function(v) { return v !== 'blue'; });
-  var layers = st.layers || ['#adafb8', '#b61d31', '#fbfaf4'];
+  var layers = st.stackLayers || st.layers || ['#adafb8', '#b61d31', '#fbfaf4'];
   if (vis.length !== layers.length) return css;
   vis.forEach(function(name, i) {
     var hex = layers[i].replace('#', '');
