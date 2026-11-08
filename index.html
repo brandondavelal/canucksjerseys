@@ -1052,7 +1052,7 @@ STYLES.millionaires.numGap = 13;
 STYLES.millionaires.extra = '#view-detail .dl-blue, #view-detail .dl-gold { display: none !important; }\n#view-detail .dl-white { inset: calc(-14px * var(--tw, 1)) !important; box-shadow: 0 8px 18px rgba(0,0,0,.3), 0 1px 3px rgba(0,0,0,.28) !important; }\n@media (max-width: 768px) { #view-detail .dl-white { inset: -11px !important; } }\n@media (max-width: 600px) { #view-detail .dl-white { inset: -9px !important; } }\nhtml[data-theme="dark"] #view-detail #detail-panel > div.dp-name { color: #f1e6cf; }\nhtml[data-theme="dark"] .hdr-filter.hdr-filter-sale, html[data-theme="dark"] .hdr-filter.hdr-filter-sale.active, html[data-theme="dark"] .hdr-filter.hdr-filter-sale:active { color: #5e1d32 !important; }';
 
 /* ---- Knicks, Flames, Blasty ---- */
-var KN_ORANGE = '#f68220', KN_BLUE = '#25579c', KN_WHITE = '#fbfaf4';
+var KN_ORANGE = '#f68220', KN_BLUE = '#1965c8', KN_WHITE = '#fbfaf4';
 var FL_YELLOW = '#ffd23f', FL_RED = '#c8102e';
 var kn = function(f) { return function(h, s, l) { return f(l); }; };
 
@@ -1064,20 +1064,20 @@ STYLES.knicks = Object.assign({}, STYLES.skate, {
   stackLayers: [KN_ORANGE, KN_BLUE, KN_WHITE]  /* photo stack: white, blue, orange */
 });
 STYLES.knicks.map = {
-  navy: kn(function(l) { return [214, .62, l < .045 ? l * 2 : Math.min(.36, .17 + (l - .05) * 4)]; }),
+  navy: kn(function(l) { return [214, .78, l < .045 ? l * 2 : Math.min(.4, .19 + (l - .05) * 4.2)]; }),
   royal: kn(function(l) { return [27, .91, Math.min(.58, l * 1.9), 2.1]; }),
   red: kn(function(l) { return [27, .91, Math.max(l, .5)]; }),
   silver: kn(function(l) { return [0, 0, l]; })
 };
 STYLES.knicks.outer = kn(function(l) { return [27, .91, .4 + .2 * l]; });   /* bottom twill layer of the photo stack: orange */
 STYLES.knicks.top = undefined;                                               /* top layer stays white */
-STYLES.knicks.bgRoyal = function(h, s, l) { return [214, .62, Math.min(.8, l), .9]; }  /* the page is Knicks blue */
+STYLES.knicks.bgRoyal = function(h, s, l) { return [214, .78, Math.min(.8, l), .9]; }  /* the page is Knicks blue */
 STYLES.knicks.ink = [27, .91, .5];
 STYLES.knicks.ctx = {
-  mid: { red: kn(function(l) { return [214, .62, l * .93]; }) },               /* middle layer: blue */
+  mid: { red: kn(function(l) { return [214, .78, l * .93]; }) },               /* middle layer: blue */
   nav: { silver: kn(function(l) { return [0, 0, .55 + .45 * l]; }) },        /* the nav trim is white */
   card: { royal: kn(function(l) { return [27, .91, Math.min(.58, l * 1.9), 2.1]; }) },
-  btn: { royal: kn(function(l) { return [214, .62, Math.min(.5, l * 1.15)]; }), red: kn(function(l) { return [27, .91, Math.max(l * .88, .43), 1]; }) }  /* buttons are Knicks blue */
+  btn: { royal: kn(function(l) { return [214, .78, Math.min(.55, l * 1.25)]; }), red: kn(function(l) { return [27, .91, Math.max(l * .88, .43), 1]; }) }  /* buttons are Knicks blue */
 };
 STYLES.knicks.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(255,255,255').split('rgba(255,235,120').join('rgba(255,255,255').split('rgba(255,150,0').join('rgba(180,185,200').split('#ffe84a').join(KN_WHITE) + '\n/* no name bar: the white name sits straight on the page */\n#view-detail .dl.dl-patch { display: none !important; }';
 
@@ -1088,8 +1088,8 @@ var KN_ASSOC = Object.assign({}, STYLES.knicks, {
 });
 KN_ASSOC.outer = kn(function(l) { return [0, 0, .9 + .1 * l]; });                 /* bottom layer of the stack: white */
 KN_ASSOC.top = function(h, s, l) { return l > .6 ? [27, .92, .55] : [27, .92, l * .8]; }; /* top layer: orange */
-KN_ASSOC.ctx = Object.assign({}, STYLES.knicks.ctx, { nav: { silver: kn(function(l) { return [214, .62, .22 + .5 * l]; }) } }); /* blue nav trim */
-KN_ASSOC.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(37,87,156').split('rgba(255,235,120').join('rgba(120,160,215').split('rgba(255,150,0').join('rgba(22,54,105').split('#ffe84a').join(KN_BLUE) + '\n/* white page, and no name bar */\nhtml[data-theme="dark"]::before { background: #fff !important; }\nhtml[data-theme="dark"] body { background-color: #fff !important; }\n#view-detail .dl.dl-patch { display: none !important; }';
+KN_ASSOC.ctx = Object.assign({}, STYLES.knicks.ctx, { nav: { silver: kn(function(l) { return [214, .78, .22 + .5 * l]; }) } }); /* blue nav trim */
+KN_ASSOC.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(25,101,200').split('rgba(255,235,120').join('rgba(120,160,215').split('rgba(255,150,0').join('rgba(22,54,105').split('#ffe84a').join(KN_BLUE) + '\n/* white page, and no name bar */\nhtml[data-theme="dark"]::before { background: #fff !important; }\nhtml[data-theme="dark"] body { background-color: #fff !important; }\n#view-detail .dl.dl-patch { display: none !important; }';
 
 /* Knicks Statement: black page, orange glass, blue trim; number and name orange on blue, photo stack orange on blue on white */
 STYLES.knicksstatement = Object.assign({}, KN_ASSOC, { nameLayers: [KN_ORANGE] }); /* the name is a single orange layer */
