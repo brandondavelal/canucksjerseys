@@ -1066,7 +1066,8 @@ var kn = function(f) { return function(h, s, l) { return f(l); }; };
 
 /* Knicks (Icon and Association jerseys): blue page, orange glass, white trim, blue buttons; number white on orange, name a single white layer (no name bar), photo stack white / blue / orange */
 STYLES.knicks = Object.assign({}, STYLES.skate, {
-  label: 'Knicks', font: "'NBA Bulls'", nameTrack: 0, numGap: 13, nameArch: true, nameExtra: -2, holes: true,
+  label: 'Knicks', font: "'NBA Bulls'", nameTrack: 0, numGap: 26, nameArch: true, nameExtra: -2, holes: true,
+  numMul: [1.5], numShrink: .5,   /* number: the outer layer is 50% thicker; the top layer is pulled in by the same amount so the overall size is unchanged */
   layers: [KN_WHITE, KN_ORANGE],              /* number: orange on white */
   nameLayers: [KN_WHITE],                      /* name: a single white layer */
   stackLayers: [KN_ORANGE, KN_BLUE, KN_WHITE]  /* photo stack: white, blue, orange */
@@ -1245,7 +1246,7 @@ function applyStyle(key) {
   /* narrower screens shrink the twill layers, except where a style pins them to 14px */
   rs.setProperty('--stack-out-768', (st.stackPinned ? so : so * 11 / 14) + 'px');
   rs.setProperty('--stack-out-600', (st.stackPinned ? so : so * 9 / 14) + 'px');
-  STY = { key: key, layers: st.layers || ['#adafb8', '#b61d31', '#fbfaf4'], font: st.font || "'NHL Vancouver'", gap: st.numGap || 39, bold: st.numBold || 0, track: st.nameTrack || 0, band: st.numBand || 4, nameTwill: !!st.nameTwill, nameLayers: st.nameLayers || null, nameExtra: st.nameExtra || 0, sparkle: !!st.sparkle, nameArch: !!st.nameArch, numMul: st.numMul || null, nameMul: st.nameMul || null, nameGapMul: st.nameGapMul != null ? st.nameGapMul : null, numClear: st.numClear || null, holes: !!st.holes };
+  STY = { key: key, layers: st.layers || ['#adafb8', '#b61d31', '#fbfaf4'], font: st.font || "'NHL Vancouver'", gap: st.numGap || 39, bold: st.numBold || 0, track: st.nameTrack || 0, band: st.numBand || 4, nameTwill: !!st.nameTwill, nameLayers: st.nameLayers || null, nameExtra: st.nameExtra || 0, sparkle: !!st.sparkle, nameArch: !!st.nameArch, numMul: st.numMul || null, nameMul: st.nameMul || null, nameGapMul: st.nameGapMul != null ? st.nameGapMul : null, numClear: st.numClear || null, holes: !!st.holes, numShrink: st.numShrink || 0 };
   if (key !== 'orca') {
     var src = Array.prototype.map.call(document.querySelectorAll('style:not(#theme-style)'), function(e) { return e.textContent; }).join('\n');
     var css = unifyStack(remapCss(src, st), st);
@@ -1293,13 +1294,15 @@ function twillMarkup(o) {
   var W = o.W, H = o.H, layers = o.layers, K = layers.length, BAND = o.BAND, BOLD = o.BOLD, RING = o.RING, p = o.p;
   var rim = function(j) { return BAND * ((o.mul && o.mul[j]) || 1); };
   var rimFrom = function(i) { var t = 0; for (var j = i; j < K - 1; j++) t += rim(j); return t; };
-  var OUT = rimFrom(0) + BOLD / 2;
+  var SH = K > 1 ? (o.shrinkTop || 0) : 0; /* the top layer is pulled in by SH (px) while the outer layer grows by the same, so the overall size stays */
+  var OUT = rimFrom(0) - SH + BOLD / 2;
   var fr = 'filterUnits="userSpaceOnUse" x="-40" y="-40" width="' + (W + 80) + '" height="' + (H + 80) + '"';
   /* zig-zag thread sewn right to the edge of a layer: the ring just inside its silhouette, filled with a small diagonal lattice */
-  var ring = function(id, col) {
+  var ring = function(id, col, shr) {
     var tile = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="3" height="3"><path d="M0 0L3 3M3 0L0 3" stroke="' + col + '" stroke-width=".9" fill="none"/></svg>');
     return '<filter id="' + id + '" ' + fr + ' color-interpolation-filters="sRGB">' +
-      '<feMorphology in="SourceAlpha" operator="erode" radius="' + RING + '" result="e"/><feComposite in="SourceAlpha" in2="e" operator="out" result="r"/>' +
+      (shr ? '<feMorphology in="SourceAlpha" operator="erode" radius="' + shr + '" result="s0"/>' : '') +
+      '<feMorphology in="' + (shr ? 's0' : 'SourceAlpha') + '" operator="erode" radius="' + RING + '" result="e"/><feComposite in="' + (shr ? 's0' : 'SourceAlpha') + '" in2="e" operator="out" result="r"/>' +
       '<feImage href="' + tile + '" x="0" y="0" width="3" height="3" result="t"/><feTile in="t" result="lat"/><feComposite in="lat" in2="r" operator="in"/></filter>';
   };
   var layer = function(fill, sw, extra) { return '<g fill="' + fill + '" stroke="' + fill + '" stroke-width="' + sw + '" stroke-linejoin="miter" stroke-miterlimit="2" ' + (extra || '') + '>' + o.texts + '</g>'; };
@@ -1312,6 +1315,7 @@ function twillMarkup(o) {
       '<feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="2" seed="3" result="n"/>' +
       '<feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  16 0 0 0 -10.4" result="sp"/><feComposite in="sp" in2="SourceAlpha" operator="in"/></filter>' +
     ring(p + 'rD', 'rgba(0,0,0,.55)') + layers.map(function(f, i) { return ring(p + 'r' + i, f); }).join('') +
+    (SH ? ring(p + 'rDs', 'rgba(0,0,0,.55)', SH) + ring(p + 'r' + (K - 1) + 's', layers[K - 1], SH) + '<filter id="' + p + 'Er" ' + fr + '><feMorphology in="SourceGraphic" operator="erode" radius="' + SH + '"/></filter>' : '') +
     '<filter id="' + p + 'Shadow" ' + fr + '><feGaussianBlur stdDeviation="' + (p === 'm' ? 1 : 2) + '"/></filter>' +
     /* o.holes (the Knicks number only): perforation holes punched through the lettering (the page shows through), kept clear of the edges */
     (o.holes ? '<pattern id="' + p + 'Pat" patternUnits="userSpaceOnUse" width="' + o.holes.pitch + '" height="' + o.holes.pitch + '"><g fill="#000"><circle cx="0" cy="0" r="' + o.holes.r + '"/><circle cx="' + o.holes.pitch + '" cy="0" r="' + o.holes.r + '"/><circle cx="0" cy="' + o.holes.pitch + '" r="' + o.holes.r + '"/><circle cx="' + o.holes.pitch + '" cy="' + o.holes.pitch + '" r="' + o.holes.r + '"/><circle cx="' + (o.holes.pitch / 2) + '" cy="' + (o.holes.pitch / 2) + '" r="' + o.holes.r + '"/></g></pattern>' +
@@ -1321,8 +1325,8 @@ function twillMarkup(o) {
   /* o.plain: lettering with no stitching and no drop shadow */
   var body = (o.plain ? '' : '<g transform="translate(0 3)" opacity=".32" filter="url(#' + p + 'Shadow)">' + layer('#000', 2 * OUT) + '</g>') +
     layers.map(function(f, i) {
-      var sw = 2 * rimFrom(i) + BOLD;
-      return layer(f, sw, isSilverTwill(f) ? 'filter="url(#' + p + 'Tex)"' : '') + ((i === 0 || (o.sparkMatch && f === layers[0])) && o.spark ? layer('#fff', sw, 'filter="url(#' + p + 'Spark)"') : '') + (o.plain ? '' : '<g transform="translate(0 .7)">' + layer('#000', sw, 'filter="url(#' + p + 'rD)"' + so) + '</g>' + layer('#000', sw, 'filter="url(#' + p + 'r' + i + ')"' + so));
+      var top = SH && i === K - 1, sw = 2 * (rimFrom(i) - (i < K - 1 ? SH : 0)) + BOLD;
+      return layer(f, sw, isSilverTwill(f) ? 'filter="url(#' + p + 'Tex)"' : (top ? 'filter="url(#' + p + 'Er)"' : '')) + ((i === 0 || (o.sparkMatch && f === layers[0])) && o.spark ? layer('#fff', sw, 'filter="url(#' + p + 'Spark)"') : '') + (o.plain ? '' : '<g transform="translate(0 .7)">' + layer('#000', sw, 'filter="url(#' + p + (top ? 'rDs' : 'rD') + ')"' + so) + '</g>' + layer('#000', sw, 'filter="url(#' + p + 'r' + i + (top ? 's' : '') + ')"' + so));
     }).join('');
   if (o.holes) body = '<g mask="url(#' + p + 'Hm)">' + body + '</g>';
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" aria-hidden="true" style="display:block;max-width:100%;margin:0 auto;overflow:visible;font-family:' + o.FONT + ';font-size:' + o.FS + 'px">' + defs + body + '</svg>';
@@ -1367,7 +1371,7 @@ function tightenNumber() {
   var digits = (el.getAttribute('data-n') || '').split('');
   if (!digits.length) return;
   var SC = 1.169, FS = 231 * SC, BOLD = STY.bold * SC, GAP = STY.gap * SC + BOLD, BAND = STY.band, PAD = 18 + (STY.band - 4) * 2, RING = 2.4, W = 330, FONT = STY.font + ", Impact, 'Arial Narrow Bold', sans-serif";
-  var layers = STY.layers, K = layers.length, OUT = BAND * (STY.numMul ? STY.numMul.reduce(function(a, b) { return a + b; }, 0) : K - 1) + BOLD / 2;
+  var layers = STY.layers, K = layers.length, OUT = BAND * (STY.numMul ? STY.numMul.reduce(function(a, b) { return a + b; }, 0) : K - 1) + BOLD / 2 - (K > 1 && STY.numShrink ? STY.numShrink * BAND : 0);
   var c = document.createElement('canvas').getContext('2d');
   c.font = FS + 'px ' + FONT;
   var m = digits.map(function(d) { return inkMeasure(FS, FONT, d); });
@@ -1400,7 +1404,7 @@ function tightenNumber() {
   /* the gap between the silver edge and the tag is 50px */
   el.style.marginBottom = (50 - (H - (base + desc + OUT))) + 'px';
   el.dataset.topInk = (PAD - OUT).toFixed(2); /* where the number's outline starts below its svg top (svg units) */
-  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul, holes: STY.holes ? { r: FS * .0085 * .25, pitch: FS * .042 * .4 * 1.2 * 1.5 * .5 * (4 / 3) * 2 * .5 * 1.5, edge: FS * .8 * .03 } : null });
+  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul, shrinkTop: K > 1 && STY.numShrink ? STY.numShrink * BAND : 0, holes: STY.holes ? { r: FS * .0085 * .25, pitch: FS * .042 * .4 * 1.2 * 1.5 * .5 * (4 / 3) * 2 * .5 * 1.5, edge: FS * .8 * .03 } : null });
 }
 
 /* the name is drawn as twill too: letters sewn like the number, on the felt plate */
