@@ -1074,7 +1074,7 @@ STYLES.knicks.ctx = {
   mid: { red: kn(function(l) { return [214, .62, l * .93]; }) },               /* middle layer: blue */
   nav: { silver: kn(function(l) { return [0, 0, .55 + .45 * l]; }) },        /* the nav trim is white */
   card: { royal: kn(function(l) { return [27, .91, Math.min(.58, l * 1.9), 2.1]; }) },
-  btn: { royal: STYLES.skate.ctx.btn.royal, red: kn(function(l) { return [27, .91, Math.max(l * .88, .43), 1]; }) }
+  btn: { royal: kn(function(l) { return [214, .62, Math.min(.5, l * 1.15)]; }), red: kn(function(l) { return [27, .91, Math.max(l * .88, .43), 1]; }) }  /* buttons are Knicks blue */
 };
 STYLES.knicks.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(255,255,255').split('rgba(255,235,120').join('rgba(255,255,255').split('rgba(255,150,0').join('rgba(180,185,200').split('#ffe84a').join(KN_WHITE) + '\n/* no name bar: the white name sits straight on the page */\n#view-detail .dl.dl-patch { display: none !important; }';
 
