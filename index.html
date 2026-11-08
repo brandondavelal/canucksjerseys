@@ -1056,7 +1056,7 @@ var kn = function(f) { return function(h, s, l) { return f(l); }; };
 /* Knicks: black page, orange glass, blue trim, triple twill (white on top, blue, orange at the bottom) */
 STYLES.knicks = Object.assign({}, STYLES.skate, {
   label: 'Knicks', font: STYLES.current.font, nameTrack: STYLES.current.nameTrack, numGap: STYLES.current.numGap + 12,
-  layers: [KN_ORANGE, KN_BLUE, KN_WHITE], nameLayers: [KN_ORANGE, KN_BLUE, KN_WHITE]
+  layers: [KN_ORANGE, KN_BLUE, KN_WHITE], nameLayers: [KN_WHITE]   /* the name is a single white layer */
 });
 STYLES.knicks.map = {
   navy: kn(function(l) { return [214, .62, l < .045 ? l * 2 : Math.min(.36, .17 + (l - .05) * 4)]; }),
@@ -1074,7 +1074,7 @@ STYLES.knicks.ctx = {
   card: { royal: kn(function(l) { return [27, .91, Math.min(.58, l * 1.9), 2.1]; }) },
   btn: { royal: STYLES.skate.ctx.btn.royal, red: kn(function(l) { return [27, .91, Math.max(l * .88, .43), 1]; }) }
 };
-STYLES.knicks.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(255,255,255').split('rgba(255,235,120').join('rgba(255,255,255').split('rgba(255,150,0').join('rgba(180,185,200').split('#ffe84a').join(KN_WHITE);
+STYLES.knicks.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(255,255,255').split('rgba(255,235,120').join('rgba(255,255,255').split('rgba(255,150,0').join('rgba(180,185,200').split('#ffe84a').join(KN_WHITE) + '\n/* no name bar: the white name sits straight on the page */\n#view-detail .dl.dl-patch { display: none !important; }';
 
 /* Flames: red page, black glass, yellow trim, double twill (red on top, yellow at the bottom) */
 STYLES.flames = Object.assign({}, STYLES.canada, {
