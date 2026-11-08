@@ -301,7 +301,8 @@ html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-info { grid-colum
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-top, html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-second { border: 1px solid rgba(255,255,255,.55); display: flex; flex-direction: column; justify-content: center; padding: 3px 4px; text-align: center; overflow: hidden; overflow-wrap: anywhere; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-team { font-size: clamp(8px, 2.5vw, 12px); letter-spacing: .14em; text-transform: uppercase; font-weight: 400; opacity: .85; line-height: 1.15; margin-bottom: 2px; text-align: justify; text-align-last: justify; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-title { font-size: clamp(6px, 1.75vw, 7.5px); letter-spacing: .06em; text-transform: uppercase; font-weight: 400; line-height: 1.12; text-align: justify; text-align-last: justify; }
-html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-second { margin-top: -1px; justify-content: center; align-items: stretch; padding: 7px 4px; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-second { margin-top: -1px; justify-content: space-evenly; align-items: stretch; padding: 0 4px; }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-code { font-size: clamp(6px, 1.9vw, 9px); letter-spacing: .22em; font-weight: 400; text-align: center; text-transform: uppercase; line-height: 1.1; padding-left: .22em; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-bars { display: flex; flex-direction: column; gap: 2.5px; width: 80%; margin: 0 auto; flex: none; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-bars i { display: block; height: 1.5px; background: #fff; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-meta { font-size: clamp(6px, 1.75vw, 8px); letter-spacing: .04em; text-transform: uppercase; font-weight: 600; line-height: 1.15; }
@@ -827,7 +828,7 @@ function nbaTagHtml(p, o) {
     '<div class="dp-tag-nba-logo">' + logoImg('images/nba-logo') + '<span class="dp-tag-nba-vert">AUTHENTICS</span></div>' +
     '<div class="dp-tag-nba-size">' + esc(size) + '</div>' +
     '<div class="dp-tag-nba-info"><div class="dp-tag-nba-top">' + (p.team ? '<div class="dp-tag-nba-team">' + esc(p.team) + '</div>' : '') + '<div class="dp-tag-nba-title">' + esc([tagTitle(p.title || ''), o.type, o.meta].concat(hand).filter(Boolean).join(' · ')) + '</div></div>' +
-      '<div class="dp-tag-nba-second"><span class="dp-tag-nba-bars"><i></i><i></i></span></div></div>' +
+      '<div class="dp-tag-nba-second"><span class="dp-tag-nba-bars"><i></i><i></i></span><div class="dp-tag-nba-code">KNICKSIN5</div></div></div>' +
     '<div class="dp-tag-nba-nike">' + logoImg('images/nike-logo') + '</div>' +
     '<div class="dp-tag-nba-len"><span class="dp-tag-nba-vert">LENGTH +2</span></div>' +
     '<div class="dp-tag-nba-hand"></div>' +
