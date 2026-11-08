@@ -1121,7 +1121,8 @@ STYLES.flames = Object.assign({}, STYLES.canada, {
   label: 'Flames', font: "'NHL Calgary'",
   layers: [FL_YELLOW, KN_WHITE, '#0d0e10'],   /* number: black on white on yellow */
   nameLayers: ['#0d0e10', KN_WHITE],           /* name: white on black */
-  hideMiddle: false, stackOut: undefined, stackPinned: false /* photo stack: the same triple twill as the number */
+  hideMiddle: false, stackOut: undefined, stackPinned: false, /* photo stack: the same triple twill as the number */
+  numMul: [.67, 1.33], nameMul: [.67]                          /* number: outer layer 1/3 thinner, middle layer 1/3 thicker; name: back layer 1/3 thinner */
 });
 STYLES.flames.map = Object.assign({}, STYLES.canada.map, { silver: kn(function(l) { return [43, 1, .4 + .42 * l]; }) });
 STYLES.flames.outer = kn(function(l) { return [43, .95, .45 + .25 * l]; });   /* bottom layer of the photo stack: yellow */
@@ -1136,8 +1137,13 @@ STYLES.flames.ctx = Object.assign({}, STYLES.canada.ctx, {
 /* Blasty: black page, red glass, yellow trim, triple twill (white on top, red, yellow at the bottom) */
 STYLES.blasty = Object.assign({}, STYLES.skate, {
   label: 'Blasty', font: "'NHL Calgary'", nameTrack: STYLES.current.nameTrack, numGap: STYLES.current.numGap + 12,
-  layers: [FL_YELLOW, FL_RED, KN_WHITE], nameLayers: [FL_RED, KN_WHITE] /* the name is a two-layer twill: white on red */
+  layers: [FL_YELLOW, FL_RED, KN_WHITE], nameLayers: [FL_RED, KN_WHITE], /* the name is a two-layer twill: white on red */
+  numMul: [.67, 1.33], nameMul: [.67]
 });
+/* photo stack: the middle layer is 1/3 thicker and the outer layer 1/3 thinner (same overall depth) */
+var FL_STACK = '\n#view-detail .dl-gold { inset: calc(-14px * var(--tw, 1)) !important; }\n@media (max-width: 768px) { #view-detail .dl-gold { inset: -11px !important; } }\n@media (max-width: 600px) { #view-detail .dl-gold { inset: -9px !important; } }';
+STYLES.flames.extra = (STYLES.flames.extra || '') + FL_STACK;
+STYLES.blasty.extra = (STYLES.blasty.extra || '') + FL_STACK;
 STYLES.blasty.outer = STYLES.flames.outer;   /* bottom layer: yellow */
 STYLES.blasty.top = undefined;               /* top layer stays white; the middle layer is Skate's red */
 STYLES.blasty.ctx = Object.assign({}, STYLES.skate.ctx, { card: { royal: STYLES.skate.map.royal } });
@@ -1227,7 +1233,7 @@ function applyStyle(key) {
   /* narrower screens shrink the twill layers, except where a style pins them to 14px */
   rs.setProperty('--stack-out-768', (st.stackPinned ? so : so * 11 / 14) + 'px');
   rs.setProperty('--stack-out-600', (st.stackPinned ? so : so * 9 / 14) + 'px');
-  STY = { key: key, layers: st.layers || ['#adafb8', '#b61d31', '#fbfaf4'], font: st.font || "'NHL Vancouver'", gap: st.numGap || 39, bold: st.numBold || 0, track: st.nameTrack || 0, band: st.numBand || 4, nameTwill: !!st.nameTwill, nameLayers: st.nameLayers || null, nameExtra: st.nameExtra || 0, sparkle: !!st.sparkle, nameArch: !!st.nameArch };
+  STY = { key: key, layers: st.layers || ['#adafb8', '#b61d31', '#fbfaf4'], font: st.font || "'NHL Vancouver'", gap: st.numGap || 39, bold: st.numBold || 0, track: st.nameTrack || 0, band: st.numBand || 4, nameTwill: !!st.nameTwill, nameLayers: st.nameLayers || null, nameExtra: st.nameExtra || 0, sparkle: !!st.sparkle, nameArch: !!st.nameArch, numMul: st.numMul || null, nameMul: st.nameMul || null };
   if (key !== 'orca') {
     var src = Array.prototype.map.call(document.querySelectorAll('style:not(#theme-style)'), function(e) { return e.textContent; }).join('\n');
     var css = unifyStack(remapCss(src, st), st);
@@ -1266,7 +1272,10 @@ function fitName() {
 
 /* stacked twill drawn in the shape of some text: o = { texts, W, H, layers, BAND, BOLD, RING, FONT, FS, p (id prefix), spark } */
 function twillMarkup(o) {
-  var W = o.W, H = o.H, layers = o.layers, K = layers.length, BAND = o.BAND, BOLD = o.BOLD, RING = o.RING, p = o.p, OUT = BAND * (K - 1) + BOLD / 2;
+  var W = o.W, H = o.H, layers = o.layers, K = layers.length, BAND = o.BAND, BOLD = o.BOLD, RING = o.RING, p = o.p;
+  var rim = function(j) { return BAND * ((o.mul && o.mul[j]) || 1); };
+  var rimFrom = function(i) { var t = 0; for (var j = i; j < K - 1; j++) t += rim(j); return t; };
+  var OUT = rimFrom(0) + BOLD / 2;
   var fr = 'filterUnits="userSpaceOnUse" x="-40" y="-40" width="' + (W + 80) + '" height="' + (H + 80) + '"';
   /* zig-zag thread sewn right to the edge of a layer: the ring just inside its silhouette, filled with a small diagonal lattice */
   var ring = function(id, col) {
@@ -1290,7 +1299,7 @@ function twillMarkup(o) {
   /* o.plain: lettering with no stitching and no drop shadow */
   var body = (o.plain ? '' : '<g transform="translate(0 3)" opacity=".32" filter="url(#' + p + 'Shadow)">' + layer('#000', 2 * OUT) + '</g>') +
     layers.map(function(f, i) {
-      var sw = 2 * BAND * (K - 1 - i) + BOLD;
+      var sw = 2 * rimFrom(i) + BOLD;
       return layer(f, sw, 'filter="url(#' + p + 'Tex)"') + ((i === 0 || (o.sparkMatch && f === layers[0])) && o.spark ? layer('#fff', sw, 'filter="url(#' + p + 'Spark)"') : '') + (o.plain ? '' : '<g transform="translate(0 .7)">' + layer('#000', sw, 'filter="url(#' + p + 'rD)"' + so) + '</g>' + layer('#000', sw, 'filter="url(#' + p + 'r' + i + ')"' + so));
     }).join('');
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" aria-hidden="true" style="display:block;max-width:100%;margin:0 auto;overflow:visible;font-family:' + o.FONT + ';font-size:' + o.FS + 'px">' + defs + body + '</svg>';
@@ -1333,7 +1342,7 @@ function tightenNumber() {
   var digits = (el.getAttribute('data-n') || '').split('');
   if (!digits.length) return;
   var SC = 1.169, FS = 231 * SC, BOLD = STY.bold * SC, GAP = STY.gap * SC + BOLD, BAND = STY.band, PAD = 18 + (STY.band - 4) * 2, RING = 2.4, W = 330, FONT = STY.font + ", Impact, 'Arial Narrow Bold', sans-serif";
-  var layers = STY.layers, K = layers.length, OUT = BAND * (K - 1) + BOLD / 2;
+  var layers = STY.layers, K = layers.length, OUT = BAND * (STY.numMul ? STY.numMul.reduce(function(a, b) { return a + b; }, 0) : K - 1) + BOLD / 2;
   var c = document.createElement('canvas').getContext('2d');
   c.font = FS + 'px ' + FONT;
   var m = digits.map(function(d) { return inkMeasure(FS, FONT, d); });
@@ -1349,7 +1358,7 @@ function tightenNumber() {
   var texts = digits.map(function(d, i) { return '<text x="' + (x[i] + off).toFixed(1) + '" y="' + base.toFixed(1) + '">' + esc(d) + '</text>'; }).join('');
   /* the gap between the silver edge and the tag is 50px */
   el.style.marginBottom = (50 - (H - (base + desc + OUT))) + 'px';
-  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle });
+  el.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: BOLD, RING: RING, FONT: FONT, FS: FS, p: 'n', spark: STY.key === 'orca' || !!STY.sparkle, sparkMatch: !!STY.sparkle, mul: STY.numMul });
 }
 
 /* the name is drawn as twill too: letters sewn like the number, on the felt plate */
@@ -1357,7 +1366,7 @@ function renderNameTwill(box) {
   var text = (box.getAttribute('data-t') || '').toUpperCase(), tgt = box.querySelector('.nt');
   if (!text || !tgt) return;
   var FONT = STY.font + ", Impact, 'Arial Narrow Bold', sans-serif", fixedGap = !!STY.nameTwill, layers = STY.nameLayers || [getComputedStyle(box).color], K = layers.length;
-  var BAND = STY.band, OUT = BAND * (K - 1), PAD = OUT + 12, RING = 2.4, LETTER_GAP = 8, SPACE = .28, DOT = .15;
+  var BAND = STY.band, OUT = BAND * (STY.nameMul ? STY.nameMul.reduce(function(a, b) { return a + b; }, 0) : K - 1), PAD = OUT + 12, RING = 2.4, LETTER_GAP = 8, SPACE = .28, DOT = .15;
   var panelW = document.getElementById('detail-panel').clientWidth, c = document.createElement('canvas').getContext('2d');
   /* phones: the name may be as wide as the twill stack round the photo */
   if (window.innerWidth <= 768) panelW += 2 * (parseFloat(getComputedStyle(document.documentElement).getPropertyValue(window.innerWidth <= 600 ? '--stack-out-600' : '--stack-out-768')) || 0);
@@ -1457,7 +1466,7 @@ function renderNameTwill(box) {
     }).join('');
     if (panelW > 0 && W * webScale > panelW) webScale = panelW / W;
   }
-  tgt.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: 0, RING: RING, FONT: FONT, FS: FS, p: 'm', spark: false, plain: STY.key === 'canada' });
+  tgt.innerHTML = twillMarkup({ texts: texts, W: W, H: H, layers: layers, BAND: BAND, BOLD: 0, RING: RING, FONT: FONT, FS: FS, p: 'm', spark: false, plain: STY.key === 'canada', mul: STY.nameMul });
   var nameSvg = tgt.querySelector('svg');
   if (nameSvg) { nameSvg.style.maxWidth = 'none'; nameSvg.style.width = (W * webScale).toFixed(2) + 'px'; }
   box.style.marginBottom = (4 * webScale * FS / 75.4).toFixed(2) + 'px'; /* 4px at web size, scaled with the lettering on phones */
