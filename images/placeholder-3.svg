@@ -4,5 +4,5 @@
 <feColorMatrix in="n" type="matrix" values="0 0 0 0 .62  0 0 0 0 .63  0 0 0 0 .66  .9 0 0 0 -.42"/>
 </filter></defs>
 <rect width="800" height="600" fill="#17181b"/>
-<rect width="800" height="600" filter="url(#h)" opacity=".5"/>
+<rect width="800" height="600" filter="url(#h)" opacity=".85"/>
 </svg>
