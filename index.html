@@ -309,7 +309,7 @@ html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-nike { grid-colum
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-nike svg, html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-nike img { width: 100%; height: auto; display: block; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-nike img { filter: invert(1); mix-blend-mode: screen; } /* the supplied swoosh is black on white: inverted and screened it is white on the black box */
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-len { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); width: 26px; padding: 12px 0; margin: 0; display: flex; align-items: center; justify-content: center; background: #0b0b0c; border-radius: 0 3px 3px 0; box-shadow: 1px 0 4px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.08); } /* a separate tab outside the tag; its height hugs the text */
-html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-len .dp-tag-nba-vert { font-size: clamp(5px, 1.7vw, 7.5px); }
+html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-len .dp-tag-nba-vert { font-size: clamp(7px, 2.2vw, 10px); letter-spacing: .78em; transform: rotate(180deg) translateY(.39em); }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-hand { grid-column: 2 / 5; grid-row: 2; background: #f6f6f3; color: #1c2f8f; font-family: "Bradley Hand", "Segoe Print", "Comic Sans MS", "Marker Felt", cursive; font-size: clamp(9px, 2.8vw, 12.5px); line-height: 1.15; padding: 2px 8px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
 html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba-hand:empty { background: #f6f6f3; }
 @media (max-width: 768px) { html[data-theme="dark"] #view-detail #detail-panel .dp-tag-nba { width: auto; max-width: none; margin: 0 calc(-1 * var(--stack-out-768, 22px) + 26px) 0 calc(-1 * var(--stack-out-768, 22px)); } }
@@ -829,7 +829,7 @@ function nbaTagHtml(p, o) {
     '<div class="dp-tag-nba-info"><div class="dp-tag-nba-top">' + (p.team ? '<div class="dp-tag-nba-team">' + esc(p.team) + '</div>' : '') + '<div class="dp-tag-nba-title">' + esc([tagTitle(p.title || ''), o.type, o.meta].filter(Boolean).join(' · ')) + '</div></div>' +
       '<div class="dp-tag-nba-second"><span class="dp-tag-nba-bars"><i></i><i></i></span></div></div>' +
     '<div class="dp-tag-nba-nike">' + logoImg('images/nike-logo') + '</div>' +
-    '<div class="dp-tag-nba-len"><span class="dp-tag-nba-vert">LENGTH +6</span></div>' +
+    '<div class="dp-tag-nba-len"><span class="dp-tag-nba-vert">LENGTH +2</span></div>' +
     '<div class="dp-tag-nba-hand">' + hand.map(function(h) { return '<div>' + esc(h) + '</div>'; }).join('') + '</div>' +
   '</div>';
 }
