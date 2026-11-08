@@ -6,6 +6,7 @@
 <title>Canucks Jerseys — Admin</title>
 <script src="data.js"></script>
 <script src="order.js"></script>
+<script src="images.js"></script>
 <script src="inventory.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,7 +55,48 @@ main { padding: 24px 48px 100px; max-width: none; margin: 0; }
 .card-title { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .card-sub { font-size: 12px; color: var(--grey); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
 
+
 .empty { padding: 80px 0; text-align: center; color: var(--lgrey); font-size: 15px; }
+
+.card { cursor: pointer; }
+.card-photos { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.55); color: #fff; font-size: 11px; letter-spacing: 0.04em; padding: 3px 7px; border-radius: 3px; pointer-events: none; }
+.card-photos.none { background: rgba(255,255,255,0.8); color: var(--grey); }
+.card-edit { margin-top: 8px; font-size: 12px; letter-spacing: 0.06em; color: var(--grey); background: none; border: none; padding: 0; text-align: left; cursor: pointer; font-family: var(--f); }
+.card-edit:hover { color: var(--black); }
+
+.status { position: fixed; bottom: 20px; left: 24px; z-index: 150; font-size: 12px; letter-spacing: 0.03em; background: rgba(0,0,0,0.82); color: #fff; padding: 9px 14px; border-radius: 6px; max-width: 70vw; }
+.status.err { background: #b3261e; }
+.status[hidden] { display: none; }
+
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; display: none; }
+.overlay.on { display: block; }
+.panel { position: fixed; top: 0; right: 0; bottom: 0; width: 600px; max-width: 100%; background: var(--white); z-index: 201; transform: translateX(100%); transition: transform 0.25s ease; overflow-y: auto; padding: 36px 36px 80px; }
+.overlay.on .panel { transform: translateX(0); }
+.panel-title { font-size: 13px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.panel-close { font-size: 13px; color: var(--grey); background: none; border: none; cursor: pointer; letter-spacing: 0.08em; text-transform: uppercase; font-family: var(--f); }
+.panel-close:hover { color: var(--black); }
+.panel-h { font-size: 22px; font-weight: 500; margin: 14px 0 4px; }
+.panel-sub { font-size: 14px; color: var(--grey); }
+.facts { margin: 22px 0 8px; display: grid; grid-template-columns: 110px 1fr; gap: 6px 14px; font-size: 13px; }
+.facts dt { color: var(--lgrey); letter-spacing: 0.08em; text-transform: uppercase; font-size: 11px; padding-top: 2px; }
+.facts dd { color: var(--black); }
+.hint { font-size: 12px; color: var(--grey); line-height: 1.5; margin: 14px 0 0; }
+.sec { font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--lgrey); margin: 34px 0 14px; }
+
+.img-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.img-cell { position: relative; aspect-ratio: 4/3; background: var(--bg); overflow: hidden; }
+.img-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.img-cell.ph img { opacity: .55; }
+.img-n { position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.55); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 3px; }
+.img-rm { position: absolute; top: 4px; right: 4px; width: 26px; height: 26px; background: rgba(255,255,255,0.92); border: none; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; color: var(--black); }
+.img-rm:hover { background: #fff; color: #c0392b; }
+.img-mv { position: absolute; top: 4px; left: 4px; display: flex; gap: 4px; }
+.img-mv button { width: 26px; height: 26px; background: rgba(255,255,255,0.92); border: none; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; color: var(--black); }
+.img-mv button:disabled { color: var(--lgrey); cursor: default; }
+.img-upload { aspect-ratio: 4/3; background: var(--bg); border: 1px dashed var(--lgrey); display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; cursor: pointer; font-size: 12px; color: var(--grey); letter-spacing: 0.06em; text-transform: uppercase; }
+.img-upload:hover, .img-upload.drag-over { background: var(--border); }
+.img-upload input { display: none; }
+.img-upload.off { opacity: .5; cursor: default; }
 </style>
 </head>
 <body>
@@ -65,32 +107,76 @@ main { padding: 24px 48px 100px; max-width: none; margin: 0; }
     <img class="logo" src="images/Frame 1.png" alt="Canucks Jerseys">
     <div class="hdr-right">
       <button id="btn-reset" type="button">Reset to sheet order</button>
-      <a href="#" id="btn-export">Export Order ↓</a>
+      <a href="#" id="btn-export" hidden>Export Order ↓</a>
       <a href="index.html" target="_blank">View Site →</a>
     </div>
   </div>
 </header>
 
 <div class="notice" id="notice"></div>
+<div class="status" id="status" hidden></div>
 <main>
   <div id="list"></div>
 </main>
 
+<div class="overlay" id="overlay">
+  <div class="panel" id="panel"></div>
+</div>
+
 <script>
-/* The Google Sheet (columns A-M) is the inventory. This page only decides the ORDER jerseys appear in:
-   drag the cards (or use the arrows), then Export Order and replace order.js in the project. */
-var S = { products: [], live: false, dirty: false };
+/* The Google Sheet (columns A-M) is the inventory. This page controls what the sheet can't: the ORDER of the listings and their PHOTOS.
+   Run `python3 cms-server.py` and open this page from localhost: every change is written straight into the project
+   (order.js, images.js, images/listings/...), ready to commit and push. Opened any other way, it falls back to downloading order.js. */
+var S = { products: [], live: false, dirty: false, server: false, resize: true, openId: null, sheetPos: {} };
 var DRAFT_KEY = 'cj-admin-order';
 
 function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
+/* ---- talking to the local server */
+function api(path, opts) {
+  opts = opts || {};
+  opts.headers = Object.assign({ 'X-CMS': '1' }, opts.headers || {});
+  return fetch(path, opts).then(function(r) { return r.json().catch(function() { return { ok: false, error: 'bad response' }; }); });
+}
+function post(path, obj) { return api(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(obj) }); }
+
+var statusTimer = 0;
+function status(msg, isErr, sticky) {
+  var el = document.getElementById('status');
+  clearTimeout(statusTimer);
+  if (!msg) { el.hidden = true; return; }
+  el.textContent = msg; el.className = 'status' + (isErr ? ' err' : ''); el.hidden = false;
+  if (!sticky) statusTimer = setTimeout(function() { el.hidden = true; }, isErr ? 6000 : 2200);
+}
+
+function gitInfo() {
+  if (!S.server) return;
+  api('/api/git').then(function(r) { S.changed = r && r.ok ? r.changed : []; notice(); });
+}
+
+/* ---- order */
 function baseOrder() { return typeof GALLERY_ORDER !== 'undefined' ? GALLERY_ORDER : []; }
 function draftOrder() { try { return JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch (e) { return null; } }
 function saveDraft() { try { localStorage.setItem(DRAFT_KEY, JSON.stringify(S.products.map(function(p) { return p.id; }))); } catch (e) {} }
 
+var orderTimer = 0;
+function orderChanged() {
+  S.dirty = true;
+  if (!S.server) { saveDraft(); render(); return; }
+  render();
+  clearTimeout(orderTimer);
+  orderTimer = setTimeout(function() {
+    post('/api/order', { ids: S.products.map(function(p) { return p.id; }) }).then(function(r) {
+      if (r.ok) { S.dirty = false; status('Order saved to the project'); gitInfo(); }
+      else status('Could not save the order: ' + (r.error || 'unknown error'), true);
+      notice();
+    });
+  }, 350);
+}
+
 function setProducts(list) {
-  var order = draftOrder() || baseOrder();
-  S.products = applyOrder(list, order);
+  /* on the local server the saved order.js is the truth; otherwise a browser draft can sit on top of it */
+  S.products = applyOrder(list, S.server ? baseOrder() : (draftOrder() || baseOrder()));
 }
 
 document.getElementById('btn-export').addEventListener('click', function(e) {
@@ -102,21 +188,32 @@ document.getElementById('btn-export').addEventListener('click', function(e) {
   a.download = 'order.js';
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(a.href);
-  S.dirty = false; render();
+  S.dirty = false; notice();
 });
 
 document.getElementById('btn-reset').addEventListener('click', function() {
   try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
   S.products = S.products.slice().sort(function(a, b) { return S.sheetPos[a.id] - S.sheetPos[b.id]; });
-  S.dirty = true; saveDraft(); render();
+  orderChanged();
 });
 
 function notice() {
-  var el = document.getElementById('notice');
-  el.innerHTML = (S.live ? 'Reading the <b>live sheet</b>.' : 'Showing the <b>saved snapshot</b> (the live sheet could not be reached).') +
-    ' The sheet (columns A–M) is the inventory; this page only sets the order. ' +
-    (S.dirty ? '<span class="dirty">Order changed — Export Order and replace order.js to publish it.</span>' : 'Drag a card, or use the arrows, to reorder.');
+  var el = document.getElementById('notice'), parts = [];
+  parts.push(S.live ? 'Reading the <b>live sheet</b>.' : 'Showing the <b>saved snapshot</b> (the live sheet could not be reached).');
+  parts.push('The sheet (columns A–M) is the inventory; this page sets the <b>order</b> and the <b>photos</b>.');
+  if (S.server) {
+    var n = (S.changed || []).length;
+    parts.push(n ? '<b>' + n + ' unpublished change' + (n === 1 ? '' : 's') + '</b> saved in the project — push when you are ready.' : 'Everything is saved in the project and published.');
+    if (!S.resize) parts.push('(Photo resizing is off: <code>sips</code> was not found.)');
+  } else {
+    parts.push('<span class="dirty">Not connected to the local server — photos can\'t be edited here.</span> Run <code>python3 cms-server.py</code> and open <code>http://localhost:8765/collection-admin.html</code>.' + (S.dirty ? ' Order changed: Export Order and replace order.js.' : ''));
+  }
+  el.innerHTML = parts.join(' ');
+  document.getElementById('btn-export').hidden = S.server;
 }
+
+/* ---- the grid */
+function photoCount(p) { return p.hasPhotos ? p.images.length : 0; }
 
 function render() {
   var list = document.getElementById('list');
@@ -125,11 +222,12 @@ function render() {
   if (!S.products.length) { list.innerHTML = '<div class="empty">The sheet has no jerseys.</div>'; return; }
   var last = S.products.length - 1;
   list.innerHTML = '<div class="grid">' + S.products.map(function(p, i) {
-    var sub = [p.manufacturer, p.year].filter(Boolean).join(' · ');
+    var sub = [p.manufacturer, p.year].filter(Boolean).join(' · '), n = photoCount(p);
     return '<div class="card" data-i="' + i + '" draggable="true">' +
       '<div class="card-thumb-wrap">' +
         '<img class="card-thumb" src="' + esc((p.images || [])[0] || '') + '" alt="">' +
         '<div class="card-num">' + (i + 1) + '</div>' +
+        '<div class="card-photos' + (n ? '' : ' none') + '">' + (n ? n + (n === 1 ? ' photo' : ' photos') : 'placeholder') + '</div>' +
         '<div class="card-move">' +
           '<button class="card-up" data-i="' + i + '"' + (i === 0 ? ' disabled' : '') + '>‹</button>' +
           '<button class="card-down" data-i="' + i + '"' + (i === last ? ' disabled' : '') + '>›</button>' +
@@ -138,15 +236,18 @@ function render() {
       '<div class="card-info">' +
         '<div class="card-title">' + esc(p.title || p.team || 'Untitled') + '</div>' +
         '<div class="card-sub">' + esc([p.team, p.player, sub].filter(Boolean).join(' — ')) + '</div>' +
+        '<button class="card-edit" data-id="' + esc(p.id) + '">Photos &amp; details</button>' +
       '</div>' +
     '</div>';
   }).join('') + '</div>';
 
-  list.querySelectorAll('.card-up').forEach(function(b) { b.addEventListener('click', function() { move(+b.dataset.i, -1); }); });
-  list.querySelectorAll('.card-down').forEach(function(b) { b.addEventListener('click', function() { move(+b.dataset.i, 1); }); });
+  list.querySelectorAll('.card-up').forEach(function(b) { b.addEventListener('click', function(e) { e.stopPropagation(); move(+b.dataset.i, -1); }); });
+  list.querySelectorAll('.card-down').forEach(function(b) { b.addEventListener('click', function(e) { e.stopPropagation(); move(+b.dataset.i, 1); }); });
+  list.querySelectorAll('.card-edit').forEach(function(b) { b.addEventListener('click', function(e) { e.stopPropagation(); openPanel(b.dataset.id); }); });
 
   var cards = list.querySelectorAll('.card');
   cards.forEach(function(card) {
+    card.addEventListener('click', function() { openPanel(S.products[+card.dataset.i].id); });
     card.addEventListener('dragstart', function(e) {
       card.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
@@ -167,10 +268,10 @@ function render() {
       e.preventDefault();
       card.classList.remove('drag-over');
       var from = +e.dataTransfer.getData('text/plain'), to = +card.dataset.i;
-      if (from === to) return;
+      if (isNaN(from) || from === to) return;
       var item = S.products.splice(from, 1)[0];
       S.products.splice(to, 0, item);
-      S.dirty = true; saveDraft(); render();
+      orderChanged();
     });
   });
 }
@@ -180,19 +281,111 @@ function move(i, dir) {
   if (j < 0 || j >= S.products.length) return;
   var item = S.products.splice(i, 1)[0];
   S.products.splice(j, 0, item);
-  S.dirty = true; saveDraft(); render();
+  orderChanged();
 }
 
+/* ---- the photos panel */
+function find(id) { return S.products.filter(function(p) { return p.id === id; })[0]; }
+
+function applyPhotos(p, images) {
+  LISTING_IMAGES[p.id] = images.slice();
+  p.hasPhotos = images.length > 0;
+  p.images = images.length ? images.slice() : PLACEHOLDER_IMAGES.slice();
+}
+
+function openPanel(id) {
+  var p = find(id); if (!p) return;
+  S.openId = id;
+  var facts = [
+    ['Player', [p.player, p.number ? '#' + p.number : ''].filter(Boolean).join(' · ')], ['Team', p.team], ['Year', p.year],
+    ['Brand', [p.manufacturer, p.model].filter(Boolean).join(' · ')], ['Type', p.jerseyType], ['Condition', p.condition],
+    ['Size', p.size], ['Designation', p.designation], ['Patches', (p.patches || []).join(', ')], ['Notes', p.notes], ['For sale', p.onSale ? 'Yes' : '']
+  ].filter(function(f) { return f[1]; });
+  var real = p.hasPhotos, imgs = p.images;
+  var cells = imgs.map(function(src, i) {
+    return '<div class="img-cell' + (real ? '' : ' ph') + '"><img src="' + esc(src) + '" alt="">' +
+      (real ? '<div class="img-mv"><button data-act="left" data-i="' + i + '"' + (i === 0 ? ' disabled' : '') + '>‹</button><button data-act="right" data-i="' + i + '"' + (i === imgs.length - 1 ? ' disabled' : '') + '>›</button></div>' +
+              '<button class="img-rm" data-act="rm" data-i="' + i + '" title="Remove">×</button>' : '') +
+      '<div class="img-n">' + (i + 1) + (real ? '' : ' · placeholder') + '</div></div>';
+  }).join('');
+  document.getElementById('panel').innerHTML =
+    '<div class="panel-title"><span>Photos &amp; details</span><button class="panel-close" id="panel-close">Close ✕</button></div>' +
+    '<div class="panel-h">' + esc(p.title || 'Untitled') + '</div>' +
+    '<div class="panel-sub">' + esc([p.team, p.player].filter(Boolean).join(' — ')) + '</div>' +
+    '<dl class="facts">' + facts.map(function(f) { return '<dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd>'; }).join('') + '</dl>' +
+    '<p class="hint">These details come from the Google Sheet — edit them there.</p>' +
+    '<div class="sec">Photos' + (real ? ' (' + imgs.length + ')' : ' — placeholders until you add some') + '</div>' +
+    '<div class="img-grid">' + cells +
+      '<label class="img-upload' + (S.server ? '' : ' off') + '" id="img-upload">' + (S.server ? '+ Add photos<br>(or drop them here)' : 'Run the local server<br>to add photos') +
+        '<input type="file" id="img-input" accept="image/*" multiple' + (S.server ? '' : ' disabled') + '></label>' +
+    '</div>' +
+    '<p class="hint">The first photo is the one on the card; the second shows when the card flips. Photos are resized to 1800px (JPEG) and saved in <code>images/listings/</code>. Removing a photo deletes its file.</p>';
+  document.getElementById('overlay').classList.add('on');
+  document.getElementById('panel-close').addEventListener('click', closePanel);
+  document.getElementById('panel').querySelectorAll('[data-act]').forEach(function(b) {
+    b.addEventListener('click', function() { photoAction(p, b.dataset.act, +b.dataset.i); });
+  });
+  var up = document.getElementById('img-upload'), inp = document.getElementById('img-input');
+  if (S.server) {
+    inp.addEventListener('change', function() { uploadFiles(p, inp.files); inp.value = ''; });
+    up.addEventListener('dragover', function(e) { e.preventDefault(); up.classList.add('drag-over'); });
+    up.addEventListener('dragleave', function() { up.classList.remove('drag-over'); });
+    up.addEventListener('drop', function(e) { e.preventDefault(); up.classList.remove('drag-over'); uploadFiles(p, e.dataTransfer.files); });
+  }
+}
+
+function closePanel() {
+  document.getElementById('overlay').classList.remove('on');
+  S.openId = null;
+}
+document.getElementById('overlay').addEventListener('click', function(e) { if (e.target.id === 'overlay') closePanel(); });
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && S.openId) closePanel(); });
+
+function photoAction(p, act, i) {
+  if (!S.server || !p.hasPhotos) return;
+  var imgs = p.images.slice();
+  if (act === 'rm') { if (!confirm('Remove this photo? Its file is deleted from the project.')) return; imgs.splice(i, 1); }
+  else if (act === 'left' && i > 0) { var a = imgs.splice(i, 1)[0]; imgs.splice(i - 1, 0, a); }
+  else if (act === 'right' && i < imgs.length - 1) { var b = imgs.splice(i, 1)[0]; imgs.splice(i + 1, 0, b); }
+  else return;
+  post('/api/images/' + p.id + '/set', { images: imgs }).then(function(r) {
+    if (!r.ok) return status('Could not save the photos: ' + (r.error || 'unknown error'), true);
+    applyPhotos(p, r.images); render(); if (S.openId === p.id) openPanel(p.id);
+    status('Photos saved to the project'); gitInfo();
+  });
+}
+
+function uploadFiles(p, files) {
+  files = Array.prototype.filter.call(files || [], function(f) { return /^image\//.test(f.type) || /\.(heic|heif|jpe?g|png|webp|gif|tiff?)$/i.test(f.name); });
+  if (!files.length) return;
+  var i = 0, failed = 0;
+  var next = function() {
+    if (i >= files.length) {
+      render(); if (S.openId === p.id) openPanel(p.id);
+      status(failed ? failed + ' photo' + (failed === 1 ? '' : 's') + ' could not be added' : files.length + ' photo' + (files.length === 1 ? '' : 's') + ' saved to the project', !!failed);
+      return gitInfo();
+    }
+    var f = files[i++];
+    status('Uploading ' + i + ' of ' + files.length + '…', false, true);
+    api('/api/images/' + p.id + '/upload', { method: 'POST', headers: { 'Content-Type': 'application/octet-stream', 'X-Filename': encodeURIComponent(f.name) }, body: f })
+      .then(function(r) { if (r.ok) applyPhotos(p, r.images); else { failed++; console.warn(r.error); } next(); })
+      .catch(function() { failed++; next(); });
+  };
+  next();
+}
+
+/* ---- start */
 function start(list, live) {
-  S.live = live;
+  S.live = live; S.list = list;
   S.sheetPos = {}; list.forEach(function(p, i) { S.sheetPos[p.id] = i; });
-  var before = S.products.map(function(p) { return p.id; }).join('|');
-  setProducts(list); S.dirty = !!draftOrder();
-  if (!S.products.length || before !== S.products.map(function(p) { return p.id; }).join('|') || live) render();
+  setProducts(list); S.dirty = !S.server && !!draftOrder();
+  render();
+  if (S.openId && !find(S.openId)) closePanel();
 }
 
-/* snapshot first, then the live sheet */
+/* snapshot first, then the live sheet; ask the local server whether it is there */
 start(rowsToProducts(SNAPSHOT_ROWS), false);
+api('/api/ping').then(function(r) { S.server = !!(r && r.ok); S.resize = !r || r.resize !== false; if (S.server) { S.dirty = false; setProducts(S.list); render(); gitInfo(); } else notice(); }).catch(function() { S.server = false; notice(); });
 loadInventoryLive().then(function(list) { start(list, true); }).catch(function() { notice(); });
 </script>
 </body>

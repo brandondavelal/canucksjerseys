@@ -8,7 +8,8 @@ var SHEET_ID = '1SUNxAUAoEavaTudeLMIOMZmNqP95UN4pE5inHnIwwhI';
 var SHEET_BASE = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/export?format=csv&gid=0&range=';
 var SHEET_URL = SHEET_BASE + 'A:M', SHEET_STATE_URL = SHEET_BASE + 'U:U';
 
-/* five placeholder photos for every jersey until real photos are added */
+/* a listing's own photos come from images.js (written by the local CMS); until it has any it shows five placeholders */
+var LISTING_IMAGES = typeof GALLERY_IMAGES !== 'undefined' ? GALLERY_IMAGES : {};
 var PLACEHOLDER_IMAGES = [1, 2, 3, 4, 5].map(function(i) { return 'images/placeholder-' + i + '.svg'; });
 
 /* U State (kept as a 14th value on each row): "Sell" puts the jersey in the For Sale filter */
@@ -48,7 +49,7 @@ function rowsToProducts(rows) {
     out.push({
       id: id, player: c[0], number: c[1], team: c[2], title: c[3], year: c[4], manufacturer: c[5], model: c[6],
       jerseyType: c[7], condition: c[8], size: c[9], designation: c[10], patches: patches, notes: c[12] === '-' ? '' : c[12],
-      onSale: /^sell$/i.test(c[13]), category: teamCategory(c[2]), images: PLACEHOLDER_IMAGES.slice()
+      onSale: /^sell$/i.test(c[13]), category: teamCategory(c[2]), images: (LISTING_IMAGES[id] && LISTING_IMAGES[id].length) ? LISTING_IMAGES[id].slice() : PLACEHOLDER_IMAGES.slice(), hasPhotos: !!(LISTING_IMAGES[id] && LISTING_IMAGES[id].length)
     });
   });
   return out;
