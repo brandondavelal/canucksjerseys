@@ -1123,7 +1123,7 @@ STYLES.flames = Object.assign({}, STYLES.canada, {
   nameLayers: ['#0d0e10', KN_WHITE],           /* name: white on black */
   hideMiddle: false, stackOut: undefined, stackPinned: false, /* photo stack: the same triple twill as the number */
   numMul: [.67, 1.33], nameMul: [.67],                         /* number: outer layer 1/3 thinner, middle layer 1/3 thicker; name: back layer 1/3 thinner */
-  nameGapMul: .5 * .9, numGap: 13 * .2,                             /* name letters half as far apart */
+  nameGapMul: .5 * .9 * .5, numGap: 13 * .2,                             /* name letters half as far apart */
   numClear: { seen: 13 * .2, mul: .25 * 1.15 * 2 }                        /* number: the clear space between the digit shapes is 1/4 of what it was */
 });
 STYLES.flames.map = Object.assign({}, STYLES.canada.map, { silver: kn(function(l) { return [43, 1, .4 + .42 * l]; }) });
@@ -1141,7 +1141,7 @@ STYLES.blasty = Object.assign({}, STYLES.skate, {
   label: 'Blasty', font: "'NHL Calgary'", nameTrack: STYLES.current.nameTrack, numGap: STYLES.current.numGap + 12,
   layers: [FL_YELLOW, FL_RED, KN_WHITE], nameLayers: [FL_RED, KN_WHITE], /* the name is a two-layer twill: white on red */
   numMul: [.67, 1.33], nameMul: [.67],
-  nameGapMul: .5 * .9, numGap: (STYLES.current.numGap + 12) * .2,
+  nameGapMul: .5 * .9 * .5, numGap: (STYLES.current.numGap + 12) * .2,
   numClear: { seen: (STYLES.current.numGap + 12) * .2, mul: .25 * 1.15 * 2 }
 });
 /* photo stack: the middle layer is 1/3 thicker and the outer layer 1/3 thinner (same overall depth) */
