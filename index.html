@@ -495,7 +495,6 @@ html[data-theme="dark"] #view-detail .detail-thumb.on::before { inset: 4.94px; }
 /* photo prev/next: white arrow on a 30% black glass circle, half on the photo and half off; hidden where there is no further photo */
 html[data-theme="dark"] #view-detail .dm-nav { position: absolute; top: 50%; z-index: 4; width: 25px; height: 25px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; cursor: pointer; border: 1px solid rgba(255,255,255,.18); background: linear-gradient(180deg, rgba(0,0,0,.56) 0%, rgba(0,0,0,.36) 100%); box-shadow: 0 1px 3px rgba(0,0,0,.2), 0 0 0 .5px rgba(0,0,0,.08); -webkit-tap-highlight-color: transparent; }
 html[data-theme="dark"] #view-detail .dm-nav[hidden] { display: none; }
-html[data-theme="dark"] #view-detail .dm-nav:disabled { opacity: .2; cursor: default; pointer-events: none; } /* both arrows always show; at the first / last photo the one that can't be used is faded */
 html[data-theme="dark"] #view-detail .dm-nav svg { display: block; width: 12px; height: 12px; }
 html[data-theme="dark"] #view-detail .dm-prev { left: 0; transform: translate(-50%, -50%); }
 html[data-theme="dark"] #view-detail .dm-next { right: 0; --dx: 50%; transform: translate(50%, -50%); }
@@ -518,7 +517,6 @@ html[data-theme="dark"] #view-detail .dm-max svg { display: block; width: 12px; 
 .lb-btn[hidden] { display: none; }
 .lb-btn svg { display: block; width: 20px; height: 20px; }
 .lb-btn:hover { background: rgba(255,255,255,.14); }
-.lb-btn:disabled { opacity: .2; cursor: default; pointer-events: none; } /* first / last photo: the arrow stays, faded */
 .lb-close { top: 16px; right: 16px; }
 .lb-prev { left: 16px; top: 50%; transform: translateY(-50%); }
 .lb-next { right: 16px; top: 50%; transform: translateY(-50%); }
@@ -759,7 +757,6 @@ function lightboxShow(i) {
   el.querySelector('img').src = LB.imgs[i];
   var multi = LB.imgs.length > 1;
   el.querySelector('.lb-prev').hidden = !multi; el.querySelector('.lb-next').hidden = !multi;
-  el.querySelector('.lb-prev').disabled = i <= 0; el.querySelector('.lb-next').disabled = i >= LB.imgs.length - 1;
   if (LB.go) LB.go(i); /* keep the page's photo and thumbnails in step */
 }
 function closeLightbox() {
@@ -773,8 +770,8 @@ function openLightbox(i) {
     el.innerHTML = '<img alt=""><button type="button" class="lb-btn lb-close" aria-label="Close">' + chev('M3.5 3.5l9 9M12.5 3.5l-9 9') + '</button><button type="button" class="lb-btn lb-prev" aria-label="Previous photo">' + chev('M10 3L5 8l5 5') + '</button><button type="button" class="lb-btn lb-next" aria-label="Next photo">' + chev('M6 3l5 5-5 5') + '</button>';
     el.addEventListener('click', function(e) {
       if (e.target.closest('.lb-close') || e.target === el) closeLightbox();
-      else if (e.target.closest('.lb-prev')) lightboxShow(LB.i - 1);
-      else if (e.target.closest('.lb-next')) lightboxShow(LB.i + 1);
+      else if (e.target.closest('.lb-prev')) lightboxShow((LB.i - 1 + LB.imgs.length) % LB.imgs.length);
+      else if (e.target.closest('.lb-next')) lightboxShow((LB.i + 1) % LB.imgs.length);
     });
     document.addEventListener('keydown', function(e) {
       if (!el.classList.contains('on')) return;
@@ -844,15 +841,13 @@ function openDetail(id, skipPush) {
     cur = i;
     di.querySelector('.detail-main img').src = imgs[i];
     thumbs.forEach(function(x, j) { x.classList.toggle('on', j === i); });
-    if (prevB) prevB.disabled = i <= 0;
-    if (nextB) nextB.disabled = i >= imgs.length - 1;
     var strip = di.querySelector('.detail-thumbs-in'), t = thumbs[i];
     if (strip && t) { var l = t.offsetLeft - strip.offsetLeft; if (l < strip.scrollLeft) strip.scrollLeft = l - 5; else if (l + t.offsetWidth > strip.scrollLeft + strip.clientWidth) strip.scrollLeft = l + t.offsetWidth - strip.clientWidth + 5; }
   };
   thumbs.forEach(function(t) { t.addEventListener('click', function() { showPhoto(+t.dataset.i); }); });
-  if (prevB) prevB.addEventListener('click', function() { showPhoto(cur - 1); });
-  if (nextB) nextB.addEventListener('click', function() { showPhoto(cur + 1); });
-  if (prevB) prevB.disabled = true;
+  /* the arrows are always live (when there is more than one photo) and wrap round: past the last photo is the first */
+  if (prevB) prevB.addEventListener('click', function() { showPhoto((cur - 1 + imgs.length) % imgs.length); });
+  if (nextB) nextB.addEventListener('click', function() { showPhoto((cur + 1) % imgs.length); });
   LB.imgs = imgs; LB.go = showPhoto; LB.get = function() { return cur; };
   di.querySelector('.dm-max').addEventListener('click', function() { openLightbox(cur); });
   var patches = p.patches || [];
