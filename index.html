@@ -724,7 +724,7 @@ function tagTitle(t) { return shownTitle(t).replace(/\b(?:Home|Away|Alt)\b\s*/g,
 /* the style a jersey's page opens in, from the sheet's Team and Style (name) columns */
 function jerseyStyle(p) {
   var t = String(p.title || '').toLowerCase(), team = String(p.team || ''), yr = firstYear(p) || 0;
-  if (/knicks/i.test(team)) return /association/.test(t) ? 'knicksassoc' : /statement/.test(t) ? 'knicksstatement' : 'knicks';
+  if (/knicks/i.test(team)) return /statement/.test(t) ? 'knicksstatement' : 'knicks'; /* Icon and Association = Knicks */
   if (/blasty/.test(t)) return 'blasty';
   if (/flames/i.test(team)) return 'flames';
   if (/millionaires/.test(t)) return 'millionaires';
@@ -1053,9 +1053,9 @@ var KN_ORANGE = '#f68220', KN_BLUE = '#25579c', KN_WHITE = '#fbfaf4';
 var FL_YELLOW = '#ffd23f', FL_RED = '#c8102e';
 var kn = function(f) { return function(h, s, l) { return f(l); }; };
 
-/* Knicks Icon: blue page, orange glass, white trim, blue buttons; number white on orange, name a single white layer (no name bar), photo stack white / blue / orange */
+/* Knicks (Icon and Association jerseys): blue page, orange glass, white trim, blue buttons; number white on orange, name a single white layer (no name bar), photo stack white / blue / orange */
 STYLES.knicks = Object.assign({}, STYLES.skate, {
-  label: 'Knicks Icon', font: STYLES.current.font, nameTrack: STYLES.current.nameTrack, numGap: STYLES.current.numGap + 12,
+  label: 'Knicks', font: STYLES.current.font, nameTrack: STYLES.current.nameTrack, numGap: STYLES.current.numGap + 12,
   layers: [KN_ORANGE, KN_WHITE],              /* number: white on orange */
   nameLayers: [KN_WHITE],                      /* name: a single white layer */
   stackLayers: [KN_ORANGE, KN_BLUE, KN_WHITE]  /* photo stack: white, blue, orange */
@@ -1078,21 +1078,21 @@ STYLES.knicks.ctx = {
 };
 STYLES.knicks.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(255,255,255').split('rgba(255,235,120').join('rgba(255,255,255').split('rgba(255,150,0').join('rgba(180,185,200').split('#ffe84a').join(KN_WHITE) + '\n/* no name bar: the white name sits straight on the page */\n#view-detail .dl.dl-patch { display: none !important; }';
 
-/* Knicks Association: white page, orange glass, blue trim, blue buttons; number and name orange on blue, photo stack orange on blue on white */
-STYLES.knicksassoc = Object.assign({}, STYLES.knicks, {
-  label: 'Knicks Association',
+/* Knicks Statement is built from this: orange glass, blue trim, blue buttons; number and name orange on blue, photo stack orange on blue on white (not a theme of its own) */
+var KN_ASSOC = Object.assign({}, STYLES.knicks, {
+  label: 'Knicks Statement',
   layers: [KN_BLUE, KN_ORANGE], nameLayers: [KN_BLUE, KN_ORANGE], stackLayers: [KN_WHITE, KN_BLUE, KN_ORANGE]
 });
-STYLES.knicksassoc.outer = kn(function(l) { return [0, 0, .9 + .1 * l]; });                 /* bottom layer of the stack: white */
-STYLES.knicksassoc.top = function(h, s, l) { return l > .6 ? [27, .92, .55] : [27, .92, l * .8]; }; /* top layer: orange */
-STYLES.knicksassoc.ctx = Object.assign({}, STYLES.knicks.ctx, { nav: { silver: kn(function(l) { return [214, .62, .22 + .5 * l]; }) } }); /* blue nav trim */
-STYLES.knicksassoc.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(37,87,156').split('rgba(255,235,120').join('rgba(120,160,215').split('rgba(255,150,0').join('rgba(22,54,105').split('#ffe84a').join(KN_BLUE) + '\n/* white page, and no name bar */\nhtml[data-theme="dark"]::before { background: #fff !important; }\nhtml[data-theme="dark"] body { background-color: #fff !important; }\n#view-detail .dl.dl-patch { display: none !important; }';
+KN_ASSOC.outer = kn(function(l) { return [0, 0, .9 + .1 * l]; });                 /* bottom layer of the stack: white */
+KN_ASSOC.top = function(h, s, l) { return l > .6 ? [27, .92, .55] : [27, .92, l * .8]; }; /* top layer: orange */
+KN_ASSOC.ctx = Object.assign({}, STYLES.knicks.ctx, { nav: { silver: kn(function(l) { return [214, .62, .22 + .5 * l]; }) } }); /* blue nav trim */
+KN_ASSOC.extra = STYLES.skate.extra.split('rgba(255,205,0').join('rgba(37,87,156').split('rgba(255,235,120').join('rgba(120,160,215').split('rgba(255,150,0').join('rgba(22,54,105').split('#ffe84a').join(KN_BLUE) + '\n/* white page, and no name bar */\nhtml[data-theme="dark"]::before { background: #fff !important; }\nhtml[data-theme="dark"] body { background-color: #fff !important; }\n#view-detail .dl.dl-patch { display: none !important; }';
 
-/* Knicks Statement: Knicks Association with a black page instead of white */
-STYLES.knicksstatement = Object.assign({}, STYLES.knicksassoc, { label: 'Knicks Statement' });
+/* Knicks Statement: black page, orange glass, blue trim; number and name orange on blue, photo stack orange on blue on white */
+STYLES.knicksstatement = Object.assign({}, KN_ASSOC);
 STYLES.knicksstatement.map = Object.assign({}, STYLES.knicks.map, { navy: kn(function(l) { return [0, 0, Math.min(.07, l * .8)]; }) });
 STYLES.knicksstatement.bgRoyal = STYLES.skate.bgRoyal;
-STYLES.knicksstatement.extra = STYLES.knicksassoc.extra.replace('html[data-theme="dark"]::before { background: #fff !important; }\nhtml[data-theme="dark"] body { background-color: #fff !important; }\n', '').replace('/* white page, and no name bar */', '/* no name bar */');
+STYLES.knicksstatement.extra = KN_ASSOC.extra.replace('html[data-theme="dark"]::before { background: #fff !important; }\nhtml[data-theme="dark"] body { background-color: #fff !important; }\n', '').replace('/* white page, and no name bar */', '/* no name bar */');
 
 /* Flames: red page, black glass, yellow trim, double twill (red on top, yellow at the bottom) */
 STYLES.flames = Object.assign({}, STYLES.canada, {
